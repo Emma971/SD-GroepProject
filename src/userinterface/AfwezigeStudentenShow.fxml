@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="657.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.AfwezigeStudentenShowController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="657.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rooster.userinterface.AfwezigeStudentenShowController">
    <children>
       <Button fx:id="ABDoneButton" layoutX="566.0" layoutY="402.0" mnemonicParsing="false" onAction="#SluitenMainFrame" prefHeight="26.0" prefWidth="64.0" text="Done" />
       <Label fx:id="ABstudentLabel" layoutX="102.0" layoutY="26.0" text="Afwezige Studenten:" />

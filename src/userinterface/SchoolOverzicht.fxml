@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.SchoolOverzichtController">
+<AnchorPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rooster.userinterface.SchoolOverzichtController">
     <children>
       <TabPane layoutX="6.0" layoutY="145.0" prefHeight="345.0" prefWidth="639.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
