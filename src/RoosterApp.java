@@ -1,4 +1,4 @@
-import src.model.School;
+import model.School;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
