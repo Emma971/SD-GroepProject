@@ -15,6 +15,7 @@ import java.time.temporal.WeekFields;
 import java.util.Locale;
 
 public class SchoolOverzichtController {
+    public Label roosternaamLabel;
     @FXML private Label roosterTitel;
     @FXML private Label dagLabel;
     @FXML private Label weekLabel;
