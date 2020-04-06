@@ -1,1 +1,1 @@
-# SD-GroepProject
+# Presentie Informatie Systeem – Groep 3
