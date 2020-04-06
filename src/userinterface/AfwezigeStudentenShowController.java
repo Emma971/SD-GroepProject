@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import Model.Leerlingen;
 
 import java.lang.reflect.AnnotatedArrayType;
 
@@ -22,9 +23,7 @@ public class AfwezigeStudentenShowController {
 
 
     public void initialize(){
-        Aanwezig.add("Piet Huizen");
-        Aanwezig.add("Jan Steenhuis");
-        Afwezig.add("Ronald van der Steen");
+        LijstMaken();
         AfwezigLijst.setItems(Afwezig);
         AanwezigLijst.setItems(Aanwezig);
     }
@@ -39,26 +38,22 @@ public class AfwezigeStudentenShowController {
         initialize();
         try {
             String naam = (String) AfwezigLijst.getSelectionModel().getSelectedItem();
-            if(naam.equals(null)||naam.isEmpty()){
+            if(naam == null||naam.isEmpty()){
                 naam = (String) AanwezigLijst.getSelectionModel().getSelectedItem();
                 if(naam.equals(null)||naam.isEmpty()){
-                    ClearViewList();
                     System.out.println("Er is niks geselecteerd");
                 }
                 else{
-                    ClearViewList();
                     Aanwezig.remove(naam);
                     Afwezig.add(naam);
                     initialize();
                 }
             }else{
-                ClearViewList();
                 Aanwezig.add(naam);
                 Afwezig.remove(naam);
                 initialize();
             }
         }catch(Exception e){
-            ClearViewList();
             System.out.println("Kan actie niet uitvoeren");
             initialize();
         }
@@ -67,5 +62,16 @@ public class AfwezigeStudentenShowController {
     public void ClearViewList(){
         AanwezigLijst.getItems().clear();
         AfwezigLijst.getItems().clear();
+    }
+
+    public void LijstMaken(){
+        if(Aanwezig.isEmpty() && Afwezig.isEmpty()) {
+            Afwezig.add("Piet van Hoekstra");
+            Afwezig.add("Peter Allemans");
+            Aanwezig.add("Jan van der Steen");
+            Aanwezig.add("Ronald van der Laan");
+            Aanwezig.add("Steven Chez");
+            Aanwezig.add("Sam Nijkant");
+        }
     }
 }
