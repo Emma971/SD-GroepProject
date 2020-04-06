@@ -1,5 +1,6 @@
-package src.userinterface;
+package userinterface;
 
+import model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,8 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import rooster.model.Rooster;
-import rooster.model.School;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

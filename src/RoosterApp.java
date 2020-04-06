@@ -1,6 +1,4 @@
-package src;
-
-import rooster.model.School;
+import src.model.School;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

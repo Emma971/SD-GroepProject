@@ -1,5 +1,6 @@
-package src.userinterface;
+package userinterface;
 
+import model.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 

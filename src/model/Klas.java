@@ -1,4 +1,4 @@
-package src.model;
+package model;
 
 public class Klas {
 	private String naam;
