@@ -42,7 +42,7 @@ public class RoosterApp extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		String fxmlPagina = "src/userinterface/SchoolOverzicht.fxml";
+		String fxmlPagina = "userinterface/SchoolOverzicht.fxml";
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
 		Parent root = loader.load();
 
