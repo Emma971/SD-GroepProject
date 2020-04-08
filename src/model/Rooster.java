@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -8,14 +9,15 @@ public class Rooster {
 	private String les;
 	private LocalDate lesDatum;
 	private int weeknummer;
-	private LocalTime lesBegintijd, lesEindTijd;
+	private LocalDateTime lesBegintijd;
+	private LocalDateTime lesEindTijd;
 	private Klas klas;
 
 
-	protected Rooster(String les, LocalDate lesdag, String beginTijdString, String eindTijdString) {
+	protected Rooster(String les, LocalDate lesdag, LocalDateTime beginTijd, LocalDateTime eindTijd) {
 
-        LocalTime beginTijd = LocalTime.parse(beginTijdString);
-        LocalTime eindTijd  = LocalTime.parse(eindTijdString);
+//        LocalTime beginTijd = LocalTime.parse(beginTijdString);
+//        LocalTime eindTijd  = LocalTime.parse(eindTijdString);
 
 		this.les = les;
 		lesDatum = lesdag;
@@ -47,7 +49,7 @@ public class Rooster {
 	public int getWeeknummer() {return weeknummer;}
 
 	public String getlestijd() {
-		return ""+ lesBegintijd + " - " + lesEindTijd;
+		return ""+ lesBegintijd.getHour()+":"+lesBegintijd.getMinute() + " - " + lesEindTijd.getHour()+":"+lesEindTijd.getMinute();
 	}
 
 	public boolean equals(Object obj) {

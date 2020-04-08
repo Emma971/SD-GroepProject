@@ -99,7 +99,7 @@
             </HBox>
          </content>
       </TitledPane>
-      <DatePicker fx:id="datePicker" layoutX="80.0" layoutY="46.0" promptText="01/04/2020" showWeekNumbers="true" />
+      <DatePicker fx:id="datePicker" layoutX="80.0" layoutY="46.0" onInputMethodTextChanged="#setVakTijdComboBox" promptText="01/04/2020" showWeekNumbers="true" />
       <ComboBox fx:id="vakTijdComboBox" layoutX="312.0" layoutY="46.0" prefWidth="150.0" promptText="les" />
       <TitledPane animated="false" collapsible="false" layoutX="312.0" layoutY="107.0" prefHeight="215.0" prefWidth="250.0" text="Lengte afmelding">
          <content>
@@ -117,11 +117,8 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Label text="Tot volgende present melding" wrapText="true">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
+                        <DatePicker fx:id="AbsentStartDatePicker" promptText="Van" showWeekNumbers="true" />
+                        <DatePicker fx:id="AbsentEndDatePicker" promptText="Tot" showWeekNumbers="true" />
                      </children>
                   </VBox>
                   <VBox alignment="TOP_CENTER" prefHeight="160.0" prefWidth="50.0" spacing="20.0">
@@ -139,7 +136,7 @@
                               <Font size="14.0" />
                            </font>
                         </RadioButton>
-                        <RadioButton fx:id="totPresentieRadioButton" mnemonicParsing="false" toggleGroup="$lengteAfmelding">
+                        <RadioButton fx:id="VanTotRadioButton" mnemonicParsing="false" toggleGroup="$lengteAfmelding">
                            <font>
                               <Font size="14.0" />
                            </font>
