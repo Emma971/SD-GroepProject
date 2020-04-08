@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.UserToevoegenController">
+   <children>
+      <TextField fx:id="sbNaamtext" layoutX="151.0" layoutY="36.0" />
+      <TextField fx:id="sbWachtword" layoutX="151.0" layoutY="74.0" />
+      <ComboBox fx:id="sbUsertype" layoutX="151.0" layoutY="115.0" onAction="#action" prefWidth="150.0" promptText="User Type" />
+      <ComboBox fx:id="sbLeerlingKlas" layoutX="152.0" layoutY="200.0" prefWidth="150.0" promptText="Klas" visible="false" />
+      <TextField fx:id="sbLeerlingGID" layoutX="152.0" layoutY="158.0" visible="false" />
+      <Label layoutX="27.0" layoutY="40.0" text="Naam &amp; Achternaam" />
+      <Label layoutX="36.0" layoutY="78.0" text="User Wachtwoord" />
+      <Label fx:id="sbLeerlingGIDLabel" layoutX="30.0" layoutY="162.0" text="(gID) Leerling" visible="false" />
+      <Label fx:id="sbMedewerkerGIDLabel" layoutX="30.0" layoutY="255.0" text="(gID) Medewerker" visible="false" />
+      <TextField fx:id="sbMedewerkerGID" layoutX="153.0" layoutY="251.0" visible="false" />
+      <ComboBox fx:id="sbMedewerkerType" layoutX="153.0" layoutY="288.0" onAction="#action2" prefWidth="150.0" promptText="medewerker type" visible="false" />
+      <Label fx:id="sbSLBMEDIDLabel" layoutX="351.0" layoutY="162.0" text="(MedID) SLB" visible="false" />
+      <Label fx:id="sbDocentMEDIDLabel" layoutX="340.0" layoutY="255.0" text="(MedID) Docent" visible="false" />
+      <ComboBox fx:id="sbSLBKlas" layoutX="436.0" layoutY="200.0" prefWidth="150.0" promptText="Klas" visible="false" />
+      <TextField fx:id="sbSLBMedID" layoutX="437.0" layoutY="158.0" visible="false" />
+      <TextField fx:id="sbDocentMedID" layoutX="437.0" layoutY="251.0" visible="false" />
+      <ComboBox fx:id="sbDocentCursus" layoutX="437.0" layoutY="288.0" prefWidth="150.0" promptText="Cursus" visible="false" />
+      <Button fx:id="sbOpslaan" layoutX="526.0" layoutY="361.0" mnemonicParsing="false" onAction="#opslaan" text="Opslaan" />
+      <Button fx:id="sbReset" layoutX="446.0" layoutY="359.0" mnemonicParsing="false" onAction="#reset" prefHeight="17.0" prefWidth="66.0" text="RESET" textFill="#e50202">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Label fx:id="errorLabel" layoutX="432.0" layoutY="28.0" />
+   </children>
+</AnchorPane>
