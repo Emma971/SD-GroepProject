@@ -10,17 +10,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import model.Rooster;
 import model.School;
 
-import javax.print.Doc;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 public class DocentRoosterController {
     @FXML private Label dagLabel;
@@ -39,7 +35,7 @@ public class DocentRoosterController {
     public void initialize() {
         try {
             overzichtDatePicker.setValue(LocalDate.now());
-            roosternaamLabel.setText("" + mainmenuController.getUsernaam());
+            roosternaamLabel.setText("" + mainmenuController.getUsername());
             toonlessen();
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");

@@ -1,3 +1,4 @@
+import javafx.scene.input.KeyCode;
 import model.School;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -5,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +37,7 @@ public class RoosterApp extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		String fxmlPagina = "userinterface/Mainmenu.fxml";
+		String fxmlPagina = "userinterface/Inloggen.fxml";
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
 		Parent root = loader.load();
 

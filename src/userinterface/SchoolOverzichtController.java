@@ -33,7 +33,7 @@ public class SchoolOverzichtController {
     public void initialize() {
         try {
             overzichtDatePicker.setValue(LocalDate.now());
-            roosternaamLabel.setText("" + mainmenuController.getUsernaam() + " Klas : " + mainmenuController.getUserklasnaam());
+            roosternaamLabel.setText("" + mainmenuController.getUsername() + " Klas : " + mainmenuController.getUserklasnaam());
             toonlessen();
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");

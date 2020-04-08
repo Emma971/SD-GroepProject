@@ -15,6 +15,6 @@
       <Button fx:id="studentaanwezigheid" layoutX="118.0" layoutY="181.0" mnemonicParsing="false" onAction="#aanwezig" prefHeight="25.0" prefWidth="95.0" text="aanwezigheid" />
       <Button fx:id="docentrooster" layoutX="110.0" layoutY="94.0" mnemonicParsing="false" onAction="#roosterscherm" prefHeight="25.0" prefWidth="111.0" text="Docent Rooster" />
       <Label fx:id="errormenulabel" layoutX="72.0" layoutY="53.0" />
-      <Button fx:id="SBtoevoegen" layoutX="93.0" layoutY="119.0" mnemonicParsing="false" onAction="#sbUserToevoegen" prefHeight="25.0" prefWidth="145.0" text="Nieuwe User toeveogen" />
+      <Button fx:id="SBtoevoegen" layoutX="93.0" layoutY="119.0" mnemonicParsing="false" onAction="#sbUserToevoegen" prefHeight="25.0" prefWidth="145.0" text="Nieuwe User toevoegen" />
    </children>
 </AnchorPane>

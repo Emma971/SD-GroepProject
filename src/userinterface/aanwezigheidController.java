@@ -9,7 +9,6 @@ import javafx.scene.control.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Map;
 
 import static Utils.Database.executeStatement;
@@ -44,7 +43,7 @@ public class aanwezigheidController {
             list.add(comboBoxcursus);
             aanwezigheidComboBox.setItems(list);
 
-            aanwezigDataLabel.setText(mainmenuController.getUsernaam() + ", " + mainmenuController.getUsertype() + ", " + mainmenuController.getUserID());
+            aanwezigDataLabel.setText(mainmenuController.getUsername() + ", " + mainmenuController.getUsertype() + ", " + mainmenuController.getUserID());
             overzichtDatePicker.setValue(LocalDate.now());
             aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth() + "/" + LocalDate.now().getYear());
 

@@ -1,26 +1,16 @@
 package userinterface;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Rooster;
-import model.School;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
 
 public class mainmenuController {
 
@@ -35,18 +25,20 @@ public class mainmenuController {
     @FXML private Button docentpresent;
     @FXML private Button SBtoevoegen;
 
-    private static String usernaam;
+    private static String username;
     private static String usertype;
     private static String klasnaam;
     private static int userID;
 
+    public void setLoginDetails(String username, String usertype, String klasnaam) {
+        mainmenuController.username = username;
+        mainmenuController.usertype = usertype;
+        mainmenuController.klasnaam = klasnaam;
+    }
+
     public void initialize() {
 
-        usernaam = "Dillon Pootoon";
-        usertype = "docent";
-        klasnaam = "V1C";
-
-        String userlabel = usernaam + ", " + usertype;
+        String userlabel = username + ", " + usertype;
 
         studentrooster.setVisible      (usertype.equals("leerling") || usertype.equals("slb"));
         studentabsent.setVisible       (usertype.equals("leerling"));
@@ -163,8 +155,8 @@ public class mainmenuController {
         Platform.exit();
     }
 
-    public static void setUsernaam(String naam){
-        usernaam = naam;
+    public static void setUsername(String naam){
+        username = naam;
     }
 
     public static void setUsertype(String type){
@@ -180,8 +172,8 @@ public class mainmenuController {
     }
 
 
-    public static String getUsernaam(){
-        return usernaam;
+    public static String getUsername(){
+        return username;
     }
 
     public static String getUsertype(){
