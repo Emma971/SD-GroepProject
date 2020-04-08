@@ -20,6 +20,7 @@ import javax.print.Doc;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class DocentRoosterController {
     @FXML private Label dagLabel;
@@ -96,13 +97,14 @@ public class DocentRoosterController {
     public void Afwezigheid(ActionEvent actionEvent) {
         try {
             Lesnaam = (String) dagRoosterListView.getSelectionModel().getSelectedItem();
-            System.out.println(Lesnaam);
-            String fxmlPagina = "AfwezigeStudentenShowController.fxml";
+
+            String fxmlPagina = "AfwezigeStudentenShow.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
             Parent root = loader.load();
 
             AfwezigeStudentenShowController controller = loader.getController();
             controller.Les(Lesnaam);
+            controller.giveDatum(overzichtDatePicker.getValue());
             Stage stage = new Stage();
             if(Lesnaam.equals(null) || Lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
@@ -111,11 +113,9 @@ public class DocentRoosterController {
             }
             stage.setScene(new Scene(root));
             stage.show();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-
         } catch (IOException e) {
             errorLabel.setText("Error! can't access absent melden window ");
+            System.out.println(e);
         }
     }
 }
