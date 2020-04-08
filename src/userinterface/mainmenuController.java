@@ -33,6 +33,7 @@ public class mainmenuController {
 
     @FXML private Button docentrooster;
     @FXML private Button docentpresent;
+    @FXML private Button SBtoevoegen;
 
     private static String usernaam;
     private static String usertype;
@@ -42,18 +43,19 @@ public class mainmenuController {
     public void initialize() {
 
         usernaam = "Dillon Pootoon";
-        usertype = "Docent";
+        usertype = "beheerder";
         klasnaam = "V1C";
 
         String userlabel = usernaam + ", " + usertype;
 
-        studentrooster.setVisible      (usertype.equals("leerling"));
+        studentrooster.setVisible      (usertype.equals("leerling") || usertype.equals("slb"));
         studentabsent.setVisible       (usertype.equals("leerling"));
-        studentaanwezigheid.setVisible (usertype.equals("leerling"));
+        studentaanwezigheid.setVisible (usertype.equals("leerling") || usertype.equals("decaan") || usertype.equals("slb"));
 
-        docentrooster.setVisible       (usertype.equals(  "Docent"));
-        docentpresent.setVisible       (usertype.equals(  "Docent"));
+        docentrooster.setVisible       (usertype.equals(  "docent"));
+        docentpresent.setVisible       (usertype.equals(  "docent"));
 
+        SBtoevoegen.setVisible        (usertype.equals("beheerder"));
 
 
         if (usertype.equals("leerling")){
@@ -108,6 +110,22 @@ public class mainmenuController {
             stage.showAndWait();
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
+        }
+    }
+
+    public void sbUserToevoegen(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("UserToevoegen.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Aanwezigheid");
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            errormenulabel.setText("ERROR! Couldn't load new window.");
+            e.printStackTrace();
         }
     }
 
