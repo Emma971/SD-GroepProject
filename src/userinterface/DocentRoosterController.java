@@ -78,7 +78,6 @@ public class DocentRoosterController {
                 lesinfo = lesinfo + " | tijd : " + x.getlestijd();
                 dagles.add(lesinfo);
             }
-
             if(weekX==x.getWeeknummer()){
                 String lesinfo="";
                 lesinfo = lesinfo + "" + x.getlesdagDatum().getDayOfWeek();
