@@ -4,16 +4,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-import model.Rooster;
-import model.School;
 
-import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static Utils.Database.executeStatement;
@@ -24,8 +20,9 @@ public class aanwezigheidController {
     @FXML private Label aanwezigDatumLabel;
     @FXML private Label aanwezigDataLabel;
     @FXML private Label aanwezigCalcLabel;
+    @FXML private Label aanwezigStudentLabel;
 
-    @FXML private ListView aaanwezigList;
+    @FXML private ListView<String> aaanwezigList;
 
     @FXML private DatePicker overzichtDatePicker;
 
@@ -33,16 +30,27 @@ public class aanwezigheidController {
 
     @FXML private Button aanwezigTonen;
 
-    private School school = School.getSchool();
+    @FXML private ComboBox<String> aanwezigheidComboBox;
+    private Object ObservableList;
 
     public void initialize() {
         try {
+            ObservableList<String> list = FXCollections.observableArrayList();
+            String comboBoxklas = "klas";
+            String comboBoxleerling = "leerling";
+            String comboBoxcursus = "cursus";
+            list.add(comboBoxklas);
+            list.add(comboBoxleerling);
+            list.add(comboBoxcursus);
+            aanwezigheidComboBox.setItems(list);
+
             aanwezigDataLabel.setText(mainmenuController.getUsernaam() + ", " + mainmenuController.getUsertype() + ", " + mainmenuController.getUserID());
             overzichtDatePicker.setValue(LocalDate.now());
             aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth() + "/" + LocalDate.now().getYear());
 
             aanwezigInputText.setVisible (mainmenuController.getUsertype().equals("Decaan")||mainmenuController.getUsertype().equals("SLB"));
             aanwezigTonen.setVisible (mainmenuController.getUsertype().equals("Decaan")||mainmenuController.getUsertype().equals("SLB"));
+            aanwezigheidComboBox.setVisible(mainmenuController.getUsertype().equals("Decaan")||mainmenuController.getUsertype().equals("SLB"));
             aanwezigCalcLabel.setVisible(mainmenuController.getUsertype().equals("leerling"));
 
             if (mainmenuController.getUsertype().equals("leerling"))
@@ -59,34 +67,102 @@ public class aanwezigheidController {
     public void toonVorigeDag(ActionEvent actionEvent) {
         LocalDate dagEerder = overzichtDatePicker.getValue().minusDays(1);
         overzichtDatePicker.setValue(dagEerder);
+        toonabsentlessenDecaan();
     }
 
     public void toonVolgendeDag(ActionEvent actionEvent) {
         LocalDate dagLater = overzichtDatePicker.getValue().plusDays(1);
         overzichtDatePicker.setValue(dagLater);
+        toonabsentlessenDecaan();
     }
 
     public void toonabsentlessenDecaan() {
         try {
             ObservableList<String> dagDecaanafwezig = FXCollections.observableArrayList();
-            if (aanwezigInputText.getText().contains("klas")){
-                String[] textsplit = aanwezigInputText.getText().split("klas");
-                String klasnaam = textsplit[1];
+            String[] textsplit = aanwezigInputText.getText().split(" ");
+            if (aanwezigheidComboBox.getValue().equals("klas")){
+                String klasnaam = aanwezigInputText.getText();
+                for (Map<String, Object> klasIDD : executeStatement("SELECT klasID FROM klas WHERE klasNaam = '" + klasnaam + "'")) {
+                    String studentenaam = "";
+                    for (Map<String, Object> leerlingIDD : executeStatement("SELECT leerlingID,gebruikerID FROM leerling WHERE klasID = " + klasIDD.get("klasID"))) {
+                        String studentID = leerlingIDD.get("gebruikerID").toString();
+                        for (Map<String, Object> leerlingnaam : executeStatement("SELECT naam FROM gebruiker WHERE gebruikerID = " + studentID)){
+                            studentenaam = leerlingnaam.get("naam").toString();}
+                            for (Map<String, Object> getlesID : executeStatement("SELECT LesID FROM afwezigheid WHERE leerlingID =" + leerlingIDD.get("leerlingID"))) {
+                                for (Map<String, Object> les : executeStatement("SELECT * FROM les WHERE lesID =" + getlesID.get("lesID") + " ORDER BY begintijd")) {
+                                String vakNaam = "";
 
-            }
-            if (aanwezigInputText.getText().contains("leerling")){
+                                    LocalDateTime begint = (LocalDateTime) les.get("begintijd");
 
-            }
-            if (aanwezigInputText.getText().contains("cursus")){
+                                    LocalDateTime eindt = (LocalDateTime) les.get("eindtijd");
 
-            }
-            for (Rooster x : school.getRooster()){
-                if(overzichtDatePicker.getValue().isEqual(x.getlesdagDatum())){
-                    String lesinfo="";
-                    lesinfo = lesinfo + "Les : " + x.getLes();
-                    lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-                    dagDecaanafwezig.add(lesinfo);
+                                    LocalDate lesdatum = begint.toLocalDate();
+
+                                    LocalDateTime begintijd = begint;
+                                    LocalDateTime eindtijd = eindt;
+
+
+                                for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID")))
+                                    vakNaam = lesnaamq.get("cursusNaam").toString();
+
+                                if (overzichtDatePicker.getValue().isEqual(lesdatum)) {
+                                    String lesinfo = "";
+                                    lesinfo = studentenaam + " was afwezig voor";
+                                    lesinfo = lesinfo + " Les : " + vakNaam;
+                                    lesinfo = lesinfo + " | tijd : "+ begintijd.getHour()+":"+begintijd.getMinute() + " - " + eindtijd.getHour()+":"+eindtijd.getMinute();
+                                    dagDecaanafwezig.add(lesinfo);
+                                }
+
+                            }
+                            }
+                        }
                 }
+            }
+            if (aanwezigheidComboBox.getValue().equals("leerling")) {
+                String vaknaam = "";
+                String leerlingID = aanwezigInputText.getText();
+                for (Map<String, Object> afwezig : executeStatement("SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd FROM afwezigheid INNER JOIN les ON afwezigheid.lesID = les.lesID INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling on afwezigheid.leerlingID = leerling.leerlingID INNER JOIN gebruiker on leerling.gebruikerID = gebruiker.gebruikerID WHERE afwezigheid.leerlingID = " + leerlingID + ";")) {
+                    String reden = (String) afwezig.get("reden");
+                    String cursusNaam = (String) afwezig.get("cursusNaam");
+                    LocalDateTime begintijd = (LocalDateTime) afwezig.get("begintijd");
+                    LocalDateTime eindtijd = (LocalDateTime) afwezig.get("eindtijd");
+                    String studentnaam = afwezig.get("naam").toString();
+                    LocalDate lesdatum = begintijd.toLocalDate();
+
+                        if (overzichtDatePicker.getValue().isEqual(lesdatum)) {
+                            String lesinfo = "";
+                            lesinfo = studentnaam + " was afwezig voor ";
+                            lesinfo = lesinfo + "Les : " + vaknaam;
+                            lesinfo = lesinfo + " | tijd : "+ begintijd.getHour()+":"+begintijd.getMinute() + " - " + eindtijd.getHour()+":"+eindtijd.getMinute();
+                            lesinfo = lesinfo + " | reden : "+ reden;
+                            dagDecaanafwezig.add(lesinfo);
+                    }
+            }
+            }
+            if (aanwezigheidComboBox.getValue().equals("cursus")) {
+                String vaknaam = "";
+                String cursusID = aanwezigInputText.getText();
+                for (Map<String, Object> afwezig : executeStatement("SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd FROM afwezigheid INNER JOIN les ON afwezigheid.lesID = les.lesID INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling on afwezigheid.leerlingID = leerling.leerlingID INNER JOIN gebruiker on leerling.gebruikerID = gebruiker.gebruikerID WHERE cursus.cursusID = " + cursusID + ";")) {
+                    String reden = (String) afwezig.get("reden");
+                    String cursusNaam = (String) afwezig.get("cursusNaam");
+                    LocalDateTime begintijd = (LocalDateTime) afwezig.get("begintijd");
+                    LocalDateTime eindtijd = (LocalDateTime) afwezig.get("eindtijd");
+                    String studentnaam = afwezig.get("naam").toString();
+                    LocalDate lesdatum = begintijd.toLocalDate();
+
+                    if (overzichtDatePicker.getValue().isEqual(lesdatum)) {
+                        String lesinfo = "";
+                        lesinfo = studentnaam + " was afwezig voor ";
+                        lesinfo = lesinfo + "Les : " + vaknaam;
+                        lesinfo = lesinfo + " | tijd : "+ begintijd.getHour()+":"+begintijd.getMinute() + " - " + eindtijd.getHour()+":"+eindtijd.getMinute();
+                        lesinfo = lesinfo + " | reden : "+ reden;
+                        dagDecaanafwezig.add(lesinfo);
+                    }
+            }
+            }
+
+            if (dagDecaanafwezig.isEmpty()){
+                dagDecaanafwezig.add("");
             }
             aaanwezigList.setItems(dagDecaanafwezig);
         } catch (NullPointerException e) {
@@ -102,7 +178,6 @@ public class aanwezigheidController {
             for (Map<String, Object> getlesID : executeStatement("SELECT LesID FROM afwezigheid WHERE leerlingID =" + mainmenuController.getUserID())) {
                 for (Map<String, Object> les : executeStatement("SELECT * FROM les WHERE lesID =" + getlesID.get("lesID") + " ORDER BY begintijd")) {
 			        String vakNaam = "";
-			        String klasNaam = "";
 			        String rawDatum = "";
 			        String rawBeginTijd = "";
 			        String rawEindTijd = "";
