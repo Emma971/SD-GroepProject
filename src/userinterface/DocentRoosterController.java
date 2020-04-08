@@ -97,12 +97,12 @@ public class DocentRoosterController {
         try {
             Lesnaam = (String) dagRoosterListView.getSelectionModel().getSelectedItem();
             System.out.println(Lesnaam);
-            String fxmlPagina = "userinterface/HotelOverzicht.fxml";
+            String fxmlPagina = "AfwezigeStudentenShowController.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
             Parent root = loader.load();
 
-            DocentRoosterController controller = loader.getController();
-            controller.myFunction()
+            AfwezigeStudentenShowController controller = loader.getController();
+            controller.Les(Lesnaam);
             Stage stage = new Stage();
             if(Lesnaam.equals(null) || Lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
@@ -117,9 +117,5 @@ public class DocentRoosterController {
         } catch (IOException e) {
             errorLabel.setText("Error! can't access absent melden window ");
         }
-    }
-
-    public static String getStageNaam(){
-        return Lesnaam;
     }
 }
