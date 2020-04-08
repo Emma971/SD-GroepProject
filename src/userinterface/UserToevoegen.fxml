@@ -31,7 +31,10 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Label fx:id="errorLabel" layoutX="432.0" layoutY="28.0" />
+      <Label fx:id="errorLabel" layoutX="315.0" layoutY="39.0" prefHeight="20.0" prefWidth="275.0">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font></Label>
       <TextField fx:id="sbUserNaamtext" layoutX="151.0" layoutY="2.0" />
       <Label fx:id="sbUserNaamLabel" layoutX="28.0" layoutY="6.0" text="User naam" />
    </children>
