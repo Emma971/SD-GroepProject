@@ -100,6 +100,8 @@ public class UserToevoegenController {
             medewerkertype = (String) sbMedewerkerType.getValue();
             gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
             executeStatement("INSERT INTO medewerker(gebruikerID,type) VALUES ('"+ gebruikerID + "', '" + medewerkertype + "');");
+
+
             }
 
     }
