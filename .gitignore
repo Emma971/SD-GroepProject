@@ -2,5 +2,5 @@
 !/idea/libraries
 /out/
 /SD-Project.iml
-/src/Database.java
-/src/DBTest.java
+/src/Utils/Database.java
+/src/Utils/DBTest.java
