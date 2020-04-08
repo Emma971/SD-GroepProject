@@ -42,6 +42,8 @@ public class Rooster {
 		return klas;
 	}
 
+	public static String getklasnaam(){ return getklasnaam();}
+
 	public LocalDate getlesdagDatum() {
 		return lesDatum;
 	}

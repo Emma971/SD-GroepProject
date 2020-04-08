@@ -4,17 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Map;
 
 import static Utils.Database.executeStatement;
@@ -33,6 +26,7 @@ public class UserToevoegenController {
     @FXML private TextField sbMedewerkerGID;
     @FXML private TextField sbSLBMedID;
     @FXML private TextField sbDocentMedID;
+    @FXML private TextField sbUserNaamtext;
 
     @FXML private ComboBox sbUsertype;
     @FXML private ComboBox sbLeerlingKlas;
@@ -70,46 +64,53 @@ public class UserToevoegenController {
 
     public void action(ActionEvent actionEvent) {
         String userComboValue = (String) sbUsertype.getValue();
-                        sbLeerlingGIDLabel.setVisible(userComboValue.equals("leerling"));
-                        sbLeerlingGID.setVisible(userComboValue.equals("leerling"));
-                        sbLeerlingKlas.setVisible(userComboValue.equals("leerling"));
+        sbLeerlingGIDLabel.setVisible(userComboValue.equals      ("leerling"));
+        sbLeerlingGID.setVisible(userComboValue.equals           ("leerling"));
+        sbLeerlingKlas.setVisible(userComboValue.equals          ("leerling"));
 
-                        sbMedewerkerGIDLabel.setVisible(userComboValue.equals("medewerker"));
-                        sbMedewerkerGID.setVisible(userComboValue.equals("medewerker"));
-                        sbMedewerkerType.setVisible(userComboValue.equals("medewerker"));
-        if (userComboValue==null){
-            sbLeerlingGIDLabel.setVisible(userComboValue.equals("\"LOL\""));
-            sbLeerlingGID.setVisible(userComboValue.equals("\"LOL\""));
-            sbLeerlingKlas.setVisible(userComboValue.equals("\"LOL\""));
-
-            sbMedewerkerGIDLabel.setVisible(userComboValue.equals("\"LOL\""));
-            sbMedewerkerGID.setVisible(userComboValue.equals("\"LOL\""));
-            sbMedewerkerType.setVisible(userComboValue.equals("\"LOL\""));
-        }
+        sbMedewerkerGIDLabel.setVisible(userComboValue.equals  ("medewerker"));
+        sbMedewerkerGID.setVisible(userComboValue.equals       ("medewerker"));
+        sbMedewerkerType.setVisible(userComboValue.equals      ("medewerker"));
     }
     public void action2(ActionEvent actionEvent){
         String medwerkerComboValue = (String) sbMedewerkerType.getValue();
-               sbSLBMEDIDLabel.setVisible(medwerkerComboValue.equals("slb"));
-               sbSLBMedID.setVisible(medwerkerComboValue.equals("slb"));
-               sbSLBKlas.setVisible(medwerkerComboValue.equals("slb"));
+        sbSLBMEDIDLabel.setVisible(medwerkerComboValue.equals        ("slb"));
+        sbSLBMedID.setVisible(medwerkerComboValue.equals             ("slb"));
+        sbSLBKlas.setVisible(medwerkerComboValue.equals              ("slb"));
 
-               sbDocentMEDIDLabel.setVisible(medwerkerComboValue.equals("docent"));
-               sbDocentMedID.setVisible(medwerkerComboValue.equals("docent"));
-               sbDocentCursus.setVisible(medwerkerComboValue.equals("docent"));
-               if (medwerkerComboValue==null){
-                   sbSLBMEDIDLabel.setVisible(medwerkerComboValue.equals("LOL"));
-                   sbSLBMedID.setVisible(medwerkerComboValue.equals("LOL"));
-                   sbSLBKlas.setVisible(medwerkerComboValue.equals("LOL"));
-
-                   sbDocentMEDIDLabel.setVisible(medwerkerComboValue.equals("LOL"));
-                   sbDocentMedID.setVisible(medwerkerComboValue.equals("LOL"));
-                   sbDocentCursus.setVisible(medwerkerComboValue.equals("LOL"));
-               }
+        sbDocentMEDIDLabel.setVisible(medwerkerComboValue.equals  ("docent"));
+        sbDocentMedID.setVisible(medwerkerComboValue.equals       ("docent"));
+        sbDocentCursus.setVisible(medwerkerComboValue.equals      ("docent"));
     }
     public void opslaan(ActionEvent actionEvent){
+        String gebruikersnaam = sbUserNaamtext.getText();
+        String gebruikernaam = sbNaamtext.getText();
+        String gebruikerWachtword = sbNaamtext.getText();
+        String gebruikerType = (String) sbUsertype.getValue();
+        String gebruikerID = "";
+        if (gebruikerType.equals("leerling")){
+            String klasID      = "";
+            gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
+            executeStatement("INSERT INTO leerling(gebruikerID,klasID) VALUES ('"+ gebruikerID + "', '" + klasID + "');");
+
+        }
+
+        if (gebruikerType.equals("medewerker")){
+            gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
+            }
 
     }
-    
+
+
+    public static String gebruikerID(String a, String b, String c, String d){
+        String gebruikerID  ="";
+        executeStatement("INSERT INTO gebruiker(gebruikersnaam, naam, type, wachtwoord) VALUES ('"+ a + "', '" + b + "', '" + c + "', '" + d + "');");
+        for (Map<String, Object> data : executeStatement("SELECT gebruikerID FROM gebruiker WHERE = gebruikersnaam" + a + ";")){
+           gebruikerID = (String) data.get("gebruikerID");
+        }
+        return gebruikerID;
+    }
+
     public void reset(ActionEvent actionEvent){
         sbDocentCursus.setValue("");
         sbSLBKlas.setValue("");
