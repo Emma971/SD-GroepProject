@@ -1,4 +1,4 @@
-package rooster.userinterface;
+package userinterface;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,8 +12,8 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import rooster.model.Rooster;
-import rooster.model.School;
+import model.Rooster;
+import model.School;
 
 import java.io.IOException;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package rooster.userinterface;
+package userinterface;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,15 +8,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import rooster.model.Rooster;
-import rooster.model.School;
+import model.Rooster;
+import model.School;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-import static rooster.model.Database.executeStatement;
+import static Utils.Database.executeStatement;
 
 public class aanwezigheidController {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy");

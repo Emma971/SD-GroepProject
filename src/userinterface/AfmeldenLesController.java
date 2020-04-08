@@ -1,5 +1,6 @@
 package userinterface;
 
+import javafx.event.ActionEvent;
 import model.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -37,4 +38,8 @@ public class AfmeldenLesController {
     private Button terugButton;
 
     public AfmeldenLesController() {}
+
+
+    public void BevestigAfmelding(ActionEvent actionEvent) {
+    }
 }
