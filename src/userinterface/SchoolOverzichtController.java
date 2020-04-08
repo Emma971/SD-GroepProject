@@ -1,4 +1,4 @@
-package rooster.userinterface;
+package userinterface;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,9 +10,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import rooster.model.Rooster;
-import rooster.model.School;
-import rooster.model.Database;
+import model.Rooster;
+import model.School;
+import Utils.Database;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
-import static rooster.model.Database.executeStatement;
+import static Utils.Database.executeStatement;
 
 public class SchoolOverzichtController {
     @FXML private Label dagLabel;

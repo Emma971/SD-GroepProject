@@ -1,7 +1,4 @@
-package rooster;
-
-import com.google.protobuf.StringValue;
-import rooster.model.School;
+import model.School;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,12 +6,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-import static rooster.model.Database.executeStatement;
+import static Utils.Database.executeStatement;
 
 public class RoosterApp extends Application {
 	public static void main(String[] args) throws Exception {
