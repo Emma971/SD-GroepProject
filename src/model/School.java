@@ -2,7 +2,6 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +30,7 @@ public class School {
 		return Collections.unmodifiableList(allelessen);
 	}
 
-	public Rooster voegLesToe(String lesnaam, LocalDate lesdag, String van, String tot, String klasnaam) throws Exception {
+	public Rooster voegLesToe(String lesnaam, LocalDate lesdag, LocalDateTime van, LocalDateTime tot, String klasnaam) throws Exception {
 
 		Rooster rooster = new Rooster(lesnaam, lesdag, van, tot);
 		rooster.setKlas(new Klas(klasnaam));

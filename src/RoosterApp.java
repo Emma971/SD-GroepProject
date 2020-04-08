@@ -21,25 +21,22 @@ public class RoosterApp extends Application {
 		for (Map<String, Object> les : executeStatement("SELECT * FROM les ORDER BY begintijd")) {
 			String vakNaam = "";
 			String klasNaam = "";
-			String rawDatum = "";
-			String rawBeginTijd = "";
-			String rawEindTijd = "";
 
 			for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID")))
 				vakNaam = lesnaamq.get("cursusNaam").toString();
 			for (Map<String, Object> lesnaamq : executeStatement("SELECT naam FROM klas WHERE klasID = " + les.get("klasID")))
 				klasNaam = lesnaamq.get("naam").toString();
 
-			LocalDateTime lesdatum = (LocalDateTime) les.get("begintijd");
+			LocalDateTime begint = (LocalDateTime) les.get("begintijd");
 
 			LocalDateTime eindt = (LocalDateTime) les.get("eindtijd");
 
-			LocalDate x = lesdatum.toLocalDate();
+			LocalDate lesdatum = begint.toLocalDate();
 
-			LocalDateTime begintijd = lesdatum;
+			LocalDateTime begintijd = begint;
 			LocalDateTime eindtijd = eindt;
 
-			nieuwSchool.voegLesToe(vakNaam, x, begintijd, eindtijd, klasNaam);
+			nieuwSchool.voegLesToe(vakNaam, lesdatum, begintijd, eindtijd, klasNaam);
 		}
 		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(-111), LocalDateTime.now(),LocalDateTime.now(), "V1C");
 		School.setSchool(nieuwSchool);
