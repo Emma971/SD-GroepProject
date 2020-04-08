@@ -45,6 +45,7 @@ public class InloggenController {
         ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.wachtwoord FROM gebruiker g WHERE g.wachtwoord = " + wachtw + " AND g.gebruikersnaam = " + gebrnm);
         if (gebrD.size() == 1){
             if (wwD.size() == 1) {
+                mainmenuController.setUsernaam(gebrnm);
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("Mainmenu.fxml"));
                     Parent root = loader.load();
