@@ -1,5 +1,6 @@
 package userinterface;
 
+import Utils.Database;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,12 +33,16 @@ public class InloggenController {
     }
 
     public void CheckLogIn(ActionEvent actionEvent) {
-        String gebrnm = String.valueOf(gebruikersnaam);
-        String wachtw = String.valueOf(wachtwoord);
+        String gebrnm = gebruikersnaam.getText();
+        String wachtw = wachtwoord.getText();
 
-        ArrayList<Map<String, Object>> gebrD = Utils.Database.executeStatement("SELECT g.gebruikersnaam FROM gebruiker g WHERE g.gebruikersnaam = " + gebrnm);
-        ArrayList<Map<String, Object>> wwD = Utils.Database.executeStatement("SELECT g.wachtwoord FROM gebruiker g WHERE g.wachtwoord = " + wachtw + " AND g.gebruikersnaam = " + gebrnm);
+        ArrayList<Map<String, Object>> gebrD = new ArrayList<>(Utils.Database.executeStatement("SELECT g.gebruikersnaam FROM gebruiker g WHERE g.gebruikersnaam = '" + gebrnm+"';"));
+
+
+        System.out.println(gebrD);
         if (gebrD.size() == 1){
+            ArrayList<Map<String, Object>> wwD = Utils.Database.executeStatement("SELECT g.wachtwoord FROM gebruiker g WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
+            System.out.println(wwD);
             if (wwD.size() == 1) {
                 mainmenuController.setUsernaam(gebrnm);
                 try {
