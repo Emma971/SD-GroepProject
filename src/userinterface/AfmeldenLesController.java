@@ -64,27 +64,27 @@ public class AfmeldenLesController {
         setVakTijdComboBox();
     }
 
-    public void BevestigAfmelding(ActionEvent actionEvent) {
-        date = datePicker.getValue();
-        String les = String.valueOf(vakTijdComboBox.getSelectionModel().getSelectedItem());
-        RedenAfmelding();
-
-        ObservableList<String> lessen = FXCollections.observableArrayList();
-        ArrayList<Map<String, Object>> data = executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam  FROM les INNER JOIN cursus on les.cursusID = cursus.cursusID WHERE begintijd < '2020-04-09'AND begintijd > '2020-04-08';");
-
-        for (Map<String, Object>less : data) {
-            lessen.add("Les: " + less.get("cursusNaam") + " Tijd:" + less.get("begintijd") + " : " + less.get("eindtijd"));
-            String lesles = "Les: " + less.get("cursusNaam") + " Tijd:" + less.get("begintijd") + " : " + less.get("eindtijd");
-            lesID = (int) less.get("lesID");
-            HashMap<String, Integer> = lesles, lesID;
-        }
-
-
-        int leerlingID = 5;
-        int lesID = 8;
-        executeStatement("INSERT INTO afwezigheid (reden, leerlingID, lesID) VALUES ('" + reden + "', '" + leerlingID + "', '" + lesID + "');");
-
-    }
+//    public void BevestigAfmelding(ActionEvent actionEvent) {
+//        date = datePicker.getValue();
+//        String les = String.valueOf(vakTijdComboBox.getSelectionModel().getSelectedItem());
+//        RedenAfmelding();
+//
+//        ObservableList<String> lessen = FXCollections.observableArrayList();
+//        ArrayList<Map<String, Object>> data = executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam  FROM les INNER JOIN cursus on les.cursusID = cursus.cursusID WHERE begintijd < '2020-04-09'AND begintijd > '2020-04-08';");
+//
+//        for (Map<String, Object>less : data) {
+//            lessen.add("Les: " + less.get("cursusNaam") + " Tijd:" + less.get("begintijd") + " : " + less.get("eindtijd"));
+//            String lesles = "Les: " + less.get("cursusNaam") + " Tijd:" + less.get("begintijd") + " : " + less.get("eindtijd");
+//            lesID = (int) less.get("lesID");
+//            HashMap<String, Integer> = lesles, lesID;
+//        }
+//
+//
+//        int leerlingID = 5;
+//        int lesID = 8;
+//        executeStatement("INSERT INTO afwezigheid (reden, leerlingID, lesID) VALUES ('" + reden + "', '" + leerlingID + "', '" + lesID + "');");
+//
+//    }
 
     public void setVakTijdComboBox() {
         ObservableList<String> lessen = FXCollections.observableArrayList();

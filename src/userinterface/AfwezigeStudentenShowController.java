@@ -1,6 +1,5 @@
 package userinterface;
 
-import com.mysql.cj.util.Util;
 import model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

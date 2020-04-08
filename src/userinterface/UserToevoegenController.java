@@ -87,16 +87,19 @@ public class UserToevoegenController {
         String gebruikernaam = sbNaamtext.getText();
         String gebruikerWachtword = sbNaamtext.getText();
         String gebruikerType = (String) sbUsertype.getValue();
-        String gebruikerID = "";
         if (gebruikerType.equals("leerling")){
+            String gebruikerID = "";
             String klasID      = "";
             gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
             executeStatement("INSERT INTO leerling(gebruikerID,klasID) VALUES ('"+ gebruikerID + "', '" + klasID + "');");
-
         }
 
         if (gebruikerType.equals("medewerker")){
-            gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
+            String gebruikerID = "";
+            String medewerkertype = "";
+            medewerkertype = (String) sbMedewerkerType.getValue();
+            gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
+            executeStatement("INSERT INTO medewerker(gebruikerID,type) VALUES ('"+ gebruikerID + "', '" + medewerkertype + "');");
             }
 
     }

@@ -43,7 +43,7 @@ public class mainmenuController {
     public void initialize() {
 
         usernaam = "Dillon Pootoon";
-        usertype = "beheerder";
+        usertype = "docent";
         klasnaam = "V1C";
 
         String userlabel = usernaam + ", " + usertype;
@@ -82,7 +82,7 @@ public class mainmenuController {
                 errormenulabel.setText("ERROR! Couldn't load new window.");
             }
         }
-        else if(usertype.equals("Docent")){
+        else if(usertype.equals("docent")){
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("DocentRooster.fxml"));
