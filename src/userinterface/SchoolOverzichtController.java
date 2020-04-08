@@ -12,13 +12,10 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import model.Rooster;
 import model.School;
-import Utils.Database;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
 
 import static Utils.Database.executeStatement;
 

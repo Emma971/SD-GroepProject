@@ -6,20 +6,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.*;
-import userinterface.*;
 
 import java.io.IOException;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import Utils.Database;
-
-import javax.xml.crypto.Data;
 
 import static javafx.application.Application.launch;
 
@@ -41,8 +35,8 @@ public class InloggenController {
         String gebrnm = String.valueOf(gebruikersnaam);
         String wachtw = String.valueOf(wachtwoord);
 
-        ArrayList<Map<String, Object>> gebrD = Database.executeStatement("SELECT g.gebruikersnaam FROM gebruiker g WHERE g.gebruikersnaam = " + gebrnm);
-        ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.wachtwoord FROM gebruiker g WHERE g.wachtwoord = " + wachtw + " AND g.gebruikersnaam = " + gebrnm);
+        ArrayList<Map<String, Object>> gebrD = Utils.Database.executeStatement("SELECT g.gebruikersnaam FROM gebruiker g WHERE g.gebruikersnaam = " + gebrnm);
+        ArrayList<Map<String, Object>> wwD = Utils.Database.executeStatement("SELECT g.wachtwoord FROM gebruiker g WHERE g.wachtwoord = " + wachtw + " AND g.gebruikersnaam = " + gebrnm);
         if (gebrD.size() == 1){
             if (wwD.size() == 1) {
                 try {
