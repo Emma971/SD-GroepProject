@@ -12,12 +12,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.lang.reflect.AnnotatedArrayType;
 import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class AfwezigeStudentenShowController {
-
+    String Les;
+    ArrayList<Map<String, Object>> leerlingen;
     ObservableList Aanwezig = FXCollections.observableArrayList();
     ObservableList Afwezig = FXCollections.observableArrayList();
     @FXML ListView AfwezigLijst;
@@ -45,6 +47,7 @@ public class AfwezigeStudentenShowController {
                     System.out.println("Er is niks geselecteerd");
                 }
                 else{
+                    System.out.println();
                     Aanwezig.remove(naam);
                     Afwezig.add(naam);
                     initialize();
@@ -74,5 +77,9 @@ public class AfwezigeStudentenShowController {
             Aanwezig.add("Steven Chez");
             Aanwezig.add("Sam Nijkant");
         }
+    }
+
+    public void Les(String LesNaam){
+        Les = LesNaam;
     }
 }
