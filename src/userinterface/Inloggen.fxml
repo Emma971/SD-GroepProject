@@ -37,7 +37,7 @@
             <Font size="13.0" />
          </font>
       </PasswordField>
-      <Button fx:id="loginButton" layoutX="272.0" layoutY="298.0" mnemonicParsing="false" onAction="#CheckLogIn" text="Inloggen">
+      <Button fx:id="loginButton" layoutX="272.0" layoutY="298.0" mnemonicParsing="false" onAction="#logIn" text="Inloggen">
          <font>
             <Font size="14.0" />
          </font>

@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class DocentRoosterController {
+    mainmenuController parentController;
+
     @FXML private Label dagLabel;
     @FXML private Label weekLabel;
     @FXML private Label errorLabel;
@@ -32,10 +34,14 @@ public class DocentRoosterController {
     private School school = School.getSchool();
     private String Lesnaam = "";
 
+    public void setParentController(mainmenuController controller) {
+        this.parentController = controller;
+    }
+
     public void initialize() {
         try {
             overzichtDatePicker.setValue(LocalDate.now());
-            roosternaamLabel.setText("" + mainmenuController.getUsernaam());
+            roosternaamLabel.setText("" + parentController.getNaamGebruiker());
             toonlessen();
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");

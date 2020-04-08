@@ -14,8 +14,6 @@ import java.io.IOException;
 
 public class mainmenuController {
 
-    public Label loginLabel;
-    public Button closebutton;
     @FXML private Label loggedLabel;
     @FXML private Label errormenulabel;
 
@@ -27,23 +25,22 @@ public class mainmenuController {
     @FXML private Button docentpresent;
     @FXML private Button SBtoevoegen;
 
-    private static String username;
-    private static String usertype;
-    private static String klasnaam;
-    private static int userID;
+    private String naamGebruiker;
+    private String usertype;
+    private String klasnaam;
+    private int gebruikerID;
 
-    public void setLoginDetails(String username, String usertype, String klasnaam) {
-        mainmenuController.username = username;
-        mainmenuController.usertype = usertype;
-        mainmenuController.klasnaam = klasnaam;
-    }
+    public void setLoginDetails(int gebruikerID, String username, String usertype, String klasnaam) {
+        this.gebruikerID = gebruikerID;
+        this.naamGebruiker = username;
+        this.usertype = usertype;
+        this.klasnaam = klasnaam;
 
-    public void initialize() {
+
 
         String userlabel = username + ", " + usertype;
 
-        studentrooster.setVisible      (                usertype.equals("leerling") ||
-                        usertype.equals("slb"));
+        studentrooster.setVisible      (usertype.equals("leerling") || usertype.equals("slb"));
         studentabsent.setVisible       (usertype.equals("leerling"));
         studentaanwezigheid.setVisible (usertype.equals("leerling") || usertype.equals("decaan") || usertype.equals("slb"));
 
@@ -62,12 +59,17 @@ public class mainmenuController {
         loggedLabel.setText(userlabel);
     }
 
+    public void initialize() {
+    }
+
     public void roosterscherm(ActionEvent actionEvent) {
         if(usertype.equals("leerling")) {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("SchoolOverzicht.fxml"));
                 Scene scene = new Scene(fxmlLoader.load());
+                SchoolOverzichtController controller = fxmlLoader.getController();
+                controller.setParentController(this);
                 Stage stage = new Stage();
                 stage.setTitle("Rooster");
                 stage.setScene(scene);
@@ -82,6 +84,8 @@ public class mainmenuController {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("DocentRooster.fxml"));
                 Scene scene = new Scene(fxmlLoader.load());
+                DocentRoosterController controller = fxmlLoader.getController();
+                controller.setParentController(this);
                 Stage stage = new Stage();
                 stage.setTitle("Rooster");
                 stage.setScene(scene);
@@ -98,6 +102,8 @@ public class mainmenuController {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("aanwezigheid.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
+            aanwezigheidController controller = fxmlLoader.getController();
+            controller.setParentController(this);
             Stage stage = new Stage();
             stage.setTitle("Aanwezigheid");
             stage.setScene(scene);
@@ -158,36 +164,36 @@ public class mainmenuController {
         Platform.exit();
     }
 
-    public static void setUsername(String naam){
-        username = naam;
+    public void setNaamGebruiker(String naam){
+        naamGebruiker = naam;
     }
 
-    public static void setUsertype(String type){
+    public void setUsertype(String type){
         usertype = type;
     }
 
-    public static void setUserklasnaam(String naam){
+    public void setUserklasnaam(String naam){
         klasnaam = naam;
     }
 
-    public static void setUserID(int ID){
-        userID = ID;
+    public void setGebruikerID(int ID){
+        gebruikerID = ID;
     }
 
 
-    public static String getUsername(){
-        return username;
+    public String getNaamGebruiker(){
+        return naamGebruiker;
     }
 
-    public static String getUsertype(){
+    public String getUsertype(){
         return usertype;
     }
 
-    public static  String getUserklasnaam(){
+    public String getUserklasnaam(){
         return klasnaam;
     }
 
-    public static  int getUserID(){
-        return userID;
+    public int getGebruikerID(){
+        return gebruikerID;
     }
 }

@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class SchoolOverzichtController {
+    mainmenuController parentController;
+
     @FXML private Label dagLabel;
     @FXML private Label weekLabel;
     @FXML private Label errorLabel;
@@ -28,16 +30,21 @@ public class SchoolOverzichtController {
 
     @FXML private DatePicker overzichtDatePicker;
 
-    private School school = School.getSchool();
-
-    public void initialize() {
+    public void setParentController(mainmenuController controller) {
         try {
-            overzichtDatePicker.setValue(LocalDate.now());
-            roosternaamLabel.setText("" + mainmenuController.getUsernaam() + " Klas : " + mainmenuController.getUserklasnaam());
+            this.parentController = controller;
+            roosternaamLabel.setText("" + parentController.getNaamGebruiker() + " Klas : " + parentController.getUserklasnaam());
             toonlessen();
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");
         }
+    }
+
+    private School school = School.getSchool();
+
+    public void initialize() {
+            overzichtDatePicker.setValue(LocalDate.now());
+
     }
 
     public void toonVanDaag(ActionEvent actionEvent) {
@@ -94,6 +101,8 @@ public class SchoolOverzichtController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfmeldenLes.fxml"));
+            AfmeldenLesController controller = fxmlLoader.getController();
+            controller.setParentController(this);
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = new Stage();
             stage.setTitle("Absent Melden");

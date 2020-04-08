@@ -1,9 +1,9 @@
 package userinterface;
 
-import Utils.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.input.KeyEvent;
 import model.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -46,7 +46,7 @@ public class AfmeldenLesController {
     @FXML   /* De rest */
     private DatePicker datePicker;
     @FXML
-    private ComboBox vakTijdComboBox;
+    private ComboBox<String> vakTijdComboBox;
     @FXML
     private Button bevestigButton;
 
@@ -55,6 +55,12 @@ public class AfmeldenLesController {
     private LocalDate date;
     private String reden;
     private int lesID;
+    private SchoolOverzichtController parentController;
+    private HashMap<String, Integer> lesIDs = new HashMap<>();
+
+    public void setParentController(SchoolOverzichtController controller) {
+        this.parentController = controller;
+    }
 
 
     public AfmeldenLesController() {}
@@ -64,40 +70,30 @@ public class AfmeldenLesController {
         setVakTijdComboBox();
     }
 
-//    public void BevestigAfmelding(ActionEvent actionEvent) {
-//        date = datePicker.getValue();
-//        String les = String.valueOf(vakTijdComboBox.getSelectionModel().getSelectedItem());
-//        RedenAfmelding();
-//
-//        ObservableList<String> lessen = FXCollections.observableArrayList();
-//        ArrayList<Map<String, Object>> data = executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam  FROM les INNER JOIN cursus on les.cursusID = cursus.cursusID WHERE begintijd < '2020-04-09'AND begintijd > '2020-04-08';");
-//
-//        for (Map<String, Object>less : data) {
-//            lessen.add("Les: " + less.get("cursusNaam") + " Tijd:" + less.get("begintijd") + " : " + less.get("eindtijd"));
-//            String lesles = "Les: " + less.get("cursusNaam") + " Tijd:" + less.get("begintijd") + " : " + less.get("eindtijd");
-//            lesID = (int) less.get("lesID");
-//            HashMap<String, Integer> = lesles, lesID;
-//        }
-//
-//
-//        int leerlingID = 5;
-//        int lesID = 8;
-//        executeStatement("INSERT INTO afwezigheid (reden, leerlingID, lesID) VALUES ('" + reden + "', '" + leerlingID + "', '" + lesID + "');");
-//
-//    }
+    public void BevestigAfmelding(ActionEvent actionEvent) {
+        date = datePicker.getValue();
+        String les = String.valueOf(vakTijdComboBox.getSelectionModel().getSelectedItem());
+        RedenAfmelding();
+
+        int gebruikerID = parentController.parentController.getGebruikerID();
+
+
+        int leerlingID = 5;
+        int lesID = lesIDs.get(les);
+        executeStatement("INSERT INTO afwezigheid (reden, leerlingID, lesID) VALUES ('" + reden + "', '" + leerlingID + "', '" + lesID + "');");
+
+    }
 
     public void setVakTijdComboBox() {
-        ObservableList<String> lessen = FXCollections.observableArrayList();
+        int gebruikerID = parentController.parentController.getGebruikerID();
         date = datePicker.getValue();
-
-        ArrayList<Map<String, Object>> data = executeStatement("SELECT les.begintijd, les.eindtijd, cursus.cursusNaam  FROM les INNER JOIN cursus on les.cursusID = cursus.cursusID WHERE begintijd < '2020-04-09'AND begintijd > '2020-04-08';");
-
-
-//        if (rooster.getlesdagDatum().isEqual(date)) {
-//            lessen.add("Les: " +rooster.getLes() + "Tijd: " + rooster.getlestijd());
-        for (Map<String, Object>les : data) {
-            lessen.add("Les: " + les.get("cursusNaam") + " Tijd:" + les.get("begintijd") + " : " + les.get("eindtijd"));
-
+        ArrayList<Map<String, Object>> data = executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE les.begintijd >= '" + date + " 00:00:00' AND les.begintijd <= '" + date + " 23:59:59' AND leerling.gebruikerID = " + gebruikerID + ";");
+        ObservableList<String> lessen = FXCollections.observableArrayList();
+        System.out.println(data);
+        for (Map<String, Object> les : data) {
+            String lesString ="Les: " + les.get("cursusNaam") + " Tijd:" + les.get("begintijd") + " : " + les.get("eindtijd");
+            lesIDs.put(lesString, (int) les.get("lesID"));
+            lessen.add(lesString);
         }
          vakTijdComboBox.setItems(lessen);
     }
@@ -113,6 +109,10 @@ public class AfmeldenLesController {
         } if (toggleReden == andersRadioButton) {
             reden = String.valueOf(andersTextArea);
         }
+    }
+
+    public void selectAnders(KeyEvent KeyEvent) {
+        redenAfmelding.selectToggle(andersRadioButton);
     }
 
     public ToggleGroup getLengteAfmelding() {

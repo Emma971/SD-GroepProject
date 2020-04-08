@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.effect.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.SchoolOverzichtController">
+<AnchorPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.SchoolOverzichtController">
     <children>
       <TabPane layoutX="6.0" layoutY="145.0" prefHeight="345.0" prefWidth="639.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -37,7 +34,7 @@
             <Font name="Calibri" size="24.0" />
          </font>
       </Label>
-        <Label fx:id="roosternaamLabel" layoutX="27.0" layoutY="43.0" prefHeight="28.0" prefWidth="275.0" text="\%User-Name% Klas: %klas%">
+        <Label fx:id="roosternaamLabel" layoutX="27.0" layoutY="55.0" prefHeight="28.0" prefWidth="555.0" text="\%User-Name% Klas: %klas%">
             <font>
                 <Font name="Calibri" size="24.0" />
             </font>

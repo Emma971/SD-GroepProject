@@ -15,6 +15,7 @@ import static Utils.Database.executeStatement;
 
 public class aanwezigheidController {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy");
+    mainmenuController parentController;
 
     @FXML private Label aanwezigDatumLabel;
     @FXML private Label aanwezigDataLabel;
@@ -30,9 +31,9 @@ public class aanwezigheidController {
     @FXML private Button aanwezigTonen;
 
     @FXML private ComboBox<String> aanwezigheidComboBox;
-    private Object ObservableList;
 
-    public void initialize() {
+    public void setParentController(mainmenuController controller) {
+        this.parentController = controller;
         try {
             ObservableList<String> list = FXCollections.observableArrayList();
             String comboBoxklas = "klas";
@@ -43,20 +44,24 @@ public class aanwezigheidController {
             list.add(comboBoxcursus);
             aanwezigheidComboBox.setItems(list);
 
-            aanwezigDataLabel.setText(mainmenuController.getUsername() + ", " + mainmenuController.getUsertype() + ", " + mainmenuController.getUserID());
+            aanwezigDataLabel.setText(parentController.getNaamGebruiker() + ", " + parentController.getUsertype() + ", " + parentController.getGebruikerID());
             overzichtDatePicker.setValue(LocalDate.now());
-            aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth() + "/" + LocalDate.now().getYear());
+            aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek().toString().toLowerCase() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth().toString().toLowerCase() + "/" + LocalDate.now().getYear());
 
-            aanwezigInputText.setVisible (mainmenuController.getUsertype().equals("Decaan")||mainmenuController.getUsertype().equals("SLB"));
-            aanwezigTonen.setVisible (mainmenuController.getUsertype().equals("Decaan")||mainmenuController.getUsertype().equals("SLB"));
-            aanwezigheidComboBox.setVisible(mainmenuController.getUsertype().equals("Decaan")||mainmenuController.getUsertype().equals("SLB"));
-            aanwezigCalcLabel.setVisible(mainmenuController.getUsertype().equals("leerling"));
+            aanwezigInputText.setVisible (parentController.getUsertype().equals("Decaan")||parentController.getUsertype().equals("SLB"));
+            aanwezigTonen.setVisible (parentController.getUsertype().equals("Decaan")||parentController.getUsertype().equals("SLB"));
+            aanwezigheidComboBox.setVisible(parentController.getUsertype().equals("Decaan")||parentController.getUsertype().equals("SLB"));
+            aanwezigCalcLabel.setVisible(parentController.getUsertype().equals("leerling"));
 
-            if (mainmenuController.getUsertype().equals("leerling"))
+            if (parentController.getUsertype().equals("leerling"))
                 toonabsentlessen();
         } catch (NullPointerException e) {
             aanwezigCalcLabel.setText("Error! couldn't load the data");
         }
+    }
+
+    public void initialize() {
+
     }
 
     public void toonVanDaag(ActionEvent actionEvent) {
@@ -66,19 +71,29 @@ public class aanwezigheidController {
     public void toonVorigeDag(ActionEvent actionEvent) {
         LocalDate dagEerder = overzichtDatePicker.getValue().minusDays(1);
         overzichtDatePicker.setValue(dagEerder);
-        toonabsentlessenDecaan();
+        String type = parentController.getUsertype();
+        if (type.equals("decaan") || type.equals("slb")) {
+            toonabsentlessenDecaan();
+        } else {
+            toonabsentlessen();
+        }
     }
 
     public void toonVolgendeDag(ActionEvent actionEvent) {
         LocalDate dagLater = overzichtDatePicker.getValue().plusDays(1);
         overzichtDatePicker.setValue(dagLater);
-        toonabsentlessenDecaan();
+        String type = parentController.getUsertype();
+        if (type.equals("decaan") || type.equals("slb")) {
+            toonabsentlessenDecaan();
+        } else {
+            toonabsentlessen();
+        }
     }
 
     public void toonabsentlessenDecaan() {
         try {
             ObservableList<String> dagDecaanafwezig = FXCollections.observableArrayList();
-            String[] textsplit = aanwezigInputText.getText().split(" ");
+//            String[] textsplit = aanwezigInputText.getText().split(" ");
             if (aanwezigheidComboBox.getValue().equals("klas")){
                 String klasnaam = aanwezigInputText.getText();
                 for (Map<String, Object> klasIDD : executeStatement("SELECT klasID FROM klas WHERE klasNaam = '" + klasnaam + "'")) {
@@ -91,24 +106,21 @@ public class aanwezigheidController {
                                 for (Map<String, Object> les : executeStatement("SELECT * FROM les WHERE lesID =" + getlesID.get("lesID") + " ORDER BY begintijd")) {
                                 String vakNaam = "";
 
-                                    LocalDateTime begint = (LocalDateTime) les.get("begintijd");
+                                    LocalDateTime begintijd = (LocalDateTime) les.get("begintijd");
 
-                                    LocalDateTime eindt = (LocalDateTime) les.get("eindtijd");
+                                    LocalDateTime eindtijd = (LocalDateTime) les.get("eindtijd");
 
-                                    LocalDate lesdatum = begint.toLocalDate();
-
-                                    LocalDateTime begintijd = begint;
-                                    LocalDateTime eindtijd = eindt;
+                                    LocalDate lesdatum = begintijd.toLocalDate();
 
 
-                                for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID")))
+                                    for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID")))
                                     vakNaam = lesnaamq.get("cursusNaam").toString();
 
                                 if (overzichtDatePicker.getValue().isEqual(lesdatum)) {
                                     String lesinfo = "";
                                     lesinfo = studentenaam + " was afwezig voor";
                                     lesinfo = lesinfo + " Les : " + vakNaam;
-                                    lesinfo = lesinfo + " | tijd : "+ begintijd.getHour()+":"+begintijd.getMinute() + " - " + eindtijd.getHour()+":"+eindtijd.getMinute();
+                                    lesinfo = lesinfo + " | tijd : "+ begintijd.getHour()+":"+ begintijd.getMinute() + " - " + eindtijd.getHour()+":"+ eindtijd.getMinute();
                                     dagDecaanafwezig.add(lesinfo);
                                 }
 
@@ -172,42 +184,45 @@ public class aanwezigheidController {
     public void toonabsentlessen(){
         try {
             ObservableList<String> dagafwezig = FXCollections.observableArrayList();
-            Integer absentTeller = 0;
 
-            for (Map<String, Object> getlesID : executeStatement("SELECT LesID FROM afwezigheid WHERE leerlingID =" + mainmenuController.getUserID())) {
+            for (Map<String, Object> getlesID : executeStatement("SELECT LesID FROM afwezigheid WHERE leerlingID =" + parentController.getGebruikerID())) {
                 for (Map<String, Object> les : executeStatement("SELECT * FROM les WHERE lesID =" + getlesID.get("lesID") + " ORDER BY begintijd")) {
 			        String vakNaam = "";
 			        String rawDatum = "";
 			        String rawBeginTijd = "";
 			        String rawEindTijd = "";
 
-			        for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID")))
-				        vakNaam = lesnaamq.get("cursusNaam").toString();
+			        for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID"))) {
+                        vakNaam = lesnaamq.get("cursusNaam").toString();
+                    }
+			        LocalDateTime datumTijdBegin = (LocalDateTime) les.get("begintijd");
+			        LocalDateTime datumTijdEind = (LocalDateTime) les.get("eindtijd");
+			        LocalDate lesDatum = datumTijdBegin.toLocalDate();
 
-			        String rawBeginDatum = les.get("begintijd").toString();
-			        String[] rawBeginDatumSplit = rawBeginDatum.split(" ");
-			        rawDatum = rawDatum + rawBeginDatumSplit[2] + "/" + rawBeginDatumSplit[1] + "/" + rawBeginDatumSplit[5];
-			        rawBeginTijd = rawBeginTijd + rawBeginDatumSplit[3];
+//			        rawDatum = datum.getDayOfMonth() + "/" + datum.getMonth() + "/" + datum.getYear();
+//			        String rawBeginDatum = les.get("begintijd").toString();
+//			        String[] rawBeginDatumSplit = rawBeginDatum.split(" ");
+//			        rawDatum = rawDatum + rawBeginDatumSplit[2] + "/" + rawBeginDatumSplit[1] + "/" + rawBeginDatumSplit[5];
+//			        rawBeginTijd = rawBeginTijd + rawBeginDatumSplit[3];
 
-			        String rawEindDatum = les.get("eindtijd").toString();
-			        String[] rawEindDatumSplit = rawEindDatum.split(" ");
-			        rawEindTijd = rawEindTijd + rawEindDatumSplit[3];
+//			        String rawEindDatum = les.get("eindtijd").toString();
+//			        String[] rawEindDatumSplit = rawEindDatum.split(" ");
+//			        rawEindTijd = rawEindTijd + rawEindDatumSplit[3];
 
-			        LocalDate lesdatum = LocalDate.parse(rawDatum, dateTimeFormatter);
-			        String begintijd = rawBeginTijd.replace(":00", "");
-			        String eindtijd = rawEindTijd.replace(":00", "");
+//			        LocalDate lesdatum = LocalDate.parse(rawDatum, dateTimeFormatter);
+//			        String begintijd = rawBeginTijd.replace(":00", "");
+//			        String eindtijd = rawEindTijd.replace(":00", "");
 
-                    if(overzichtDatePicker.getValue().isEqual(lesdatum)){
+                    if(overzichtDatePicker.getValue().isEqual(lesDatum)){
                         String lesinfo="afwezig voor";
                         lesinfo = lesinfo + "Les : " + vakNaam;
-                        lesinfo = lesinfo + " | tijd : " + begintijd + " - " + eindtijd;
+                        lesinfo = lesinfo + " | tijd : " + datumTijdBegin.getHour() + "." + datumTijdBegin.getMinute() + " - " + datumTijdEind.getHour() + "." + datumTijdEind.getMinute();
                     dagafwezig.add(lesinfo);
                     }
                 }
-                absentTeller++;
             }
             aaanwezigList.setItems(dagafwezig);
-            aanwezigCalcLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek() + ", " + overzichtDatePicker.getValue().getDayOfMonth() + "/" + overzichtDatePicker.getValue().getMonth() + "/" + overzichtDatePicker.getValue().getYear() + ", er is : " + absentTeller + "absent melding");
+            aanwezigCalcLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase() + ", " + overzichtDatePicker.getValue().getDayOfMonth() + "/" + overzichtDatePicker.getValue().getMonth().toString().toLowerCase() + "/" + overzichtDatePicker.getValue().getYear());
         } catch (NullPointerException e) {
             aanwezigCalcLabel.setText("Error! couldn't load the data");
         }

@@ -6,11 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -20,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
 public class InloggenController {
+
     public Button loginButton;
     @FXML private Label HeadLabel;
     @FXML private TextField wachtwoord;
@@ -31,7 +30,7 @@ public class InloggenController {
     private void initialize() {
     }
 
-    public void CheckLogIn(ActionEvent actionEvent) throws IOException {
+    public void logIn(ActionEvent actionEvent) throws IOException {
         String gebrnm = gebruikersnaam.getText();
         String wachtw = wachtwoord.getText();
 
@@ -39,15 +38,14 @@ public class InloggenController {
 
         System.out.println(gebrD);
         if ((int) gebrD.get(0).get("COUNT(*)") == 1){
-            ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.type, k.klasNaam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
+            ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.type, k.klasNaam, g.gebruikerID, g.naam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
             System.out.println(wwD);
             if (wwD.size() == 1) {
-                mainmenuController.setUsernaam(gebrnm);
 //                try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("Mainmenu.fxml"));
                     Parent root = loader.load();
                     mainmenuController controller = loader.getController();
-//                    controller.setLoginDetails(gebrnm, (String) wwD.get(0).get("type"), (String) wwD.get(0).get("klasNaam"));
+                    controller.setLoginDetails((int) wwD.get(0).get("gebruikerID"), (String) wwD.get(0).get("naam"), (String) wwD.get(0).get("type"), (String) wwD.get(0).get("klasNaam"));
                     Stage newStage = new Stage();
                     newStage.setScene(new Scene(root));
                     newStage.setTitle("Main menu");
