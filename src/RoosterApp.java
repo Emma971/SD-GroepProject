@@ -14,27 +14,19 @@ import static Utils.Database.executeStatement;
 
 public class RoosterApp extends Application {
 	public static void main(String[] args) throws Exception {
-
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy");
 		School nieuwSchool = new School("HU");
 
-		for (Map<String, Object> les : executeStatement("SELECT * FROM les ORDER BY begintijd")) {
-			String vakNaam = "";
-			String klasNaam = "";
 
-			for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID")))
-				vakNaam = lesnaamq.get("cursusNaam").toString();
-			for (Map<String, Object> lesnaamq : executeStatement("SELECT naam FROM klas WHERE klasID = " + les.get("klasID")))
-				klasNaam = lesnaamq.get("naam").toString();
 
-			LocalDateTime begint = (LocalDateTime) les.get("begintijd");
+		for (Map<String, Object> les : executeStatement("SELECT les.begintijd, les.eindtijd, cursus.cursusNaam, klas.klasNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN klas ON les.klasID = klas.klasID ORDER BY les.begintijd")) {
+			String vakNaam = (String)les.get("cursusNaam");
+			String klasNaam = (String)les.get("naam");
 
-			LocalDateTime eindt = (LocalDateTime) les.get("eindtijd");
+			LocalDateTime begintijd = (LocalDateTime) les.get("begintijd");
 
-			LocalDate lesdatum = begint.toLocalDate();
+			LocalDateTime eindtijd = (LocalDateTime) les.get("eindtijd");
 
-			LocalDateTime begintijd = begint;
-			LocalDateTime eindtijd = eindt;
+			LocalDate lesdatum = begintijd.toLocalDate();
 
 			nieuwSchool.voegLesToe(vakNaam, lesdatum, begintijd, eindtijd, klasNaam);
 		}
