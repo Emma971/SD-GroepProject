@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="302.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rooster.userinterface.mainmenuController">
+   <children>
+      <Label fx:id="loginLabel" layoutX="8.0" layoutY="6.0" text="Logged in as:" />
+      <Label fx:id="loggedLabel" layoutX="8.0" layoutY="23.0" text="\%username%, %usertype% van klas: %klasnaam%" />
+      <Button fx:id="studentabsent" layoutX="118.0" layoutY="139.0" mnemonicParsing="false" onAction="#absentmelden" text="absent melden" />
+      <Button fx:id="studentrooster" layoutX="118.0" layoutY="94.0" mnemonicParsing="false" onAction="#roosterscherm" prefHeight="25.0" prefWidth="95.0" text="rooster" />
+      <Button fx:id="docentpresent" layoutX="118.0" layoutY="139.0" mnemonicParsing="false" onAction="#presentieLijst" prefHeight="25.0" prefWidth="95.0" text="presentie lijst" />
+      <Button fx:id="closebutton" layoutX="242.0" layoutY="263.0" mnemonicParsing="false" onAction="#close" text="uitloggen" />
+      <Button fx:id="studentaanwezigheid" layoutX="118.0" layoutY="181.0" mnemonicParsing="false" onAction="#aanwezig" prefHeight="25.0" prefWidth="95.0" text="aanwezigheid" />
+      <Button fx:id="docentrooster" layoutX="118.0" layoutY="94.0" mnemonicParsing="false" onAction="#roosterscherm" prefHeight="25.0" prefWidth="95.0" text="rooster" />
+      <Label fx:id="errormenulabel" layoutX="72.0" layoutY="53.0" />
+   </children>
+</AnchorPane>

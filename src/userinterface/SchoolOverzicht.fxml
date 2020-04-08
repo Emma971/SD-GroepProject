@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.SchoolOverzichtController">
+<AnchorPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rooster.userinterface.SchoolOverzichtController">
     <children>
       <TabPane layoutX="6.0" layoutY="145.0" prefHeight="345.0" prefWidth="639.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -42,10 +42,15 @@
                 <Font name="Calibri" size="24.0" />
             </font>
         </Label>
+      <Label fx:id="errorLabel" layoutX="166.0" layoutY="69.0" prefHeight="28.0" prefWidth="344.0">
+         <font>
+            <Font name="Calibri" size="24.0" />
+         </font>
+      </Label>
         <DatePicker fx:id="overzichtDatePicker" editable="false" layoutX="164.0" layoutY="97.0" onAction="#toonlessen" prefHeight="25.0" prefWidth="353.0" showWeekNumbers="true" />
         <Button layoutX="27.0" layoutY="97.0" mnemonicParsing="false" onAction="#toonVorigeDag" prefHeight="25.0" prefWidth="116.0" text="&lt;&lt;" />
         <Button layoutX="535.0" layoutY="97.0" mnemonicParsing="false" onAction="#toonVolgendeDag" prefHeight="25.0" prefWidth="101.0" text="&gt;&gt;" />
         <Button layoutX="395.0" layoutY="19.0" mnemonicParsing="false" onAction="#toonVanDaag" prefHeight="25.0" prefWidth="74.0" text="Vandaag" />
-      <Button layoutX="535.0" layoutY="18.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="101.0" text="Absent melden" />
+      <Button fx:id="absentmeldenbutton" layoutX="535.0" layoutY="18.0" mnemonicParsing="false" onAction="#absentmelden" prefHeight="26.0" prefWidth="101.0" text="Absent melden" />
     </children>
 </AnchorPane>

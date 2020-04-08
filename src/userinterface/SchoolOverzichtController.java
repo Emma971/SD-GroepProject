@@ -1,26 +1,36 @@
-package userinterface;
+package rooster.userinterface;
 
-import model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.stage.Stage;
+import rooster.model.Rooster;
+import rooster.model.School;
+import rooster.model.Database;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
+import static rooster.model.Database.executeStatement;
+
 public class SchoolOverzichtController {
-    public Label roosternaamLabel;
-    @FXML private Label roosterTitel;
     @FXML private Label dagLabel;
     @FXML private Label weekLabel;
+    @FXML private Label errorLabel;
+    @FXML private Label roosternaamLabel;
+
     @FXML private ListView dagRoosterListView;
     @FXML private ListView weekRoosterListView;
+
     @FXML private DatePicker overzichtDatePicker;
 
     private School school = School.getSchool();
@@ -28,9 +38,10 @@ public class SchoolOverzichtController {
     public void initialize() {
         try {
             overzichtDatePicker.setValue(LocalDate.now());
+            roosternaamLabel.setText("" + mainmenuController.getUsernaam() + " Klas : " + mainmenuController.getUserklasnaam());
             toonlessen();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            errorLabel.setText("Error! couldn't load the data");
         }
     }
 
@@ -49,6 +60,7 @@ public class SchoolOverzichtController {
     }
 
     public void toonlessen() {
+        try {
         ObservableList<String> dagles = FXCollections.observableArrayList();
         ObservableList<String> weekles = FXCollections.observableArrayList();
 
@@ -76,5 +88,22 @@ public class SchoolOverzichtController {
         }
         dagRoosterListView.setItems(dagles);
         weekRoosterListView.setItems(weekles);
+        } catch (NullPointerException e) {
+            errorLabel.setText("Error! couldn't load the data");
+        }
+    }
+
+    public void absentmelden(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("AfmeldenLes.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Absent Melden");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            errorLabel.setText("Error! can't access absent melden window ");
+        }
     }
 }
