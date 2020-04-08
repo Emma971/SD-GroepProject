@@ -35,7 +35,7 @@ public class DocentRoosterController {
     public void initialize() {
         try {
             overzichtDatePicker.setValue(LocalDate.now());
-            roosternaamLabel.setText("" + mainmenuController.getUsername());
+            roosternaamLabel.setText("" + mainmenuController.getUsernaam());
             toonlessen();
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");

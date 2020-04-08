@@ -42,12 +42,12 @@ public class InloggenController {
             ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.type, k.klasNaam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
             System.out.println(wwD);
             if (wwD.size() == 1) {
-                mainmenuController.setUsername(gebrnm);
+                mainmenuController.setUsernaam(gebrnm);
 //                try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("Mainmenu.fxml"));
                     Parent root = loader.load();
                     mainmenuController controller = loader.getController();
-                    controller.setLoginDetails(gebrnm, (String) wwD.get(0).get("type"), (String) wwD.get(0).get("klasNaam"));
+//                    controller.setLoginDetails(gebrnm, (String) wwD.get(0).get("type"), (String) wwD.get(0).get("klasNaam"));
                     Stage newStage = new Stage();
                     newStage.setScene(new Scene(root));
                     newStage.setTitle("Main menu");

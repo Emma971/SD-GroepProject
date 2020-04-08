@@ -14,6 +14,8 @@ import java.io.IOException;
 
 public class mainmenuController {
 
+    public Label loginLabel;
+    public Button closebutton;
     @FXML private Label loggedLabel;
     @FXML private Label errormenulabel;
 
@@ -40,7 +42,8 @@ public class mainmenuController {
 
         String userlabel = username + ", " + usertype;
 
-        studentrooster.setVisible      (usertype.equals("leerling") || usertype.equals("slb"));
+        studentrooster.setVisible      (                usertype.equals("leerling") ||
+                        usertype.equals("slb"));
         studentabsent.setVisible       (usertype.equals("leerling"));
         studentaanwezigheid.setVisible (usertype.equals("leerling") || usertype.equals("decaan") || usertype.equals("slb"));
 
