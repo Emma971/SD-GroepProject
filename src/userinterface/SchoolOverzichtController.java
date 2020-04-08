@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Rooster;
 import model.School;
@@ -101,7 +102,9 @@ public class SchoolOverzichtController {
             Stage stage = new Stage();
             stage.setTitle("Absent Melden");
             stage.setScene(scene);
-            stage.show();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
         } catch (IOException e) {
             errorLabel.setText("Error! can't access absent melden window ");
         }

@@ -1,6 +1,6 @@
 /.idea/*
-!/idea/libraries
+!/idea/libraries/
 /out/
-/SD-Project.iml
-/src/Database.java
-/src/DBTest.java
+/SD-Project.iml/
+/src/Utils/Database.java/
+/src/DBTest.java/

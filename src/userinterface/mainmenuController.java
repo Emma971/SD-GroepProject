@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Rooster;
 import model.School;
@@ -72,7 +73,8 @@ public class mainmenuController {
             Stage stage = new Stage();
             stage.setTitle("Rooster");
             stage.setScene(scene);
-            stage.show();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
         }
@@ -86,7 +88,8 @@ public class mainmenuController {
             Stage stage = new Stage();
             stage.setTitle("Aanwezigheid");
             stage.setScene(scene);
-            stage.show();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
         }
@@ -100,7 +103,8 @@ public class mainmenuController {
             Stage stage = new Stage();
             stage.setTitle("Absent Melden");
             stage.setScene(scene);
-            stage.show();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
         }
@@ -114,7 +118,8 @@ public class mainmenuController {
             Stage stage = new Stage();
             stage.setTitle("presentieLijst");
             stage.setScene(scene);
-            stage.show();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
         }
