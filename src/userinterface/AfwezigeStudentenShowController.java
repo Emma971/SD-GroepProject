@@ -14,13 +14,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.lang.reflect.AnnotatedArrayType;
+import java.sql.DatabaseMetaData;
 
 public class AfwezigeStudentenShowController {
+
     ObservableList Aanwezig = FXCollections.observableArrayList();
     ObservableList Afwezig = FXCollections.observableArrayList();
     @FXML ListView AfwezigLijst;
     @FXML ListView AanwezigLijst;
-
 
     public void initialize(){
         LijstMaken();
