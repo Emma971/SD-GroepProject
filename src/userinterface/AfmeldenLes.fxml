@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rooster.userinterface.AfmeldenLesController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.AfmeldenLesController">
    <children>
       <Button fx:id="terugButton" layoutX="25.0" layoutY="335.0" mnemonicParsing="false" text="Terug" />
       <Button fx:id="bevestigButton" layoutX="514.0" layoutY="335.0" mnemonicParsing="false" text="Bevestig" />

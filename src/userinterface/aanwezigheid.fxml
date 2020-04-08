@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rooster.userinterface.aanwezigheidController">
+   <children>
+      <TextField fx:id="aanwezigInputText" layoutX="112.0" layoutY="40.0" prefHeight="25.0" prefWidth="311.0" promptText="Klas V1C of Leerling code/naam of cursus cursusID" />
+      <Button fx:id="aanwezigTonen" layoutX="422.0" layoutY="40.0" mnemonicParsing="false" onAction="#toonabsentlessenDecaan" prefHeight="25.0" prefWidth="60.0" text="tonen" />
+      <Label fx:id="aanwezigDatumLabel" layoutX="14.0" layoutY="6.0" text="\%date%" />
+      <Label fx:id="aanwezigDataLabel" layoutX="377.0" layoutY="14.0" text="\%user-name%, %user-type%,%userID%" />
+      <ListView fx:id="aaanwezigList" layoutX="75.0" layoutY="129.0" prefHeight="257.0" prefWidth="444.0" />
+      <Label fx:id="aanwezigCalcLabel" layoutX="193.0" layoutY="76.0" text="\%user-name%, %user-type%,%userID%" />
+      <DatePicker fx:id="overzichtDatePicker" layoutX="150.0" layoutY="103.0" prefHeight="25.0" prefWidth="293.0" />
+      <Button fx:id="aanwezigVolgendeDag" layoutX="444.0" layoutY="103.0" mnemonicParsing="false" onAction="#toonVolgendeDag" prefHeight="25.0" prefWidth="76.0" text="&gt;&gt;&gt;" />
+      <Button fx:id="aanwezigVorigeDag" layoutX="74.0" layoutY="103.0" mnemonicParsing="false" onAction="#toonVorigeDag" prefHeight="25.0" prefWidth="76.0" text="&lt;&lt;&lt;" />
+      <Button fx:id="aanwezigVandaag" layoutX="259.0" layoutY="10.0" mnemonicParsing="false" onAction="#toonVanDaag" text="Vandaag" />
+   </children>
+</AnchorPane>
