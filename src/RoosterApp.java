@@ -1,6 +1,3 @@
-
-
-//import com.google.protobuf.StringValue;
 import model.School;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -9,8 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -63,13 +58,5 @@ public class RoosterApp extends Application {
 		stage.setTitle("Presentie melden Progamma");
 		stage.setScene(new Scene(root));
 		stage.show();
-
-//		String fxmlPagina = "userinterface/Inloggen.fxml";
-//		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
-//		Parent root = loader.load();
-//
-//		stage.setTitle("Log in");
-//		stage.setScene(new Scene(root));
-//		stage.show();
 	}
 }
