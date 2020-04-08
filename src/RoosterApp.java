@@ -1,55 +1,66 @@
+package rooster;
+
+import com.google.protobuf.StringValue;
+import rooster.model.School;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.School;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+
+import static rooster.model.Database.executeStatement;
 
 public class RoosterApp extends Application {
 	public static void main(String[] args) throws Exception {
+
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy");
 		School nieuwSchool = new School("HU");
 
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(0),   "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(1),   "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(4),   "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(5),   "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(6),   "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(7),   "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(8),   "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(9),   "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(10),  "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(13),  "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(14),  "08:30","11:30", "V1C");
+		for (Map<String, Object> les : executeStatement("SELECT * FROM les ORDER BY begintijd")) {
+			String vakNaam = "";
+			String klasNaam = "";
+			String rawDatum = "";
+			String rawBeginTijd = "";
+			String rawEindTijd = "";
 
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(0),   "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(1),   "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(2),   "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(3),   "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(6),   "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(7),   "08:30","11:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(8),   "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(9),   "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(10),  "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(13),  "12:30","15:30", "V1C");
-		nieuwSchool.voegLesToe("OOAD", LocalDate.now().plusDays(14),  "12:30","15:30", "V1C");
+			for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID")))
+				vakNaam = lesnaamq.get("cursusNaam").toString();
+			for (Map<String, Object> lesnaamq : executeStatement("SELECT naam FROM klas WHERE klasID = " + les.get("klasID")))
+				klasNaam = lesnaamq.get("naam").toString();
 
+			String rawBeginDatum = les.get("begintijd").toString();
+			String[] rawBeginDatumSplit = rawBeginDatum.split(" ");
+			rawDatum = rawDatum + rawBeginDatumSplit[2] + "/" + rawBeginDatumSplit[1] + "/" + rawBeginDatumSplit[5];
+			rawBeginTijd = rawBeginTijd + rawBeginDatumSplit[3];
+
+			String rawEindDatum = les.get("eindtijd").toString();
+			String[] rawEindDatumSplit = rawEindDatum.split(" ");
+			rawEindTijd = rawEindTijd + rawEindDatumSplit[3];
+
+			LocalDate lesdatum = LocalDate.parse(rawDatum, dateTimeFormatter);
+			String begintijd = rawBeginTijd.replace(":00", "");
+			String eindtijd = rawEindTijd.replace(":00", "");
+
+			nieuwSchool.voegLesToe(vakNaam, lesdatum, begintijd, eindtijd, klasNaam);
+		}
+		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(-111),   "12:30","15:30", "V1C");
 		School.setSchool(nieuwSchool);
-
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
-//		String fxmlPagina = "userinterface/AfmeldenLes.fxml";
-//		String fxmlPagina = "userinterface/AfwezigeStudentenShow.fxml";
-		String fxmlPagina = "userinterface/Inloggen.fxml";
-//		String fxmlPagina = "userinterface/SchoolOverzicht.fxml";
+		String fxmlPagina = "userinterface/Mainmenu.fxml";
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
 		Parent root = loader.load();
 
-		stage.setTitle("Rooster");
+		stage.setTitle("Presentie melden Progamma");
 		stage.setScene(new Scene(root));
 		stage.show();
 	}
