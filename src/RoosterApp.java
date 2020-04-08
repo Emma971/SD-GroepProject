@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -29,22 +30,18 @@ public class RoosterApp extends Application {
 			for (Map<String, Object> lesnaamq : executeStatement("SELECT naam FROM klas WHERE klasID = " + les.get("klasID")))
 				klasNaam = lesnaamq.get("naam").toString();
 
-			String rawBeginDatum = les.get("begintijd").toString();
-			String[] rawBeginDatumSplit = rawBeginDatum.split(" ");
-			rawDatum = rawDatum + rawBeginDatumSplit[2] + "/" + rawBeginDatumSplit[1] + "/" + rawBeginDatumSplit[5];
-			rawBeginTijd = rawBeginTijd + rawBeginDatumSplit[3];
+			LocalDateTime lesdatum = (LocalDateTime) les.get("begintijd");
 
-			String rawEindDatum = les.get("eindtijd").toString();
-			String[] rawEindDatumSplit = rawEindDatum.split(" ");
-			rawEindTijd = rawEindTijd + rawEindDatumSplit[3];
+			LocalDateTime eindt = (LocalDateTime) les.get("eindtijd");
 
-			LocalDate lesdatum = LocalDate.parse(rawDatum, dateTimeFormatter);
-			String begintijd = rawBeginTijd.replace(":00", "");
-			String eindtijd = rawEindTijd.replace(":00", "");
+			LocalDate x = lesdatum.toLocalDate();
 
-			nieuwSchool.voegLesToe(vakNaam, lesdatum, begintijd, eindtijd, klasNaam);
+			LocalDateTime begintijd = lesdatum;
+			LocalDateTime eindtijd = eindt;
+
+			nieuwSchool.voegLesToe(vakNaam, x, begintijd, eindtijd, klasNaam);
 		}
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(-111),   "12:30","15:30", "V1C");
+		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(-111), LocalDateTime.now(),LocalDateTime.now(), "V1C");
 		School.setSchool(nieuwSchool);
 		launch(args);
 	}
