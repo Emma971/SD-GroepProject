@@ -6,8 +6,8 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.aanwezigheidController">
    <children>
-      <TextField fx:id="aanwezigInputText" layoutX="165.0" layoutY="40.0" prefHeight="25.0" prefWidth="293.0" promptText="Klasnaam/leeerlingID/cursusID" text="TICT-SD-V1C of Leerlingcode of cursusID" />
-      <Button fx:id="aanwezigTonen" layoutX="458.0" layoutY="40.0" mnemonicParsing="false" onAction="#toonabsentlessenDecaan" prefHeight="25.0" prefWidth="60.0" text="tonen" />
+      <TextField fx:id="aanwezigInputText" layoutX="178.0" layoutY="40.0" prefHeight="25.0" prefWidth="269.0" promptText="Klasnaam/leeerlingID/cursusID" text="TICT-SD-V1C of Leerlingcode of cursusID" />
+      <Button fx:id="aanwezigTonen" layoutX="448.0" layoutY="40.0" mnemonicParsing="false" onAction="#toonabsentlessenDecaan" prefHeight="25.0" prefWidth="70.0" text="tonen" />
       <Label fx:id="aanwezigDatumLabel" layoutX="14.0" layoutY="6.0" text="\%date%" />
       <Label fx:id="aanwezigDataLabel" layoutX="377.0" layoutY="14.0" text="\%user-name%, %user-type%,%userID%" />
       <ListView fx:id="aaanwezigList" layoutX="75.0" layoutY="129.0" prefHeight="257.0" prefWidth="444.0" />
@@ -16,7 +16,7 @@
       <Button fx:id="aanwezigVolgendeDag" layoutX="444.0" layoutY="103.0" mnemonicParsing="false" onAction="#toonVolgendeDag" prefHeight="25.0" prefWidth="76.0" text="&gt;&gt;&gt;" />
       <Button fx:id="aanwezigVorigeDag" layoutX="74.0" layoutY="103.0" mnemonicParsing="false" onAction="#toonVorigeDag" prefHeight="25.0" prefWidth="76.0" text="&lt;&lt;&lt;" />
       <Button fx:id="aanwezigVandaag" layoutX="259.0" layoutY="10.0" mnemonicParsing="false" onAction="#toonVanDaag" text="Vandaag" />
-      <ComboBox fx:id="aanwezigheidComboBox" layoutX="75.0" layoutY="40.0" prefHeight="25.0" prefWidth="91.0" />
+      <ComboBox fx:id="aanwezigheidComboBox" layoutX="75.0" layoutY="40.0" prefHeight="25.0" prefWidth="103.0" promptText="Kies" />
       <Label fx:id="aanwezigStudentLabel" layoutX="75.0" layoutY="85.0" prefHeight="17.0" prefWidth="83.0" />
    </children>
 </AnchorPane>

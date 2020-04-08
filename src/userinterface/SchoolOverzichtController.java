@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Rooster;
 import model.School;
@@ -17,8 +16,6 @@ import model.School;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
-import static Utils.Database.executeStatement;
 
 public class SchoolOverzichtController {
     @FXML private Label dagLabel;
@@ -84,6 +81,8 @@ public class SchoolOverzichtController {
                 weekles.add(lesinfo);
             }
         }
+        if (dagles.isEmpty()){dagles.add("");}
+        if (weekles.isEmpty()){weekles.add("");}
         dagRoosterListView.setItems(dagles);
         weekRoosterListView.setItems(weekles);
         } catch (NullPointerException e) {
@@ -99,9 +98,7 @@ public class SchoolOverzichtController {
             Stage stage = new Stage();
             stage.setTitle("Absent Melden");
             stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-
+            stage.show();
         } catch (IOException e) {
             errorLabel.setText("Error! can't access absent melden window ");
         }
