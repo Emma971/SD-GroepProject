@@ -35,6 +35,9 @@ public class UserToevoegenController {
     @FXML private ComboBox sbDocentCursus;
 
     public void initialize() {
+
+
+        
            try {
                ObservableList<String> usertype = FXCollections.observableArrayList("leerling","medewerker");
                sbUsertype.setItems(usertype);
@@ -91,6 +94,7 @@ public class UserToevoegenController {
             String gebruikerID = "";
             String klasID      = "";
             gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
+
             executeStatement("INSERT INTO leerling(gebruikerID,klasID) VALUES ('"+ gebruikerID + "', '" + klasID + "');");
         }
 
