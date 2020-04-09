@@ -19,7 +19,7 @@ public class RoosterApp extends Application {
 	String klasNaam;
 	public static void main(String[] args) throws Exception {
 		String klasNaam;
-		School nieuwSchool = new School("HU");
+//		School nieuwSchool = new School("HU");
 
 		for (Map<String, Object> les : executeStatement("SELECT les.lesID, les.begintijd, les.eindtijd, cursus.cursusNaam, klas.klasNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN klas ON les.klasID = klas.klasID ORDER BY les.begintijd")) {
 			String vakNaam = (String)les.get("cursusNaam");
@@ -32,10 +32,10 @@ public class RoosterApp extends Application {
 
 			LocalDate lesdatum = begintijd.toLocalDate();
 
-			nieuwSchool.voegLesToe(lesID, vakNaam, lesdatum, begintijd, eindtijd, klasNaam);
+//			nieuwSchool.voegLesToe(lesID, vakNaam, lesdatum, begintijd, eindtijd, klasNaam);
 		}
 //		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(-111), LocalDateTime.now(),LocalDateTime.now(), "V1C");
-		School.setSchool(nieuwSchool);
+//		School.setSchool(nieuwSchool);
 		launch(args);
 	}
 

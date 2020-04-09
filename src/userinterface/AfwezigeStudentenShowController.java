@@ -1,6 +1,6 @@
 package userinterface;
 
-import model.*;
+import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,13 +13,11 @@ import java.util.*;
 public class AfwezigeStudentenShowController {
     private LocalDate Datum;
     private String Les;
-    private String KlasNaam;
     ArrayList<Map<String, Object>> Alleleerlingen;
-    private List<Rooster> allelessen = new ArrayList<Rooster>();
-    ObservableList Aanwezig = FXCollections.observableArrayList();
-    ObservableList Afwezig = FXCollections.observableArrayList();
-    @FXML ListView AfwezigLijst;
-    @FXML ListView AanwezigLijst;
+    ObservableList<String> Aanwezig = FXCollections.observableArrayList();
+    ObservableList<String> Afwezig = FXCollections.observableArrayList();
+    @FXML ListView<String> AfwezigLijst;
+    @FXML ListView<String> AanwezigLijst;
     @FXML Button Afwezigbutton;
     @FXML Button Aanwezigbutton;
     private int lesID;
@@ -87,36 +85,18 @@ public class AfwezigeStudentenShowController {
     }
 
     public void LijstMaken(){
-        String[] Lesinfo = Les.split(":");
-        String[] Splitter = Lesinfo[1].split("|");
-        String LesCode = Splitter[0].strip();
-
-        String[] lesminuten = Lesinfo[3].split("-");
-
-        int BegintijdUur = Integer.parseInt(Lesinfo[2].strip());
-        int BegintijdMinuten = Integer.parseInt(lesminuten[0].strip());
-//        int EindtijdUur = Integer.parseInt(lesminuten[1].strip());
-//        int EindtijdMinuten = Integer.parseInt(Lesinfo[4].strip());
-        LocalDateTime Begintijd = Datum.atTime(BegintijdUur, BegintijdMinuten);
-//        LocalDateTime Eindtijd = Datum.atTime(EindtijdUur, EindtijdMinuten);
-        allelessen = School.getSchool().getRooster();
-        for (int i = 0; i < allelessen.size(); i++){
-            if(allelessen.get(i).getlesdagDatum().equals(Datum) && allelessen.get(i).getlestijd().equals(""+Lesinfo[2].strip()+":"+Lesinfo[3]+":"+Lesinfo[4].strip()) && allelessen.get(i).getLes().equals(LesCode)){
-                KlasNaam = allelessen.get(i).getKlas().getNaam(); //
-            }
-        }
         Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam, l.leerlingID, a.reden FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID LEFT OUTER JOIN afwezigheid a ON l.leerlingID = a.leerlingID WHERE les.lesID = " + lesID);
-        for(int i = 0; i < Alleleerlingen.size(); i++){
-            if (Alleleerlingen.get(i).get("reden") == null) {
-                Aanwezig.add(Alleleerlingen.get(i).get("naam"));
-                System.out.println(Alleleerlingen.get(i).get("naam"));
-                System.out.println(Alleleerlingen.get(i).get("leerlingID"));
-                System.out.println("Aanwezig? " + Alleleerlingen.get(i).get("reden"));
+        for (Map<String, Object> stringObjectMap : Alleleerlingen) {
+            if (stringObjectMap.get("reden") == null) {
+                Aanwezig.add((String) stringObjectMap.get("naam"));
+                System.out.println(stringObjectMap.get("naam"));
+                System.out.println(stringObjectMap.get("leerlingID"));
+                System.out.println("Afwezig? " + stringObjectMap.get("reden"));
             } else {
-                Afwezig.add(Alleleerlingen.get(i).get("naam"));
+                Afwezig.add((String) stringObjectMap.get("naam"));
             }
 
-            leerlingIDs.put((String) Alleleerlingen.get(i).get("naam"), (int) Alleleerlingen.get(i).get("leerlingID"));
+            leerlingIDs.put((String) stringObjectMap.get("naam"), (int) stringObjectMap.get("leerlingID"));
         }
     }
 

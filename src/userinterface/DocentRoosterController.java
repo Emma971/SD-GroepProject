@@ -1,6 +1,7 @@
 
 package userinterface;
 
+import Utils.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,13 +12,13 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import model.Rooster;
-import model.School;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DocentRoosterController {
     mainmenuController parentController;
@@ -33,7 +34,6 @@ public class DocentRoosterController {
     @FXML private DatePicker overzichtDatePicker;
 
     private String gebruikersType;
-    private School school = School.getSchool();
     private String Lesnaam = "";
     private HashMap<String, Integer> lesIDs;
 
@@ -70,8 +70,8 @@ public class DocentRoosterController {
         try {
             lesIDs = new HashMap<>();
 
-            ObservableList<String> dagles = FXCollections.observableArrayList();
-            ObservableList<String> weekles = FXCollections.observableArrayList();
+            ObservableList<String> lessenDag = FXCollections.observableArrayList();
+            ObservableList<String> lessenWeek = FXCollections.observableArrayList();
 
             LocalDate dagX = overzichtDatePicker.getValue();
             DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
@@ -79,25 +79,25 @@ public class DocentRoosterController {
 
             dagLabel.setText(overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase());
             weekLabel.setText("Week : " + weekX);
-            for (Rooster x : school.getRooster()){
-                if(overzichtDatePicker.getValue().isEqual(x.getlesdagDatum())){
+            for (Map<String, Object> data : Database.executeStatement("SELECT les.begintijd, klas.klasNaam, les.lesID FROM les INNER JOIN klas ON les.klasID = klas.klasID INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID WHERE medewerker.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekX - 1))) {
+                System.out.println(data);
+                LocalDateTime begintijd = (LocalDateTime) data.get("begintijd");
+                if(overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())){
                     String lesinfo="";
-                    lesinfo = lesinfo + "Les : " + x.getLes();
-                    lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-                    dagles.add(lesinfo);
-                    lesIDs.put(lesinfo, x.getLesID());
+                    lesinfo = lesinfo + "Les : " + data.get("klasNaam");
+                    lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
+                    lessenDag.add(lesinfo);
+                    lesIDs.put(lesinfo, (int) data.get("lesID"));
                 }
-                if(weekX==x.getWeeknummer()){
-                    String lesinfo="";
-                    lesinfo = lesinfo + "" + x.getlesdagDatum().getDayOfWeek();
-                    lesinfo = lesinfo + " | Les : " + x.getLes();
-                    lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-                    weekles.add(lesinfo);
-                    lesIDs.put(lesinfo, x.getLesID());
-                }
+                String lesinfo = "";
+                lesinfo = lesinfo + begintijd.getDayOfWeek();
+                lesinfo = lesinfo + "  |  Les : " + data.get("klasNaam");
+                lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
+                lessenWeek.add(lesinfo);
+                lesIDs.put(lesinfo, (int) data.get("lesID"));
             }
-            dagRoosterListView.setItems(dagles);
-            weekRoosterListView.setItems(weekles);
+            dagRoosterListView.setItems(lessenDag);
+            weekRoosterListView.setItems(lessenWeek);
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");
             e.printStackTrace();

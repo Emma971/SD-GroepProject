@@ -50,8 +50,6 @@ public class AfmeldenLesController {
     @FXML
     private Button bevestigButton;
 
-    private School school = School.getSchool();
-//    public Rooster rooster;
     private LocalDate date;
     private String reden;
     private int lesID;
@@ -60,14 +58,11 @@ public class AfmeldenLesController {
 
     public void setParentController(SchoolOverzichtController controller) {
         this.parentController = controller;
+        datePicker.setValue(LocalDate.now());
+        setLesTijdComboBox();
     }
 
-
-    public AfmeldenLesController() {}
-
     public void initialize() {
-        datePicker.setValue(LocalDate.now());
-        setVakTijdComboBox();
     }
 
     public void BevestigAfmelding() {
@@ -84,14 +79,20 @@ public class AfmeldenLesController {
 
     }
 
-    public void setVakTijdComboBox() {
+    public void setLesTijdComboBox() {
+        setLesTijdComboBox(0);
+    }
+
+    public void setLesTijdComboBox(int lesID) {
+        String valueToSelect = null;
         int gebruikerID = parentController.parentController.getGebruikerID();
-        date = datePicker.getValue();
-        ArrayList<Map<String, Object>> data = executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE les.begintijd >= '" + date + " 00:00:00' AND les.begintijd <= '" + date + " 23:59:59' AND leerling.gebruikerID = " + gebruikerID + ";");
+        ArrayList<Map<String, Object>> data = Database.executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE les.begintijd >= '" + date + " 00:00:00' AND les.begintijd <= '" + date + " 23:59:59' AND leerling.gebruikerID = " + gebruikerID + ";");
         ObservableList<String> lessen = FXCollections.observableArrayList();
         System.out.println(data);
         for (Map<String, Object> les : data) {
-            String lesString ="Les: " + les.get("cursusNaam") + " Tijd:" + les.get("begintijd") + " : " + les.get("eindtijd");
+            String beginTijd = ((LocalDateTime) les.get("begintijd")).getHour() + ":" + ((LocalDateTime) les.get("begintijd")).getMinute();
+            String eindTijd = ((LocalDateTime) les.get("eindtijd")).getHour() + ":" + ((LocalDateTime) les.get("eindtijd")).getMinute();
+            String lesString ="Les: " + les.get("cursusNaam") + "\n\t" + beginTijd + " - " + eindTijd;
             lesIDs.put(lesString, (int) les.get("lesID"));
             lessen.add(lesString);
             if (lesID == (int) les.get("lesID")) {

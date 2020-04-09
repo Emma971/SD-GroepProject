@@ -151,7 +151,7 @@ public class aanwezigheidController {
             if (aanwezigheidComboBox.getValue().equals("cursus")) {
                 String vaknaam = "";
                 String cursusID = aanwezigInputText.getText();
-                for (Map<String, Object> afwezig : executeStatement("SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd FROM afwezigheid INNER JOIN les ON afwezigheid.lesID = les.lesID INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling on afwezigheid.leerlingID = leerling.leerlingID INNER JOIN gebruiker on leerling.gebruikerID = gebruiker.gebruikerID WHERE cursus.cursusID = " + cursusID + ";")) {
+                for (Map<String, Object> afwezig : executeStatement("SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd FROM afwezigheid INNER JOIN les ON afwezigheid.lesID = les.lesID INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling on afwezigheid.leerlingID = leerling.leerlingID INNER JOIN gebruiker on leerling.gebruikerID = gebruiker.gebruikerID WHERE cursus.cursusID = '" + cursusID + "';")) {
                     String reden = (String) afwezig.get("reden");
                     String cursusNaam = (String) afwezig.get("cursusNaam");
                     LocalDateTime begintijd = (LocalDateTime) afwezig.get("begintijd");

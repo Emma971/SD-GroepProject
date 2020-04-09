@@ -1,5 +1,6 @@
 package userinterface;
 
+import Utils.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -63,8 +64,8 @@ public class SchoolOverzichtController {
 
     public void toonlessen() {
         try {
-        ObservableList<String> dagles = FXCollections.observableArrayList();
-        ObservableList<String> weekles = FXCollections.observableArrayList();
+        ObservableList<String> lessenDag = FXCollections.observableArrayList();
+        ObservableList<String> lessenWeek = FXCollections.observableArrayList();
 
         LocalDate dagX = overzichtDatePicker.getValue();
         DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
@@ -72,38 +73,60 @@ public class SchoolOverzichtController {
 
         dagLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek());
         weekLabel.setText("Week : " + weekX);
-        for (Rooster x : school.getRooster()){
-            if(overzichtDatePicker.getValue().isEqual(x.getlesdagDatum())){
+        for (Map<String, Object> les : Database.executeStatement("SELECT les.begintijd, cursus.cursusNaam, les.lesID FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID WHERE medewerker.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekX - 1))) {
+            System.out.println(les);
+            LocalDateTime begintijd = (LocalDateTime) les.get("begintijd");
+            if(overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())){
                 String lesinfo="";
-                lesinfo = lesinfo + "Les : " + x.getLes();
-                lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-                dagles.add(lesinfo);
+                lesinfo = lesinfo + "Les : " + les.get("cursusNaam");
+                lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
+                lessenDag.add(lesinfo);
+                lesIDs.put(lesinfo, (int) les.get("lesID"));
             }
-
-            if(weekX==x.getWeeknummer()){
-                String lesinfo="";
-                lesinfo = lesinfo + "" + x.getlesdagDatum().getDayOfWeek();
-                lesinfo = lesinfo + " | Les : " + x.getLes();
-                lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-                weekles.add(lesinfo);
-            }
+            String lesinfo = "";
+            lesinfo = lesinfo + begintijd.getDayOfWeek();
+            lesinfo = lesinfo + "  |  Les : " + les.get("cursusNaam");
+            lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
+            lessenWeek.add(lesinfo);
+            lesIDs.put(lesinfo, (int) les.get("lesID"));
         }
-        if (dagles.isEmpty()){dagles.add("");}
-        if (weekles.isEmpty()){weekles.add("");}
-        dagRoosterListView.setItems(dagles);
-        weekRoosterListView.setItems(weekles);
+//        for (Rooster x : school.getRooster()){
+//            if(overzichtDatePicker.getValue().isEqual(x.getlesdagDatum())){
+//                String lesinfo="";
+//                lesinfo = lesinfo + "Les : " + x.getLes();
+//                lesinfo = lesinfo + " | tijd : " + x.getlestijd();
+//                dagles.add(lesinfo);
+//            }
+//
+//            if(weekX==x.getWeeknummer()){
+//                String lesinfo="";
+//                lesinfo = lesinfo + "" + x.getlesdagDatum().getDayOfWeek();
+//                lesinfo = lesinfo + " | Les : " + x.getLes();
+//                lesinfo = lesinfo + " | tijd : " + x.getlestijd();
+//                weekles.add(lesinfo);
+//            }
+//        }
+        if (lessenDag.isEmpty()){lessenDag.add("");}
+        if (lessenWeek.isEmpty()){lessenWeek.add("");}
+        dagRoosterListView.setItems(lessenDag);
+        weekRoosterListView.setItems(lessenWeek);
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");
         }
     }
 
-    public void absentmelden(ActionEvent actionEvent) {
+    public void absentmelden() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfmeldenLes.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
             AfmeldenLesController controller = fxmlLoader.getController();
             controller.setParentController(this);
-            Scene scene = new Scene(fxmlLoader.load());
+            String dagRoosterSelectedLes = dagRoosterListView.getSelectionModel().getSelectedItem();
+            if (dagRoosterSelectedLes != null) {
+                controller.setDatePicker(overzichtDatePicker.getValue());
+//                controller.setLesTijdComboBox();
+            }
             Stage stage = new Stage();
             stage.setTitle("Absent Melden");
             stage.setScene(scene);
