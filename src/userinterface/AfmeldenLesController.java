@@ -63,6 +63,7 @@ public class AfmeldenLesController {
     }
 
     public void initialize() {
+        datePicker.setValue(LocalDate.now());
     }
 
     public void BevestigAfmelding() {
