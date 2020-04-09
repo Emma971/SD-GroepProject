@@ -48,9 +48,9 @@ public class aanwezigheidController {
             overzichtDatePicker.setValue(LocalDate.now());
             aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek().toString().toLowerCase() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth().toString().toLowerCase() + "/" + LocalDate.now().getYear());
 
-            aanwezigInputText.setVisible (parentController.getUsertype().equals("Decaan")||parentController.getUsertype().equals("SLB"));
-            aanwezigTonen.setVisible (parentController.getUsertype().equals("Decaan")||parentController.getUsertype().equals("SLB"));
-            aanwezigheidComboBox.setVisible(parentController.getUsertype().equals("Decaan")||parentController.getUsertype().equals("SLB"));
+            aanwezigInputText.setVisible (parentController.getUsertype().equals("decaan")||parentController.getUsertype().equals("slb"));
+            aanwezigTonen.setVisible (parentController.getUsertype().equals("decaan")||parentController.getUsertype().equals("slb"));
+            aanwezigheidComboBox.setVisible(parentController.getUsertype().equals("decaan")||parentController.getUsertype().equals("slb"));
             aanwezigCalcLabel.setVisible(parentController.getUsertype().equals("leerling"));
 
             if (parentController.getUsertype().equals("leerling"))
