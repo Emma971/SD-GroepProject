@@ -37,13 +37,14 @@ public class DocentRoosterController {
 
     public void setParentController(mainmenuController controller) {
         this.parentController = controller;
+        roosternaamLabel.setText("" + parentController.getNaamGebruiker());
+        toonlessen();
     }
 
     public void initialize() {
         try {
             overzichtDatePicker.setValue(LocalDate.now());
-            roosternaamLabel.setText("" + parentController.getNaamGebruiker());
-            toonlessen();
+
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");
         }
