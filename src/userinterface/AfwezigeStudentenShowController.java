@@ -28,6 +28,8 @@ public class AfwezigeStudentenShowController {
     ObservableList Afwezig = FXCollections.observableArrayList();
     @FXML ListView AfwezigLijst;
     @FXML ListView AanwezigLijst;
+    @FXML Button Afwezigbutton;
+    @FXML Button Aanwezigbutton;
     private int lesID;
     private HashMap<String, Integer> leerlingIDs = new HashMap<>();
 
@@ -77,8 +79,6 @@ public class AfwezigeStudentenShowController {
     }
 
     public void afwezigMelden(ActionEvent actionEvent) {
-        System.out.println(Datum);
-        System.out.println(Les);
         try {
             String naam = (String) AanwezigLijst.getSelectionModel().getSelectedItem();
             if(naam == null||naam.isEmpty()){
@@ -152,5 +152,10 @@ public class AfwezigeStudentenShowController {
     public void zetAlleleerlingen(){
         LijstMaken();
         initialize();
+    }
+
+    public void zetButtonsVisable(String usertype){
+            Afwezigbutton.setVisible      (usertype.equals("docent"));
+            Aanwezigbutton.setVisible      (usertype.equals("docent"));
     }
 }

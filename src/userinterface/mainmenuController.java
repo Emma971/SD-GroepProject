@@ -86,6 +86,7 @@ public class mainmenuController {
                 Scene scene = new Scene(fxmlLoader.load());
                 DocentRoosterController controller = fxmlLoader.getController();
                 controller.setParentController(this);
+                controller.setUserType(usertype);
                 Stage stage = new Stage();
                 stage.setTitle("Rooster");
                 stage.setScene(scene);

@@ -33,6 +33,7 @@ public class DocentRoosterController {
 
     @FXML private DatePicker overzichtDatePicker;
 
+    private String gebruikersType;
     private School school = School.getSchool();
     private String Lesnaam = "";
     private HashMap<String, Integer> lesIDs;
@@ -116,6 +117,7 @@ public class DocentRoosterController {
             controller.Les(Lesnaam);
             controller.giveDatum(overzichtDatePicker.getValue());
             controller.zetAlleleerlingen();
+            controller.zetButtonsVisable(gebruikersType);
             Stage stage = new Stage();
             if(Lesnaam.equals(null) || Lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
@@ -128,5 +130,9 @@ public class DocentRoosterController {
             errorLabel.setText("Error! can't access absent melden window ");
             System.out.println(e);
         }
+    }
+
+    public void setUserType(String Usertype){
+        gebruikersType = Usertype;
     }
 }
