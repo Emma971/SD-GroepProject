@@ -24,8 +24,6 @@ import java.util.Map;
 public class AfwezigeStudentenShowController {
     private LocalDate Datum;
     private String Les;
-    private String KlasNaam;
-    private List<Rooster> allelessen = new ArrayList<Rooster>();
     ArrayList<Map<String, Object>> Alleleerlingen;
     ArrayList<Map<String, Object>> Afwezigeleerlingen;
     ObservableList Aanwezig = FXCollections.observableArrayList();
@@ -34,6 +32,7 @@ public class AfwezigeStudentenShowController {
     @FXML ListView AanwezigLijst;
 
     public void initialize(){
+        LijstMaken();
         AfwezigLijst.setItems(Afwezig);
         AanwezigLijst.setItems(Aanwezig);
     }
@@ -93,50 +92,7 @@ public class AfwezigeStudentenShowController {
         AfwezigLijst.getItems().clear();
     }
 
-//    public void LijstMaken(){
-//        System.out.println(getDate());
-//        System.out.println(getles());
-//        String[] Lesinfo = Les.split(":");
-//        String[] Splitter = Lesinfo[1].split("|");
-//        String LesCode = Splitter[0].strip();
-//
-//        String[] lesminuten = Lesinfo[3].split("-");
-//
-//        int BegintijdUur = Integer.parseInt(Lesinfo[2].strip());
-//        int BegintijdMinuten = Integer.parseInt(lesminuten[0].strip());
-//        int EindtijdUur = Integer.parseInt(lesminuten[1].strip());
-//        int EindtijdMinuten = Integer.parseInt(Lesinfo[4].strip());
-//        LocalDateTime Begintijd = Datum.atTime(BegintijdUur, BegintijdMinuten);
-//        LocalDateTime Eindtijd = Datum.atTime(EindtijdUur, EindtijdMinuten);
-//        allelessen = School.getSchool().getRooster();
-//        for (int i = 0; i < allelessen.size(); i++){
-//            if(allelessen.get(i).getlesdagDatum().equals(Datum) && allelessen.get(i).getlestijd().equals(""+Lesinfo[2].strip()+":"+Lesinfo[3]+":"+Lesinfo[4].strip()) && allelessen.get(i).getLes().equals(LesCode)){
-//                KlasNaam = allelessen.get(i).getKlas().getNaam();
-//            }
-//        }
-//        Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID INNER JOIN cursus c ON c.cursusID = les.cursusID WHERE les.begintijd = " + Begintijd + " AND k.klasNaam = " + KlasNaam);
-//        for(int i = 0; i < Alleleerlingen.size(); i++){
-//            Aanwezig.add(Alleleerlingen.get(i));
-//        }
-//    }
-
-    public void Les(String LesNaam){
-        Les = LesNaam;
-    }
-
-    public String getles(){
-        return Les;
-    }
-
-    public void giveDatum(LocalDate TheDate){
-        Datum = TheDate;
-    }
-
-    public LocalDate getDate(){
-        return Datum;
-    }
-
-    public void setInformation() {
+    public void LijstMaken(){
         String[] Lesinfo = Les.split(":");
         String[] Splitter = Lesinfo[1].split("|");
         String LesCode = Splitter[0].strip();
@@ -149,16 +105,18 @@ public class AfwezigeStudentenShowController {
         int EindtijdMinuten = Integer.parseInt(Lesinfo[4].strip());
         LocalDateTime Begintijd = Datum.atTime(BegintijdUur, BegintijdMinuten);
         LocalDateTime Eindtijd = Datum.atTime(EindtijdUur, EindtijdMinuten);
-        allelessen = School.getSchool().getRooster();
-        for (int i = 0; i < allelessen.size(); i++){
-            if(allelessen.get(i).getlesdagDatum().equals(Datum) && allelessen.get(i).getlestijd().equals(""+Lesinfo[2].strip()+":"+Lesinfo[3]+":"+Lesinfo[4].strip()) && allelessen.get(i).getLes().equals(LesCode)){
-                KlasNaam = "TICT-SD-V1C"; //allelessen.get(i).getKlas().getNaam();
-            }
+        Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID INNER JOIN cursus c ON c.cursusID = les.cursusID WHERE les.begintijd = " + Begintijd + " AND k.klasNaam = " + Rooster.getklasnaam());
+        Afwezigeleerlingen = Utils.Database.executeStatement("SELECT l.leerlingID FROM gebruiker g, leerling l, les, afwezigheid a, cursus c, klas k WHERE g.gebruikerID = l.gebruikerID AND l.leerlingID = a.leerlingID AND l.klasID = k.klasID AND c.klasID = k.klasID AND c.cursusID = 1 AND les.klasID = k.klasID AND les.cursusID = c.cursusID AND l.klasID = c.klasID AND les.lesID = a.lesID AND les.klasID = k.klasID AND les.klasID = l.klasID AND les.begintijd = " + Begintijd + " AND les.eindtijd = " + Eindtijd);
+        for(int i = 0; i < Afwezigeleerlingen.size(); i++){
+            Afwezig.add(Utils.Database.executeStatement("SELECT naam FROM leerling l, gebruiker g WHERE l.leerlingID = " + Afwezigeleerlingen.get(i) + " AND l.gebruikerID = g.gebruikerID"));
         }
-        Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID INNER JOIN cursus c ON c.cursusID = les.cursusID WHERE les.begintijd = '" + Begintijd + "' AND k.klasNaam = 'TICT-SD-V1C'");
-        for(int i = 0; i < Alleleerlingen.size(); i++){
-            Aanwezig.add(Alleleerlingen.get(i));
-        }
-        initialize();
+    }
+
+    public void Les(String LesNaam){
+        Les = LesNaam;
+    }
+
+    public void giveDatum(LocalDate TheDate){
+        Datum = TheDate;
     }
 }

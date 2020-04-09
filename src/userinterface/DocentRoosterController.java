@@ -1,3 +1,4 @@
+
 package userinterface;
 
 import javafx.collections.FXCollections;
@@ -64,32 +65,32 @@ public class DocentRoosterController {
 
     public void toonlessen() {
         try {
-        ObservableList<String> dagles = FXCollections.observableArrayList();
-        ObservableList<String> weekles = FXCollections.observableArrayList();
+            ObservableList<String> dagles = FXCollections.observableArrayList();
+            ObservableList<String> weekles = FXCollections.observableArrayList();
 
-        LocalDate dagX = overzichtDatePicker.getValue();
-        DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
-        int weekX = Integer.parseInt(dagX.format(forX));
+            LocalDate dagX = overzichtDatePicker.getValue();
+            DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
+            int weekX = Integer.parseInt(dagX.format(forX));
 
-        dagLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek());
-        weekLabel.setText("Week : " + weekX);
-        for (Rooster x : school.getRooster()){
-            if(overzichtDatePicker.getValue().isEqual(x.getlesdagDatum())){
-                String lesinfo="";
-                lesinfo = lesinfo + "Les : " + x.getLes();
-                lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-                dagles.add(lesinfo);
+            dagLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek());
+            weekLabel.setText("Week : " + weekX);
+            for (Rooster x : school.getRooster()){
+                if(overzichtDatePicker.getValue().isEqual(x.getlesdagDatum())){
+                    String lesinfo="";
+                    lesinfo = lesinfo + "Les : " + x.getLes();
+                    lesinfo = lesinfo + " | tijd : " + x.getlestijd();
+                    dagles.add(lesinfo);
+                }
+                if(weekX==x.getWeeknummer()){
+                    String lesinfo="";
+                    lesinfo = lesinfo + "" + x.getlesdagDatum().getDayOfWeek();
+                    lesinfo = lesinfo + " | Les : " + x.getLes();
+                    lesinfo = lesinfo + " | tijd : " + x.getlestijd();
+                    weekles.add(lesinfo);
+                }
             }
-            if(weekX==x.getWeeknummer()){
-                String lesinfo="";
-                lesinfo = lesinfo + "" + x.getlesdagDatum().getDayOfWeek();
-                lesinfo = lesinfo + " | Les : " + x.getLes();
-                lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-                weekles.add(lesinfo);
-            }
-        }
-        dagRoosterListView.setItems(dagles);
-        weekRoosterListView.setItems(weekles);
+            dagRoosterListView.setItems(dagles);
+            weekRoosterListView.setItems(weekles);
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");
         }
@@ -97,8 +98,8 @@ public class DocentRoosterController {
 
     public void Afwezigheid(ActionEvent actionEvent) {
         try {
-
             Lesnaam = (String) dagRoosterListView.getSelectionModel().getSelectedItem();
+
             String fxmlPagina = "AfwezigeStudentenShow.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
             Parent root = loader.load();
@@ -106,7 +107,6 @@ public class DocentRoosterController {
             AfwezigeStudentenShowController controller = loader.getController();
             controller.Les(Lesnaam);
             controller.giveDatum(overzichtDatePicker.getValue());
-            controller.setInformation();
             Stage stage = new Stage();
             if(Lesnaam.equals(null) || Lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
