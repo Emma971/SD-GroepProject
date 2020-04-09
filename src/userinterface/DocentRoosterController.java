@@ -18,6 +18,7 @@ import model.School;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 public class DocentRoosterController {
     mainmenuController parentController;
@@ -34,6 +35,7 @@ public class DocentRoosterController {
 
     private School school = School.getSchool();
     private String Lesnaam = "";
+    private HashMap<String, Integer> lesIDs;
 
     public void setParentController(mainmenuController controller) {
         this.parentController = controller;
@@ -66,6 +68,8 @@ public class DocentRoosterController {
 
     public void toonlessen() {
         try {
+            lesIDs = new HashMap<>();
+
             ObservableList<String> dagles = FXCollections.observableArrayList();
             ObservableList<String> weekles = FXCollections.observableArrayList();
 
@@ -81,6 +85,7 @@ public class DocentRoosterController {
                     lesinfo = lesinfo + "Les : " + x.getLes();
                     lesinfo = lesinfo + " | tijd : " + x.getlestijd();
                     dagles.add(lesinfo);
+                    lesIDs.put(lesinfo, x.getLesID());
                 }
                 if(weekX==x.getWeeknummer()){
                     String lesinfo="";
@@ -88,6 +93,7 @@ public class DocentRoosterController {
                     lesinfo = lesinfo + " | Les : " + x.getLes();
                     lesinfo = lesinfo + " | tijd : " + x.getlestijd();
                     weekles.add(lesinfo);
+                    lesIDs.put(lesinfo, x.getLesID());
                 }
             }
             dagRoosterListView.setItems(dagles);
@@ -106,6 +112,7 @@ public class DocentRoosterController {
             Parent root = loader.load();
 
             AfwezigeStudentenShowController controller = loader.getController();
+            controller.setLesID(lesIDs.get(dagRoosterListView.getSelectionModel().getSelectedItem()));
             controller.Les(Lesnaam);
             controller.giveDatum(overzichtDatePicker.getValue());
             controller.zetAlleleerlingen();

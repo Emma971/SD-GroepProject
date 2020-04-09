@@ -30,9 +30,9 @@ public class School {
 		return Collections.unmodifiableList(allelessen);
 	}
 
-	public Rooster voegLesToe(String lesnaam, LocalDate lesdag, LocalDateTime van, LocalDateTime tot, String klasnaam) throws Exception {
+	public Rooster voegLesToe(int lesID, String lesnaam, LocalDate lesdag, LocalDateTime van, LocalDateTime tot, String klasnaam) throws Exception {
 
-		Rooster rooster = new Rooster(lesnaam, lesdag, van, tot);
+		Rooster rooster = new Rooster(lesID, lesnaam, lesdag, van, tot);
 		rooster.setKlas(new Klas(klasnaam));
 
 		allelessen.add(rooster);

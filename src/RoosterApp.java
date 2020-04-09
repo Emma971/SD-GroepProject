@@ -21,9 +21,10 @@ public class RoosterApp extends Application {
 		String klasNaam;
 		School nieuwSchool = new School("HU");
 
-		for (Map<String, Object> les : executeStatement("SELECT les.begintijd, les.eindtijd, cursus.cursusNaam, klas.klasNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN klas ON les.klasID = klas.klasID ORDER BY les.begintijd")) {
+		for (Map<String, Object> les : executeStatement("SELECT les.lesID, les.begintijd, les.eindtijd, cursus.cursusNaam, klas.klasNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN klas ON les.klasID = klas.klasID ORDER BY les.begintijd")) {
 			String vakNaam = (String)les.get("cursusNaam");
 			klasNaam = (String)les.get("naam");
+			int lesID = (int) les.get("lesID");
 
 			LocalDateTime begintijd = (LocalDateTime) les.get("begintijd");
 
@@ -31,9 +32,9 @@ public class RoosterApp extends Application {
 
 			LocalDate lesdatum = begintijd.toLocalDate();
 
-			nieuwSchool.voegLesToe(vakNaam, lesdatum, begintijd, eindtijd, klasNaam);
+			nieuwSchool.voegLesToe(lesID, vakNaam, lesdatum, begintijd, eindtijd, klasNaam);
 		}
-		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(-111), LocalDateTime.now(),LocalDateTime.now(), "V1C");
+//		nieuwSchool.voegLesToe("OOP", LocalDate.now().plusDays(-111), LocalDateTime.now(),LocalDateTime.now(), "V1C");
 		School.setSchool(nieuwSchool);
 		launch(args);
 	}

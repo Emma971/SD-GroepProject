@@ -16,10 +16,7 @@ import java.lang.reflect.AnnotatedArrayType;
 import java.sql.DatabaseMetaData;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AfwezigeStudentenShowController {
     private LocalDate Datum;
@@ -31,6 +28,8 @@ public class AfwezigeStudentenShowController {
     ObservableList Afwezig = FXCollections.observableArrayList();
     @FXML ListView AfwezigLijst;
     @FXML ListView AanwezigLijst;
+    private int lesID;
+    private HashMap<String, Integer> leerlingIDs = new HashMap<>();
 
     public void initialize(){
         AfwezigLijst.setItems(Afwezig);
@@ -43,41 +42,53 @@ public class AfwezigeStudentenShowController {
         stage.close();
     }
 
-    public void ChangeAbsentie(ActionEvent actionEvent) {
+    public void aanwezigMelden(ActionEvent actionevent) {
         System.out.println(Datum);
         System.out.println(Les);
-        initialize();
-        String[] Lesinfo = Les.split(":");
-        String[] Splitter = Lesinfo[1].split("|");
-        String LesCode = Splitter[0].strip();
-
-        String[] lesminuten = Lesinfo[3].split("-");
-        String begintijd = Lesinfo[2].strip() + ":" + lesminuten[0].strip() + ":00";
-
-        String eindtijd = lesminuten[1].strip() + ":" + Lesinfo[4].strip() + ":00";
-        int BegintijdUur = Integer.parseInt(Lesinfo[2].strip());
-        int BegintijdMinuten = Integer.parseInt(lesminuten[0].strip());
-        int EindtijdUur = Integer.parseInt(lesminuten[1].strip());
-        int EindtijdMinuten = Integer.parseInt(Lesinfo[4].strip());
-        LocalDateTime Begintijd = Datum.atTime(BegintijdUur, BegintijdMinuten);
-        LocalDateTime Eindtijd = Datum.atTime(EindtijdUur, EindtijdMinuten);
         try {
             String naam = (String) AfwezigLijst.getSelectionModel().getSelectedItem();
             if(naam == null||naam.isEmpty()){
-                naam = (String) AanwezigLijst.getSelectionModel().getSelectedItem();
-                if(naam.equals(null)||naam.isEmpty()){
-                    System.out.println("Er is niks geselecteerd");
-                }
-                else{
-                    Utils.Database.executeStatement("DELETE FROM `afwezigheid` WHERE leerlingID = " + Utils.Database.executeStatement("SELECT leerlingID FROM leerling l, gebruiker g WHERE l.gebruikerID = g.gebruikerID AND g.naam = " + naam ));
-                    Aanwezig.remove(naam);
-                    Afwezig.add(naam);
-                    initialize();
-                }
+
             }else{
-                Utils.Database.executeStatement("INSERT INTO `afwezigheid`(`reden`, `leerlingID`, `lesID`) VALUES ('Absent', '" + (Utils.Database.executeStatement("SELECT leerlingID FROM leerling l, gebruiker g WHERE l.gebruikerID = g.gebruikerID AND g.naam = " + naam )) + "', '" + Utils.Database.executeStatement("SELECT lesID FROM les, cursus WHERE begintijd = " + Begintijd +" AND eindtijd = " + Eindtijd + " AND les.cursusID = cursus.cursusID AND cursus.cursusNaam = " + LesCode) + "'");
+                System.out.println("leerlingID: " + leerlingIDs.get(naam));
+                System.out.println("lesID: " + lesID);
+                Utils.Database.executeStatement("DELETE FROM `afwezigheid` WHERE leerlingID = " + leerlingIDs.get(naam) + " and lesID = " + lesID);
                 Aanwezig.add(naam);
                 Afwezig.remove(naam);
+                initialize();
+            }
+        }catch(Exception e) {
+            System.out.println("Kan actie niet uitvoeren");
+            System.out.println(e);
+            initialize();
+
+//        naam = (String) AfwezigLijst.getSelectionModel().getSelectedItem();
+//        int leerlingID = leerlingIDs.get(naam);
+//        if(naam.equals(null)||naam.isEmpty()){
+//            System.out.println("Er is niks geselecteerd");
+//        }
+//        else{
+//            Utils.Database.executeStatement("DELETE FROM `afwezigheid` WHERE leerlingID = " + leerlingID + " and lesID = " + lesID);
+//            Aanwezig.remove(naam);
+//            Afwezig.add(naam);
+//            initialize();
+//        }
+        }
+    }
+
+    public void afwezigMelden(ActionEvent actionEvent) {
+        System.out.println(Datum);
+        System.out.println(Les);
+        try {
+            String naam = (String) AanwezigLijst.getSelectionModel().getSelectedItem();
+            if(naam == null||naam.isEmpty()){
+
+            }else{
+                System.out.println("leerlingID: " + leerlingIDs.get(naam));
+                System.out.println("lesID: " + lesID);
+                Utils.Database.executeStatement("INSERT INTO `afwezigheid` (`reden`, `leerlingID`, `lesID`) VALUES ('Absent', '" + leerlingIDs.get(naam) + "', '" + lesID + "')");
+                Afwezig.add(naam);
+                Aanwezig.remove(naam);
                 initialize();
             }
         }catch(Exception e){
@@ -101,20 +112,33 @@ public class AfwezigeStudentenShowController {
 
         int BegintijdUur = Integer.parseInt(Lesinfo[2].strip());
         int BegintijdMinuten = Integer.parseInt(lesminuten[0].strip());
-        int EindtijdUur = Integer.parseInt(lesminuten[1].strip());
-        int EindtijdMinuten = Integer.parseInt(Lesinfo[4].strip());
+//        int EindtijdUur = Integer.parseInt(lesminuten[1].strip());
+//        int EindtijdMinuten = Integer.parseInt(Lesinfo[4].strip());
         LocalDateTime Begintijd = Datum.atTime(BegintijdUur, BegintijdMinuten);
-        LocalDateTime Eindtijd = Datum.atTime(EindtijdUur, EindtijdMinuten);
+//        LocalDateTime Eindtijd = Datum.atTime(EindtijdUur, EindtijdMinuten);
         allelessen = School.getSchool().getRooster();
         for (int i = 0; i < allelessen.size(); i++){
             if(allelessen.get(i).getlesdagDatum().equals(Datum) && allelessen.get(i).getlestijd().equals(""+Lesinfo[2].strip()+":"+Lesinfo[3]+":"+Lesinfo[4].strip()) && allelessen.get(i).getLes().equals(LesCode)){
-                KlasNaam = "TICT-SD-V1C"; //allelessen.get(i).getKlas().getNaam();
+                KlasNaam = allelessen.get(i).getKlas().getNaam(); //
             }
         }
-        Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID INNER JOIN cursus c ON c.cursusID = les.cursusID WHERE les.begintijd = '" + Begintijd + "' AND k.klasNaam = 'TICT-SD-V1C'");
+        Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam, l.leerlingID, a.reden FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID LEFT OUTER JOIN afwezigheid a ON l.leerlingID = a.leerlingID WHERE les.lesID = " + lesID);
         for(int i = 0; i < Alleleerlingen.size(); i++){
-            Aanwezig.add(Alleleerlingen.get(i).get("naam"));
+            if (Alleleerlingen.get(i).get("reden") == null) {
+                Aanwezig.add(Alleleerlingen.get(i).get("naam"));
+                System.out.println(Alleleerlingen.get(i).get("naam"));
+                System.out.println(Alleleerlingen.get(i).get("leerlingID"));
+                System.out.println("Aanwezig? " + Alleleerlingen.get(i).get("reden"));
+            } else {
+                Afwezig.add(Alleleerlingen.get(i).get("naam"));
+            }
+
+            leerlingIDs.put((String) Alleleerlingen.get(i).get("naam"), (int) Alleleerlingen.get(i).get("leerlingID"));
         }
+    }
+
+    public void setLesID(int lesID) {
+        this.lesID = lesID;
     }
 
     public void Les(String LesNaam){

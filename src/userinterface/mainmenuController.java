@@ -42,10 +42,10 @@ public class mainmenuController {
 
         studentrooster.setVisible      (usertype.equals("leerling") || usertype.equals("slb"));
         studentabsent.setVisible       (usertype.equals("leerling"));
-        studentaanwezigheid.setVisible (usertype.equals("leerling") || usertype.equals("decaan") || usertype.equals("slb"));
+        studentaanwezigheid.setVisible (usertype.equals("leerling") || usertype.equals("decaan"));
 
         docentrooster.setVisible       (usertype.equals(  "docent"));
-        docentpresent.setVisible       (usertype.equals(  "docent"));
+        docentpresent.setVisible       (false);  // (usertype.equals(  "docent"));
 
         SBtoevoegen.setVisible        (usertype.equals("beheerder"));
 

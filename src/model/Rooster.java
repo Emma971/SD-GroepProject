@@ -12,13 +12,15 @@ public class Rooster {
 	private LocalDateTime lesBegintijd;
 	private LocalDateTime lesEindTijd;
 	private Klas klas;
+	private int lesID;
 
 
-	protected Rooster(String les, LocalDate lesdag, LocalDateTime beginTijd, LocalDateTime eindTijd) {
+	protected Rooster(int lesID, String les, LocalDate lesdag, LocalDateTime beginTijd, LocalDateTime eindTijd) {
 
 //        LocalTime beginTijd = LocalTime.parse(beginTijdString);
 //        LocalTime eindTijd  = LocalTime.parse(eindTijdString);
 
+		this.lesID = lesID;
 		this.les = les;
 		lesDatum = lesdag;
 		lesBegintijd = beginTijd;
@@ -52,6 +54,10 @@ public class Rooster {
 
 	public String getlestijd() {
 		return ""+ lesBegintijd.getHour()+":"+lesBegintijd.getMinute() + " - " + lesEindTijd.getHour()+":"+lesEindTijd.getMinute();
+	}
+
+	public int getLesID() {
+		return lesID;
 	}
 
 	public boolean equals(Object obj) {

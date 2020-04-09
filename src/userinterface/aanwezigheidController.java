@@ -66,6 +66,7 @@ public class aanwezigheidController {
 
     public void toonVanDaag(ActionEvent actionEvent) {
         overzichtDatePicker.setValue(LocalDate.now());
+        toonabsentlessen();
     }
 
     public void toonVorigeDag(ActionEvent actionEvent) {
@@ -214,10 +215,12 @@ public class aanwezigheidController {
 //			        String eindtijd = rawEindTijd.replace(":00", "");
 
                     if(overzichtDatePicker.getValue().isEqual(lesDatum)){
-                        String lesinfo="afwezig voor";
+                        String lesinfo="afwezig voor ";
                         lesinfo = lesinfo + "Les : " + vakNaam;
                         lesinfo = lesinfo + " | tijd : " + datumTijdBegin.getHour() + "." + datumTijdBegin.getMinute() + " - " + datumTijdEind.getHour() + "." + datumTijdEind.getMinute();
                     dagafwezig.add(lesinfo);
+                    } else {
+                        dagafwezig.add("");
                     }
                 }
             }
