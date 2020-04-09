@@ -38,7 +38,7 @@ public class InloggenController {
 
         System.out.println(gebrD);
         if ((int) gebrD.get(0).get("COUNT(*)") == 1){
-            ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.type, k.klasNaam, g.gebruikerID, g.naam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
+            ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.type, k.klasNaam, g.gebruikerID, g.naam FROM gebruiker g LEFT OUTER JOIN leerling l ON g.gebruikerID = l.gebruikerID LEFT OUTER JOIN klas k ON l.klasID = k.klasID WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
             System.out.println(wwD);
             if (wwD.size() == 1) {
 //                try {
