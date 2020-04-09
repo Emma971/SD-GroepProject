@@ -8,8 +8,9 @@
       <Button fx:id="ABDoneButton" layoutX="566.0" layoutY="402.0" mnemonicParsing="false" onAction="#SluitenMainFrame" prefHeight="26.0" prefWidth="64.0" text="Done" />
       <Label fx:id="ABstudentLabel" layoutX="102.0" layoutY="26.0" text="Afwezige Studenten:" />
       <Label layoutX="396.0" layoutY="26.0" text="Aanwezige Studenten:" />
-      <Button layoutX="396.0" layoutY="402.0" mnemonicParsing="false" onAction="#ChangeAbsentie" text="Verander Aanwezigheid" />
-      <ListView fx:id="AfwezigLijst" layoutX="35.0" layoutY="59.0" prefHeight="306.0" prefWidth="243.0" />
+      <Button layoutX="289.0" layoutY="146.0" mnemonicParsing="false" onAction="#afwezigMelden" text="&lt;---" />
+      <ListView fx:id="AfwezigLijst" layoutX="34.0" layoutY="59.0" prefHeight="306.0" prefWidth="243.0" />
       <ListView fx:id="AanwezigLijst" layoutX="345.0" layoutY="59.0" prefHeight="306.0" prefWidth="243.0" />
+      <Button layoutX="289.0" layoutY="215.0" mnemonicParsing="false" onAction="#aanwezigMelden" text="---&gt;" />
    </children>
 </AnchorPane>
