@@ -79,7 +79,7 @@ public class mainmenuController {
                 errormenulabel.setText("ERROR! Couldn't load new window.");
             }
         }
-        else if(usertype.equals("docent")){
+        else if(usertype.equals("docent")|| usertype.equals("slb")){
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("DocentRooster.fxml"));
