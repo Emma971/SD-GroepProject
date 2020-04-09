@@ -97,8 +97,8 @@ public class DocentRoosterController {
 
     public void Afwezigheid(ActionEvent actionEvent) {
         try {
-            Lesnaam = (String) dagRoosterListView.getSelectionModel().getSelectedItem();
 
+            Lesnaam = (String) dagRoosterListView.getSelectionModel().getSelectedItem();
             String fxmlPagina = "AfwezigeStudentenShow.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
             Parent root = loader.load();
@@ -106,6 +106,7 @@ public class DocentRoosterController {
             AfwezigeStudentenShowController controller = loader.getController();
             controller.Les(Lesnaam);
             controller.giveDatum(overzichtDatePicker.getValue());
+            controller.setInformation();
             Stage stage = new Stage();
             if(Lesnaam.equals(null) || Lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
