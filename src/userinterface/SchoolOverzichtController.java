@@ -2,7 +2,6 @@ package userinterface;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,12 +9,13 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import model.Rooster;
-import model.School;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SchoolOverzichtController {
     mainmenuController parentController;
@@ -25,10 +25,12 @@ public class SchoolOverzichtController {
     @FXML private Label errorLabel;
     @FXML private Label roosternaamLabel;
 
-    @FXML private ListView dagRoosterListView;
-    @FXML private ListView weekRoosterListView;
+    @FXML private ListView<String> dagRoosterListView;
+    @FXML private ListView<String> weekRoosterListView;
 
     @FXML private DatePicker overzichtDatePicker;
+
+    private HashMap<String, Integer> lesIDs = new HashMap<>();
 
     public void setParentController(mainmenuController controller) {
         try {
@@ -40,23 +42,21 @@ public class SchoolOverzichtController {
         }
     }
 
-    private School school = School.getSchool();
-
     public void initialize() {
             overzichtDatePicker.setValue(LocalDate.now());
 
     }
 
-    public void toonVanDaag(ActionEvent actionEvent) {
+    public void toonVanDaag() {
         overzichtDatePicker.setValue(LocalDate.now());
     }
 
-    public void toonVorigeDag(ActionEvent actionEvent) {
+    public void toonVorigeDag() {
         LocalDate dagEerder = overzichtDatePicker.getValue().minusDays(1);
         overzichtDatePicker.setValue(dagEerder);
     }
 
-    public void toonVolgendeDag(ActionEvent actionEvent) {
+    public void toonVolgendeDag() {
         LocalDate dagLater = overzichtDatePicker.getValue().plusDays(1);
         overzichtDatePicker.setValue(dagLater);
     }

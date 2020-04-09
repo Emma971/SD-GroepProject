@@ -2,7 +2,6 @@ package userinterface;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -18,7 +17,6 @@ public class UserToevoegenController {
     @FXML private Label sbMedewerkerGIDLabel;
     @FXML private Label sbSLBMEDIDLabel;
     @FXML private Label sbDocentMEDIDLabel;
-    @FXML private Label errorLabel;
 
     @FXML private TextField sbNaamtext;
     @FXML private TextField sbWachtword;
@@ -28,16 +26,13 @@ public class UserToevoegenController {
     @FXML private TextField sbDocentMedID;
     @FXML private TextField sbUserNaamtext;
 
-    @FXML private ComboBox sbUsertype;
-    @FXML private ComboBox sbLeerlingKlas;
-    @FXML private ComboBox sbMedewerkerType;
-    @FXML private ComboBox sbSLBKlas;
-    @FXML private ComboBox sbDocentCursus;
+    @FXML private ComboBox<String> sbUsertype;
+    @FXML private ComboBox<String> sbLeerlingKlas;
+    @FXML private ComboBox<String> sbMedewerkerType;
+    @FXML private ComboBox<String> sbSLBKlas;
+    @FXML private ComboBox<String> sbDocentCursus;
 
     public void initialize() {
-
-
-        
            try {
                ObservableList<String> usertype = FXCollections.observableArrayList("leerling","medewerker");
                sbUsertype.setItems(usertype);
@@ -65,8 +60,8 @@ public class UserToevoegenController {
            }
     }
 
-    public void action(ActionEvent actionEvent) {
-        String userComboValue = (String) sbUsertype.getValue();
+    public void action() {
+        String userComboValue = sbUsertype.getValue();
         sbLeerlingGIDLabel.setVisible(userComboValue.equals      ("leerling"));
         sbLeerlingGID.setVisible(userComboValue.equals           ("leerling"));
         sbLeerlingKlas.setVisible(userComboValue.equals          ("leerling"));
@@ -75,8 +70,8 @@ public class UserToevoegenController {
         sbMedewerkerGID.setVisible(userComboValue.equals       ("medewerker"));
         sbMedewerkerType.setVisible(userComboValue.equals      ("medewerker"));
     }
-    public void action2(ActionEvent actionEvent){
-        String medwerkerComboValue = (String) sbMedewerkerType.getValue();
+    public void action2(){
+        String medwerkerComboValue = sbMedewerkerType.getValue();
         sbSLBMEDIDLabel.setVisible(medwerkerComboValue.equals        ("slb"));
         sbSLBMedID.setVisible(medwerkerComboValue.equals             ("slb"));
         sbSLBKlas.setVisible(medwerkerComboValue.equals              ("slb"));
@@ -85,13 +80,13 @@ public class UserToevoegenController {
         sbDocentMedID.setVisible(medwerkerComboValue.equals       ("docent"));
         sbDocentCursus.setVisible(medwerkerComboValue.equals      ("docent"));
     }
-    public void opslaan(ActionEvent actionEvent){
+    public void opslaan(){
         String gebruikersnaam = sbUserNaamtext.getText();
         String gebruikernaam = sbNaamtext.getText();
         String gebruikerWachtword = sbNaamtext.getText();
-        String gebruikerType = (String) sbUsertype.getValue();
+        String gebruikerType = sbUsertype.getValue();
         if (gebruikerType.equals("leerling")){
-            String gebruikerID = "";
+            String gebruikerID;
             String klasID      = "";
             gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
 
@@ -99,9 +94,9 @@ public class UserToevoegenController {
         }
 
         if (gebruikerType.equals("medewerker")){
-            String gebruikerID = "";
-            String medewerkertype = "";
-            medewerkertype = (String) sbMedewerkerType.getValue();
+            String gebruikerID;
+            String medewerkertype;
+            medewerkertype = sbMedewerkerType.getValue();
             gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
             executeStatement("INSERT INTO medewerker(gebruikerID,type) VALUES ('"+ gebruikerID + "', '" + medewerkertype + "');");
 
@@ -120,7 +115,7 @@ public class UserToevoegenController {
         return gebruikerID;
     }
 
-    public void reset(ActionEvent actionEvent){
+    public void reset(){
         sbDocentCursus.setValue("");
         sbSLBKlas.setValue("");
         sbMedewerkerType.setValue("");

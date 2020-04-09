@@ -90,8 +90,8 @@
             </HBox>
          </content>
       </TitledPane>
-      <DatePicker fx:id="datePicker" layoutX="80.0" layoutY="46.0" onAction="#setVakTijdComboBox" onInputMethodTextChanged="#setVakTijdComboBox" promptText="01/04/2020" showWeekNumbers="true" />
-      <ComboBox fx:id="vakTijdComboBox" layoutX="312.0" layoutY="46.0" prefWidth="150.0" promptText="les" />
+      <DatePicker fx:id="datePicker" layoutX="80.0" layoutY="46.0" onAction="#setLesTijdComboBox" onInputMethodTextChanged="#setLesTijdComboBox" promptText="01/04/2020" showWeekNumbers="true" />
+      <ComboBox fx:id="lesTijdComboBox" layoutX="312.0" layoutY="46.0" prefWidth="150.0" promptText="les" />
       <TitledPane animated="false" collapsible="false" layoutX="312.0" layoutY="107.0" prefHeight="215.0" prefWidth="250.0" text="Lengte afmelding">
          <content>
             <HBox prefHeight="100.0" prefWidth="200.0">

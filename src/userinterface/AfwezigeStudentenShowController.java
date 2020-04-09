@@ -3,19 +3,11 @@ package userinterface;
 import model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import java.lang.reflect.AnnotatedArrayType;
-import java.sql.DatabaseMetaData;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class AfwezigeStudentenShowController {
@@ -44,14 +36,12 @@ public class AfwezigeStudentenShowController {
         stage.close();
     }
 
-    public void aanwezigMelden(ActionEvent actionevent) {
+    public void aanwezigMelden() {
         System.out.println(Datum);
         System.out.println(Les);
         try {
-            String naam = (String) AfwezigLijst.getSelectionModel().getSelectedItem();
-            if(naam == null||naam.isEmpty()){
-
-            }else{
+            String naam = AfwezigLijst.getSelectionModel().getSelectedItem();
+            if (naam != null && !naam.isEmpty()) {
                 System.out.println("leerlingID: " + leerlingIDs.get(naam));
                 System.out.println("lesID: " + lesID);
                 Utils.Database.executeStatement("DELETE FROM `afwezigheid` WHERE leerlingID = " + leerlingIDs.get(naam) + " and lesID = " + lesID);
@@ -61,7 +51,7 @@ public class AfwezigeStudentenShowController {
             }
         }catch(Exception e) {
             System.out.println("Kan actie niet uitvoeren");
-            System.out.println(e);
+            e.printStackTrace();
             initialize();
 
 //        naam = (String) AfwezigLijst.getSelectionModel().getSelectedItem();
@@ -78,12 +68,10 @@ public class AfwezigeStudentenShowController {
         }
     }
 
-    public void afwezigMelden(ActionEvent actionEvent) {
+    public void afwezigMelden() {
         try {
-            String naam = (String) AanwezigLijst.getSelectionModel().getSelectedItem();
-            if(naam == null||naam.isEmpty()){
-
-            }else{
+            String naam = AanwezigLijst.getSelectionModel().getSelectedItem();
+            if (naam != null && !naam.isEmpty()) {
                 System.out.println("leerlingID: " + leerlingIDs.get(naam));
                 System.out.println("lesID: " + lesID);
                 Utils.Database.executeStatement("INSERT INTO `afwezigheid` (`reden`, `leerlingID`, `lesID`) VALUES ('Absent', '" + leerlingIDs.get(naam) + "', '" + lesID + "')");
@@ -93,14 +81,9 @@ public class AfwezigeStudentenShowController {
             }
         }catch(Exception e){
             System.out.println("Kan actie niet uitvoeren");
-            System.out.println(e);
+            e.printStackTrace();
             initialize();
         }
-    }
-
-    public void ClearViewList(){
-        AanwezigLijst.getItems().clear();
-        AfwezigLijst.getItems().clear();
     }
 
     public void LijstMaken(){

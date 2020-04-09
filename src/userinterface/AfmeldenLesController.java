@@ -1,5 +1,6 @@
 package userinterface;
 
+import Utils.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,11 +10,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static Utils.Database.executeStatement;
 
 public class AfmeldenLesController {
 
@@ -46,7 +46,7 @@ public class AfmeldenLesController {
     @FXML   /* De rest */
     private DatePicker datePicker;
     @FXML
-    private ComboBox<String> vakTijdComboBox;
+    private ComboBox<String> lesTijdComboBox;
     @FXML
     private Button bevestigButton;
 
@@ -70,9 +70,9 @@ public class AfmeldenLesController {
         setVakTijdComboBox();
     }
 
-    public void BevestigAfmelding(ActionEvent actionEvent) {
+    public void BevestigAfmelding() {
         date = datePicker.getValue();
-        String les = String.valueOf(vakTijdComboBox.getSelectionModel().getSelectedItem());
+        String les = lesTijdComboBox.getSelectionModel().getSelectedItem();
         RedenAfmelding();
 
         int gebruikerID = parentController.parentController.getGebruikerID();
@@ -80,7 +80,7 @@ public class AfmeldenLesController {
 
         int leerlingID = 5;
         int lesID = lesIDs.get(les);
-        executeStatement("INSERT INTO afwezigheid (reden, leerlingID, lesID) VALUES ('" + reden + "', '" + leerlingID + "', '" + lesID + "');");
+        Database.executeStatement("INSERT INTO afwezigheid (reden, leerlingID, lesID) VALUES ('" + reden + "', '" + leerlingID + "', '" + lesID + "');");
 
     }
 
@@ -94,8 +94,11 @@ public class AfmeldenLesController {
             String lesString ="Les: " + les.get("cursusNaam") + " Tijd:" + les.get("begintijd") + " : " + les.get("eindtijd");
             lesIDs.put(lesString, (int) les.get("lesID"));
             lessen.add(lesString);
+            if (lesID == (int) les.get("lesID")) {
+                valueToSelect = lesString;
+            }
         }
-         vakTijdComboBox.setItems(lessen);
+         lesTijdComboBox.setItems(lessen);
     }
 
     public void RedenAfmelding() {
@@ -111,25 +114,11 @@ public class AfmeldenLesController {
         }
     }
 
-    public void selectAnders(KeyEvent KeyEvent) {
+    public void selectAnders() {
         redenAfmelding.selectToggle(andersRadioButton);
     }
 
-    public ToggleGroup getLengteAfmelding() {
-        return lengteAfmelding;
+    public void setDatePicker(LocalDate date) {
+        datePicker.setValue(date);
     }
-
-    public DatePicker getDatePicker() {
-        return datePicker;
-    }
-
-    public DatePicker getAbsentEndDatePicker() {
-        return AbsentEndDatePicker;
-    }
-
-    public DatePicker getAbsentStartDatePicker() {
-        return AbsentStartDatePicker;
-    }
-
-
 }

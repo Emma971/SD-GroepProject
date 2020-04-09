@@ -1,7 +1,6 @@
 package userinterface;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -62,43 +61,33 @@ public class mainmenuController {
     public void initialize() {
     }
 
-    public void roosterscherm(ActionEvent actionEvent) {
-        if(usertype.equals("leerling")) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader();
+    public void roosterscherm() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            Scene scene = null;
+            if(usertype.equals("leerling")) {
                 fxmlLoader.setLocation(getClass().getResource("SchoolOverzicht.fxml"));
-                Scene scene = new Scene(fxmlLoader.load());
+                scene = new Scene(fxmlLoader.load());
                 SchoolOverzichtController controller = fxmlLoader.getController();
                 controller.setParentController(this);
-                Stage stage = new Stage();
-                stage.setTitle("Rooster");
-                stage.setScene(scene);
-                stage.initModality(Modality.APPLICATION_MODAL);
-                stage.showAndWait();
-            } catch (IOException e) {
-                errormenulabel.setText("ERROR! Couldn't load new window.");
-            }
-        }
-        else if(usertype.equals("docent")|| usertype.equals("slb")){
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader();
+            } else if (usertype.equals("docent")|| usertype.equals("slb")) {
                 fxmlLoader.setLocation(getClass().getResource("DocentRooster.fxml"));
-                Scene scene = new Scene(fxmlLoader.load());
+                scene = new Scene(fxmlLoader.load());
                 DocentRoosterController controller = fxmlLoader.getController();
                 controller.setParentController(this);
                 controller.setUserType(usertype);
-                Stage stage = new Stage();
-                stage.setTitle("Rooster");
-                stage.setScene(scene);
-                stage.initModality(Modality.APPLICATION_MODAL);
-                stage.showAndWait();
-            } catch (IOException e) {
-                errormenulabel.setText("ERROR! Couldn't load new window.");
             }
+            Stage stage = new Stage();
+            stage.setTitle("Rooster");
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            errormenulabel.setText("ERROR! Couldn't load new window.");
         }
     }
 
-    public void aanwezig(ActionEvent actionEvent) {
+    public void aanwezig() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("aanwezigheid.fxml"));
@@ -115,7 +104,7 @@ public class mainmenuController {
         }
     }
 
-    public void sbUserToevoegen(ActionEvent actionEvent) {
+    public void sbUserToevoegen() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("UserToevoegen.fxml"));
@@ -131,7 +120,7 @@ public class mainmenuController {
         }
     }
 
-    public void absentmelden(ActionEvent actionEvent) {
+    public void absentmelden() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfmeldenLes.fxml"));
@@ -146,7 +135,7 @@ public class mainmenuController {
         }
     }
 
-    public void presentieLijst(ActionEvent actionEvent) {
+    public void presentieLijst() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfwezigeStudentenShow.fxml"));
@@ -161,24 +150,8 @@ public class mainmenuController {
         }
     }
 
-    public void close(ActionEvent actionEvent) {
+    public void close() {
         Platform.exit();
-    }
-
-    public void setNaamGebruiker(String naam){
-        naamGebruiker = naam;
-    }
-
-    public void setUsertype(String type){
-        usertype = type;
-    }
-
-    public void setUserklasnaam(String naam){
-        klasnaam = naam;
-    }
-
-    public void setGebruikerID(int ID){
-        gebruikerID = ID;
     }
 
 

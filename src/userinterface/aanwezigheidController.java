@@ -2,19 +2,16 @@ package userinterface;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import static Utils.Database.executeStatement;
 
 public class aanwezigheidController {
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy");
     mainmenuController parentController;
 
     @FXML private Label aanwezigDatumLabel;
@@ -64,12 +61,12 @@ public class aanwezigheidController {
 
     }
 
-    public void toonVanDaag(ActionEvent actionEvent) {
+    public void toonVanDaag() {
         overzichtDatePicker.setValue(LocalDate.now());
         toonabsentlessen();
     }
 
-    public void toonVorigeDag(ActionEvent actionEvent) {
+    public void toonVorigeDag() {
         LocalDate dagEerder = overzichtDatePicker.getValue().minusDays(1);
         overzichtDatePicker.setValue(dagEerder);
         String type = parentController.getUsertype();
@@ -80,7 +77,7 @@ public class aanwezigheidController {
         }
     }
 
-    public void toonVolgendeDag(ActionEvent actionEvent) {
+    public void toonVolgendeDag() {
         LocalDate dagLater = overzichtDatePicker.getValue().plusDays(1);
         overzichtDatePicker.setValue(dagLater);
         String type = parentController.getUsertype();
@@ -163,7 +160,7 @@ public class aanwezigheidController {
                     LocalDate lesdatum = begintijd.toLocalDate();
 
                     if (overzichtDatePicker.getValue().isEqual(lesdatum)) {
-                        String lesinfo = "";
+                        String lesinfo;
                         lesinfo = studentnaam + " was afwezig voor ";
                         lesinfo = lesinfo + "Les : " + vaknaam;
                         lesinfo = lesinfo + " | tijd : "+ begintijd.getHour()+":"+begintijd.getMinute() + " - " + eindtijd.getHour()+":"+eindtijd.getMinute();
@@ -189,9 +186,6 @@ public class aanwezigheidController {
             for (Map<String, Object> getlesID : executeStatement("SELECT LesID FROM afwezigheid WHERE leerlingID =" + parentController.getGebruikerID())) {
                 for (Map<String, Object> les : executeStatement("SELECT * FROM les WHERE lesID =" + getlesID.get("lesID") + " ORDER BY begintijd")) {
 			        String vakNaam = "";
-			        String rawDatum = "";
-			        String rawBeginTijd = "";
-			        String rawEindTijd = "";
 
 			        for (Map<String, Object> lesnaamq : executeStatement("SELECT cursusNaam FROM cursus WHERE cursusID = " + les.get("cursusID"))) {
                         vakNaam = lesnaamq.get("cursusNaam").toString();
@@ -199,20 +193,6 @@ public class aanwezigheidController {
 			        LocalDateTime datumTijdBegin = (LocalDateTime) les.get("begintijd");
 			        LocalDateTime datumTijdEind = (LocalDateTime) les.get("eindtijd");
 			        LocalDate lesDatum = datumTijdBegin.toLocalDate();
-
-//			        rawDatum = datum.getDayOfMonth() + "/" + datum.getMonth() + "/" + datum.getYear();
-//			        String rawBeginDatum = les.get("begintijd").toString();
-//			        String[] rawBeginDatumSplit = rawBeginDatum.split(" ");
-//			        rawDatum = rawDatum + rawBeginDatumSplit[2] + "/" + rawBeginDatumSplit[1] + "/" + rawBeginDatumSplit[5];
-//			        rawBeginTijd = rawBeginTijd + rawBeginDatumSplit[3];
-
-//			        String rawEindDatum = les.get("eindtijd").toString();
-//			        String[] rawEindDatumSplit = rawEindDatum.split(" ");
-//			        rawEindTijd = rawEindTijd + rawEindDatumSplit[3];
-
-//			        LocalDate lesdatum = LocalDate.parse(rawDatum, dateTimeFormatter);
-//			        String begintijd = rawBeginTijd.replace(":00", "");
-//			        String eindtijd = rawEindTijd.replace(":00", "");
 
                     if(overzichtDatePicker.getValue().isEqual(lesDatum)){
                         String lesinfo="afwezig voor ";

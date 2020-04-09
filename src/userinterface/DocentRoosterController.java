@@ -3,7 +3,6 @@ package userinterface;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,8 +27,8 @@ public class DocentRoosterController {
     @FXML private Label errorLabel;
     @FXML private Label roosternaamLabel;
 
-    @FXML private ListView dagRoosterListView;
-    @FXML private ListView weekRoosterListView;
+    @FXML private ListView<String> dagRoosterListView;
+    @FXML private ListView<String> weekRoosterListView;
 
     @FXML private DatePicker overzichtDatePicker;
 
@@ -53,16 +52,16 @@ public class DocentRoosterController {
         }
     }
 
-    public void toonVanDaag(ActionEvent actionEvent) {
+    public void toonVanDaag() {
         overzichtDatePicker.setValue(LocalDate.now());
     }
 
-    public void toonVorigeDag(ActionEvent actionEvent) {
+    public void toonVorigeDag() {
         LocalDate dagEerder = overzichtDatePicker.getValue().minusDays(1);
         overzichtDatePicker.setValue(dagEerder);
     }
 
-    public void toonVolgendeDag(ActionEvent actionEvent) {
+    public void toonVolgendeDag() {
         LocalDate dagLater = overzichtDatePicker.getValue().plusDays(1);
         overzichtDatePicker.setValue(dagLater);
     }
@@ -78,7 +77,7 @@ public class DocentRoosterController {
             DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
             int weekX = Integer.parseInt(dagX.format(forX));
 
-            dagLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek());
+            dagLabel.setText(overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase());
             weekLabel.setText("Week : " + weekX);
             for (Rooster x : school.getRooster()){
                 if(overzichtDatePicker.getValue().isEqual(x.getlesdagDatum())){
@@ -101,12 +100,13 @@ public class DocentRoosterController {
             weekRoosterListView.setItems(weekles);
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");
+            e.printStackTrace();
         }
     }
 
-    public void Afwezigheid(ActionEvent actionEvent) {
+    public void Afwezigheid() {
         try {
-            Lesnaam = (String) dagRoosterListView.getSelectionModel().getSelectedItem();
+            Lesnaam = dagRoosterListView.getSelectionModel().getSelectedItem();
 
             String fxmlPagina = "AfwezigeStudentenShow.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
@@ -119,7 +119,7 @@ public class DocentRoosterController {
             controller.zetAlleleerlingen();
             controller.zetButtonsVisable(gebruikersType);
             Stage stage = new Stage();
-            if(Lesnaam.equals(null) || Lesnaam.isEmpty()){
+            if(Lesnaam == null || Lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
             }else {
                 stage.setTitle(Lesnaam);
@@ -128,7 +128,7 @@ public class DocentRoosterController {
             stage.show();
         } catch (IOException e) {
             errorLabel.setText("Error! can't access absent melden window ");
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
