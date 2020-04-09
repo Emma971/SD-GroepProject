@@ -67,13 +67,13 @@ public class SchoolOverzichtController {
         ObservableList<String> lessenDag = FXCollections.observableArrayList();
         ObservableList<String> lessenWeek = FXCollections.observableArrayList();
 
-        LocalDate dagX = overzichtDatePicker.getValue();
-        DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
-        int weekX = Integer.parseInt(dagX.format(forX));
+        LocalDate systeemDag = overzichtDatePicker.getValue();
+        DateTimeFormatter weekformat = DateTimeFormatter.ofPattern("w");
+        int weekNummer = Integer.parseInt(systeemDag.format(weekformat));
 
         dagLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek());
-        weekLabel.setText("Week : " + weekX);
-        for (Map<String, Object> les : Database.executeStatement("SELECT les.begintijd, cursus.cursusNaam, les.lesID FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID WHERE medewerker.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekX - 1))) {
+        weekLabel.setText("Week : " + weekNummer);
+        for (Map<String, Object> les : Database.executeStatement("SELECT les.begintijd, cursus.cursusNaam, les.lesID FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID WHERE medewerker.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekNummer - 1))) {
             System.out.println(les);
             LocalDateTime begintijd = (LocalDateTime) les.get("begintijd");
             if(overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())){
@@ -98,7 +98,7 @@ public class SchoolOverzichtController {
 //                dagles.add(lesinfo);
 //            }
 //
-//            if(weekX==x.getWeeknummer()){
+//            if(weekNummer==x.getRoosterWeeknummer()){
 //                String lesinfo="";
 //                lesinfo = lesinfo + "" + x.getlesdagDatum().getDayOfWeek();
 //                lesinfo = lesinfo + " | Les : " + x.getLes();

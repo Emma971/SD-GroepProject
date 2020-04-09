@@ -50,7 +50,7 @@ public class Rooster {
 		return lesDatum;
 	}
 
-	public int getWeeknummer() {return weeknummer;}
+	public int getRoosterWeeknummer() {return weeknummer;}
 
 	public String getlestijd() {
 		return ""+ lesBegintijd.getHour()+":"+lesBegintijd.getMinute() + " - " + lesEindTijd.getHour()+":"+lesEindTijd.getMinute();
