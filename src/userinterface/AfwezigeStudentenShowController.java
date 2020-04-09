@@ -24,15 +24,15 @@ import java.util.Map;
 public class AfwezigeStudentenShowController {
     private LocalDate Datum;
     private String Les;
+    private String KlasNaam;
     ArrayList<Map<String, Object>> Alleleerlingen;
-    ArrayList<Map<String, Object>> Afwezigeleerlingen;
+    private List<Rooster> allelessen = new ArrayList<Rooster>();
     ObservableList Aanwezig = FXCollections.observableArrayList();
     ObservableList Afwezig = FXCollections.observableArrayList();
     @FXML ListView AfwezigLijst;
     @FXML ListView AanwezigLijst;
 
     public void initialize(){
-        LijstMaken();
         AfwezigLijst.setItems(Afwezig);
         AanwezigLijst.setItems(Aanwezig);
     }
@@ -105,10 +105,15 @@ public class AfwezigeStudentenShowController {
         int EindtijdMinuten = Integer.parseInt(Lesinfo[4].strip());
         LocalDateTime Begintijd = Datum.atTime(BegintijdUur, BegintijdMinuten);
         LocalDateTime Eindtijd = Datum.atTime(EindtijdUur, EindtijdMinuten);
-        Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID INNER JOIN cursus c ON c.cursusID = les.cursusID WHERE les.begintijd = " + Begintijd + " AND k.klasNaam = " + Rooster.getklasnaam());
-        Afwezigeleerlingen = Utils.Database.executeStatement("SELECT l.leerlingID FROM gebruiker g, leerling l, les, afwezigheid a, cursus c, klas k WHERE g.gebruikerID = l.gebruikerID AND l.leerlingID = a.leerlingID AND l.klasID = k.klasID AND c.klasID = k.klasID AND c.cursusID = 1 AND les.klasID = k.klasID AND les.cursusID = c.cursusID AND l.klasID = c.klasID AND les.lesID = a.lesID AND les.klasID = k.klasID AND les.klasID = l.klasID AND les.begintijd = " + Begintijd + " AND les.eindtijd = " + Eindtijd);
-        for(int i = 0; i < Afwezigeleerlingen.size(); i++){
-            Afwezig.add(Utils.Database.executeStatement("SELECT naam FROM leerling l, gebruiker g WHERE l.leerlingID = " + Afwezigeleerlingen.get(i) + " AND l.gebruikerID = g.gebruikerID"));
+        allelessen = School.getSchool().getRooster();
+        for (int i = 0; i < allelessen.size(); i++){
+            if(allelessen.get(i).getlesdagDatum().equals(Datum) && allelessen.get(i).getlestijd().equals(""+Lesinfo[2].strip()+":"+Lesinfo[3]+":"+Lesinfo[4].strip()) && allelessen.get(i).getLes().equals(LesCode)){
+                KlasNaam = "TICT-SD-V1C"; //allelessen.get(i).getKlas().getNaam();
+            }
+        }
+        Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID INNER JOIN cursus c ON c.cursusID = les.cursusID WHERE les.begintijd = '" + Begintijd + "' AND k.klasNaam = 'TICT-SD-V1C'");
+        for(int i = 0; i < Alleleerlingen.size(); i++){
+            Aanwezig.add(Alleleerlingen.get(i).get("naam"));
         }
     }
 
@@ -118,5 +123,10 @@ public class AfwezigeStudentenShowController {
 
     public void giveDatum(LocalDate TheDate){
         Datum = TheDate;
+    }
+
+    public void zetAlleleerlingen(){
+        LijstMaken();
+        initialize();
     }
 }

@@ -108,6 +108,7 @@ public class DocentRoosterController {
             AfwezigeStudentenShowController controller = loader.getController();
             controller.Les(Lesnaam);
             controller.giveDatum(overzichtDatePicker.getValue());
+            controller.zetAlleleerlingen();
             Stage stage = new Stage();
             if(Lesnaam.equals(null) || Lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
