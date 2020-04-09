@@ -38,14 +38,18 @@ public class InloggenController {
 
         System.out.println(gebrD);
         if ((int) gebrD.get(0).get("COUNT(*)") == 1){
-            ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.type, k.klasNaam, g.gebruikerID, g.naam FROM gebruiker g LEFT OUTER JOIN leerling l ON g.gebruikerID = l.gebruikerID LEFT OUTER JOIN klas k ON l.klasID = k.klasID WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
+            ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.gebruikerType, k.klasNaam, g.gebruikerID, g.naam, m.medewerkerType FROM gebruiker g LEFT OUTER JOIN medewerker m ON g.gebruikerID = m.gebruikerID LEFT OUTER JOIN leerling l ON g.gebruikerID = l.gebruikerID LEFT OUTER JOIN klas k ON l.klasID = k.klasID WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
             System.out.println(wwD);
             if (wwD.size() == 1) {
 //                try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("Mainmenu.fxml"));
                     Parent root = loader.load();
                     mainmenuController controller = loader.getController();
-                    controller.setLoginDetails((int) wwD.get(0).get("gebruikerID"), (String) wwD.get(0).get("naam"), (String) wwD.get(0).get("type"), (String) wwD.get(0).get("klasNaam"));
+                    String gebruikertype = (String) wwD.get(0).get("gebruikerType");
+                    if (gebruikertype.equals("medewerker")) {
+                        gebruikertype = (String) wwD.get(0).get("medewerkerType");
+                    }
+                    controller.setLoginDetails((int) wwD.get(0).get("gebruikerID"), (String) wwD.get(0).get("naam"), gebruikertype, (String) wwD.get(0).get("klasNaam"));
                     Stage newStage = new Stage();
                     newStage.setScene(new Scene(root));
                     newStage.setTitle("Main menu");
