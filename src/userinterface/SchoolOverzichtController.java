@@ -73,7 +73,7 @@ public class SchoolOverzichtController {
 
         dagLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek());
         weekLabel.setText("Week : " + weekNummer);
-        for (Map<String, Object> les : Database.executeStatement("SELECT les.begintijd, cursus.cursusNaam, les.lesID FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID WHERE medewerker.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekNummer - 1))) {
+        for (Map<String, Object> les : Database.executeStatement("SELECT les.begintijd, cursus.cursusNaam, les.lesID FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE leerling.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekNummer - 1))) {
             System.out.println(les);
             LocalDateTime begintijd = (LocalDateTime) les.get("begintijd");
             if(overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())){
