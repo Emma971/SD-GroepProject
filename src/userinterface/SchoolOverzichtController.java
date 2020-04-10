@@ -125,7 +125,7 @@ public class SchoolOverzichtController {
             String dagRoosterSelectedLes = dagRoosterListView.getSelectionModel().getSelectedItem();
             if (dagRoosterSelectedLes != null) {
                 controller.setDatePicker(overzichtDatePicker.getValue());
-//                controller.setLesTijdComboBox();
+                controller.setLesTijdComboBox();
             }
             Stage stage = new Stage();
             stage.setTitle("Absent Melden");

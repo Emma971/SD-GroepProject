@@ -82,23 +82,28 @@ public class AfmeldenLesController {
     }
 
     public void setLesTijdComboBox(int lesID) {
+        date = datePicker.getValue();
         String valueToSelect = null;
         int gebruikerID = parentController.parentController.getGebruikerID();
-        ArrayList<Map<String, Object>> data = Database.executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE les.begintijd >= '" + date + " 00:00:00' AND les.begintijd <= '" + date + " 23:59:59' AND leerling.gebruikerID = " + gebruikerID + ";");
-        ObservableList<String> lessen = FXCollections.observableArrayList();
-        System.out.println(data);
-        for (Map<String, Object> les : data) {
+        System.out.println(date);
+        ArrayList<Map<String, Object>> lessen = Database.executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE les.begintijd >= '" + date + " 00:00:00' AND les.begintijd <= '" + date + " 23:59:59' AND leerling.gebruikerID = " + gebruikerID + ";");
+        ObservableList<String> lessenStrings = FXCollections.observableArrayList();
+        System.out.println(lessen);
+        for (Map<String, Object> les : lessen) {
             String beginTijd = ((LocalDateTime) les.get("begintijd")).getHour() + ":" + ((LocalDateTime) les.get("begintijd")).getMinute();
             String eindTijd = ((LocalDateTime) les.get("eindtijd")).getHour() + ":" + ((LocalDateTime) les.get("eindtijd")).getMinute();
             String lesString ="Les: " + les.get("cursusNaam") + "\n\t" + beginTijd + " - " + eindTijd;
             lesIDs.put(lesString, (int) les.get("lesID"));
-            lessen.add(lesString);
+            lessenStrings.add(lesString);
             if (lesID == (int) les.get("lesID")) {
                 valueToSelect = lesString;
             }
         }
-         lesTijdComboBox.setItems(lessen);
-//        lesTijdComboBox.select(valueToSelect);
+        lesTijdComboBox.setItems(lessenStrings);
+        lesTijdComboBox.show();                                    //
+        lesTijdComboBox.setVisibleRowCount(lessenStrings.size());  // Resize ComboBox dropdown list
+        lesTijdComboBox.hide();                                    //
+        lesTijdComboBox.setValue(valueToSelect);
     }
 
     public void RedenAfmelding() {
