@@ -1,9 +1,10 @@
 package userinterface;
 
-import Utils.*;
+import Utils.Database;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
@@ -29,20 +30,21 @@ public class InloggenController {
 
         String query = "SELECT COUNT(*) " +
                 "FROM gebruiker g " +
-                "WHERE g.gebruikersnaam = '" + gebrnm;
-        ArrayList<Map<String, Object>> gebrD = new ArrayList<>(Database.executeStatement(query));
-        if ((int) gebrD.get(0).get("COUNT(*)") == 1){
-            query = "SELECT g.gebruikerType, k.klasNaam, g.gebruikerID, g.naam, m.medewerkerType " +
-                    "FROM gebruiker g " +
-                    "LEFT OUTER JOIN medewerker m ON g.gebruikerID = m.gebruikerID " +
-                    "LEFT OUTER JOIN leerling l ON g.gebruikerID = l.gebruikerID " +
-                    "LEFT OUTER JOIN klas k ON l.klasID = k.klasID " +
-                    "WHERE g.wachtwoord = '" + wachtw + "' " +
-                    "AND g.gebruikersnaam = '" + gebrnm+"'";
-            ArrayList<Map<String, Object>> wwD = Database.executeStatement(query);
-            System.out.println(wwD);
-            if (wwD.size() == 1) {
-//                try {
+                "WHERE g.gebruikersnaam = '" + gebrnm + "'";
+        try {
+            ArrayList<Map<String, Object>> gebrD = new ArrayList<>(Database.executeStatement(query));
+            if ((int) gebrD.get(0).get("COUNT(*)") == 1) {
+                query = "SELECT g.gebruikerType, k.klasNaam, g.gebruikerID, g.naam, m.medewerkerType " +
+                        "FROM gebruiker g " +
+                        "LEFT OUTER JOIN medewerker m ON g.gebruikerID = m.gebruikerID " +
+                        "LEFT OUTER JOIN leerling l ON g.gebruikerID = l.gebruikerID " +
+                        "LEFT OUTER JOIN klas k ON l.klasID = k.klasID " +
+                        "WHERE g.wachtwoord = '" + wachtw + "' " +
+                        "AND g.gebruikersnaam = '" + gebrnm + "'";
+                ArrayList<Map<String, Object>> wwD = Database.executeStatement(query);
+                System.out.println(wwD);
+                if (wwD.size() == 1) {
+                    //                try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("Mainmenu.fxml"));
                     Parent root = loader.load();
                     mainmenuController controller = loader.getController();
@@ -57,15 +59,22 @@ public class InloggenController {
                     newStage.initModality(Modality.APPLICATION_MODAL);
                     newStage.showAndWait();
 
-//                } catch (IOException e) {
-//                    String message = e.getMessage();
-//                    HeadLabel.setText(message);
-//                }
+                    //                } catch (IOException e) {
+                    //                    String message = e.getMessage();
+                    //                    HeadLabel.setText(message);
+                    //                }
+                } else {
+                    HeadLabel.setText("Onjuist wachtwoord");
+                }
             } else {
-                HeadLabel.setText("Dit wachtwoord bestaat niet.");
+                HeadLabel.setText("Deze gebruiker bestaat niet");
             }
-        } else {
-            HeadLabel.setText("Deze gebruiker bestaat niet.");
+        } catch (UnsupportedOperationException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Er is een fout opgetreden");
+            alert.setHeaderText(null);
+            alert.setContentText(e.getLocalizedMessage());
+            alert.showAndWait();
         }
     }
 }
