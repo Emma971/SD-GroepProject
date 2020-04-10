@@ -45,7 +45,6 @@ public class SchoolOverzichtController {
 
     public void initialize() {
             overzichtDatePicker.setValue(LocalDate.now());
-
     }
 
     public void toonVanDaag() {
@@ -73,9 +72,11 @@ public class SchoolOverzichtController {
 
         dagLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek());
         weekLabel.setText("Week : " + weekNummer);
-        for (Map<String, Object> les : Database.executeStatement("SELECT les.begintijd, cursus.cursusNaam, les.lesID FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE leerling.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekNummer - 1))) {
+        for (Map<String, Object> les : Database.executeStatement("SELECT les.begintijd, cursus.cursusNaam, les.lesID FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE leerling.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekNummer - 1) + " ORDER BY les.begintijd")) {
+
             System.out.println(les);
             LocalDateTime begintijd = (LocalDateTime) les.get("begintijd");
+
             if(overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())){
                 String lesinfo="";
                 lesinfo = lesinfo + "Les : " + les.get("cursusNaam");
@@ -83,6 +84,7 @@ public class SchoolOverzichtController {
                 lessenDag.add(lesinfo);
                 lesIDs.put(lesinfo, (int) les.get("lesID"));
             }
+
             String lesinfo = "";
             lesinfo = lesinfo + begintijd.getDayOfWeek();
             lesinfo = lesinfo + "  |  Les : " + les.get("cursusNaam");
@@ -90,22 +92,7 @@ public class SchoolOverzichtController {
             lessenWeek.add(lesinfo);
             lesIDs.put(lesinfo, (int) les.get("lesID"));
         }
-//        for (Rooster x : school.getRooster()){
-//            if(overzichtDatePicker.getValue().isEqual(x.getlesdagDatum())){
-//                String lesinfo="";
-//                lesinfo = lesinfo + "Les : " + x.getLes();
-//                lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-//                dagles.add(lesinfo);
-//            }
-//
-//            if(weekNummer==x.getRoosterWeeknummer()){
-//                String lesinfo="";
-//                lesinfo = lesinfo + "" + x.getlesdagDatum().getDayOfWeek();
-//                lesinfo = lesinfo + " | Les : " + x.getLes();
-//                lesinfo = lesinfo + " | tijd : " + x.getlestijd();
-//                weekles.add(lesinfo);
-//            }
-//        }
+
         if (lessenDag.isEmpty()){lessenDag.add("");}
         if (lessenWeek.isEmpty()){lessenWeek.add("");}
         dagRoosterListView.setItems(lessenDag);
