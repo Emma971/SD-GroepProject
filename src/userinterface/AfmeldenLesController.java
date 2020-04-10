@@ -3,9 +3,6 @@ package userinterface;
 import Utils.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.scene.input.KeyEvent;
-import model.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -101,6 +98,7 @@ public class AfmeldenLesController {
             }
         }
          lesTijdComboBox.setItems(lessen);
+//        lesTijdComboBox.select(valueToSelect);
     }
 
     public void RedenAfmelding() {
