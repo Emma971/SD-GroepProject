@@ -1,5 +1,6 @@
 package userinterface;
 
+import Utils.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -8,8 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.util.Map;
-
-import static Utils.Database.executeStatement;
 
 public class UserToevoegenController {
 
@@ -44,7 +43,14 @@ public class UserToevoegenController {
             ObservableList<String> klassen = FXCollections.observableArrayList();
             ObservableList<String> cursus = FXCollections.observableArrayList();
 
-            for (Map<String, Object> data : executeStatement("SELECT klas.klasNaam, cursus.cursusNaam FROM klas LEFT OUTER JOIN cursus ON klas.klasID = cursus.klasID UNION SELECT klas.klasNaam, cursus.cursusNaam FROM klas RIGHT OUTER JOIN cursus ON klas.klasID = cursus.klasID;")){
+            String query = "SELECT klas.klasNaam, cursus.cursusNaam " +
+                    "FROM klas " +
+                    "LEFT OUTER JOIN cursus ON klas.klasID = cursus.klasID " +
+                    "UNION " +
+                    "SELECT klas.klasNaam, cursus.cursusNaam " +
+                    "FROM klas " +
+                    "RIGHT OUTER JOIN cursus ON klas.klasID = cursus.klasID";
+            for (Map<String, Object> data : Database.executeStatement(query)){
                 String klasNaam   = (String) data.get("klasNaam");
                 String cursusnaam = (String) data.get("cursusNaam");
                 if(klasNaam!=null){
@@ -94,9 +100,15 @@ public class UserToevoegenController {
                 int gebruikerID;
                 int klasID = 0;
                 gebruikerID = gebruikerID(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
-                for (Map<String, Object> data : executeStatement("SELECT klasID FROM klas WHERE klasNaam = '" + sbLeerlingKlas.getValue() + "';"))
+                String query = "SELECT klasID " +
+                        "FROM klas " +
+                        "WHERE klasNaam = '" + sbLeerlingKlas.getValue() + "'";
+                for (Map<String, Object> data : Database.executeStatement(query))
                     klasID = (int) data.get("klasID");
-                executeStatement("INSERT INTO leerling(gebruikerID,klasID) VALUES ('" + gebruikerID + "', '" + klasID + "');");
+                query = "INSERT INTO leerling " +
+                        "(gebruikerID, klasID) VALUES " +
+                        "(" + gebruikerID + ", " + klasID + ")";
+                Database.executeStatement(query);
             }
 
             if (gebruikerType.equals("medewerker")) {
@@ -104,26 +116,47 @@ public class UserToevoegenController {
                 String medewerkertype;
                 medewerkertype = sbMedewerkerType.getValue();
                 gebruikerID = gebruikerID(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
-                executeStatement("INSERT INTO medewerker(gebruikerID,medewerkerType) VALUES ('" + gebruikerID + "', '" + medewerkertype + "');");
+                String query = "INSERT INTO medewerker " +
+                        "(gebruikerID, medewerkerType) VALUES " +
+                        "(" + gebruikerID + ", '" + medewerkertype + "')";
+                Database.executeStatement(query);
 
                 if (medewerkertype.equals("slb")) {
                     int medewerkerID = 0;
                     int klasID = 0;
-                    for (Map<String, Object> data : executeStatement("SELECT medewerkerID FROM medewerker WHERE gebruikerID = '" + gebruikerID + "';"))
+                    query = "SELECT medewerkerID " +
+                            "FROM medewerker " +
+                            "WHERE gebruikerID = " + gebruikerID;
+                    for (Map<String, Object> data : Database.executeStatement(query))
                         medewerkerID = (int) data.get("medewerkerID");
-                    for (Map<String, Object> data : executeStatement("SELECT klasID FROM klas WHERE klasNaam = '" + sbSLBKlas.getValue() + "';"))
+                    query = "SELECT klasID " +
+                            "FROM klas " +
+                            "WHERE klasNaam = '" + sbSLBKlas.getValue() + "';";
+                    for (Map<String, Object> data : Database.executeStatement(query))
                         klasID = (int) data.get("klasID");
-                    executeStatement("INSERT INTO medewerkertoegangklas(medewerkerID, klasID) VALUES ('" + medewerkerID + "', " + klasID + ");");
+                    query = "INSERT INTO medewerkertoegangklas " +
+                            "(medewerkerID, klasID) VALUES " +
+                            "(" + medewerkerID + ", " + klasID + ")";
+                    Database.executeStatement(query);
                 }
 
                 if (medewerkertype.equals("docent")) {
                     int medewerkerID = 0;
                     int cursusID = 0;
-                    for (Map<String, Object> data : executeStatement("SELECT medewerkerID FROM medewerker WHERE gebruikerID = '" + gebruikerID + "';"))
+                    query = "SELECT medewerkerID " +
+                            "FROM medewerker " +
+                            "WHERE gebruikerID = " + gebruikerID;
+                    for (Map<String, Object> data : Database.executeStatement(query))
                         medewerkerID = (int) data.get("medewerkerID");
-                    for (Map<String, Object> data : executeStatement("SELECT cursusID FROM cursus WHERE cursusNaam = '" + sbSLBKlas.getValue() + "';"))
+                    query = "SELECT cursusID " +
+                            "FROM cursus " +
+                            "WHERE cursusNaam = '" + sbSLBKlas.getValue() + "'";
+                    for (Map<String, Object> data : Database.executeStatement(query))
                         cursusID = (int) data.get("cursusID");
-                    executeStatement("INSERT INTO medewerkertoegangcursus(medewerkerID, cursusID) VALUES ('" + medewerkerID + "', '" + cursusID + "');");
+                    query = "INSERT INTO medewerkertoegangcursus " +
+                            "(medewerkerID, cursusID) VALUES " +
+                            "(" + medewerkerID + ", " + cursusID + ")";
+                    Database.executeStatement(query);
                 }
 
             }
@@ -135,8 +168,14 @@ public class UserToevoegenController {
 
     public int gebruikerID(String a, String b, String c, String d){
         int gebruikerID = 0;
-        executeStatement("INSERT INTO gebruiker(gebruikersnaam, naam, gebruikerType, wachtwoord) VALUES ('"+ a + "', '" + b + "', '" + c + "', '" + d + "');");
-        for (Map<String, Object> data : executeStatement("SELECT gebruikerID FROM gebruiker WHERE gebruikersnaam = '" + a + "';")){
+        String query = "INSERT INTO gebruiker " +
+                "(gebruikersnaam, naam, gebruikerType, wachtwoord) VALUES " +
+                "('"+ a + "', '" + b + "', '" + c + "', '" + d + "');";
+        Database.executeStatement(query);
+        query = "SELECT gebruikerID " +
+                "FROM gebruiker " +
+                "WHERE gebruikersnaam = '" + a + "';";
+        for (Map<String, Object> data : Database.executeStatement(query)){
             gebruikerID = (int) data.get("gebruikerID");
         }
         return gebruikerID;
@@ -147,7 +186,10 @@ public class UserToevoegenController {
         boolean aa = (a==null);
         boolean bb = (b==null);
         boolean cc = (c==null);
-        for (Map<String, Object> data : executeStatement("SELECT gebruikersnaam FROM gebruiker WHERE gebruikersnaam = '" + a +"';")) {
+        String query = "SELECT gebruikersnaam " +
+                "FROM gebruiker " +
+                "WHERE gebruikersnaam = '" + a +"';";
+        for (Map<String, Object> data : Database.executeStatement(query)) {
             System.out.println(data.get("gebruikersnaam"));
             if (a.equals(data.get("gebruikersnaam"))) {
                 errorLabel.setText("gebruikersnaam bestaat al !");

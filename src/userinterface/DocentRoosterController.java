@@ -79,7 +79,13 @@ public class DocentRoosterController {
 
             dagLabel.setText(overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase());
             weekLabel.setText("Week : " + weekX);
-            for (Map<String, Object> data : Database.executeStatement("SELECT les.begintijd, klas.klasNaam, les.lesID FROM les INNER JOIN klas ON les.klasID = klas.klasID INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID WHERE medewerker.gebruikerID = " + parentController.getGebruikerID() + " AND WEEK(les.begintijd) = " + (weekX - 1))) {
+            String query = "SELECT les.begintijd, klas.klasNaam, les.lesID " +
+                    "FROM les " +
+                    "INNER JOIN klas ON les.klasID = klas.klasID " +
+                    "INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID " +
+                    "WHERE medewerker.gebruikerID = " + parentController.getGebruikerID() + " " +
+                    "AND WEEK(les.begintijd) = " + (weekX - 1);
+            for (Map<String, Object> data : Database.executeStatement(query)) {
                 System.out.println(data);
                 LocalDateTime begintijd = (LocalDateTime) data.get("begintijd");
                 if(overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())){

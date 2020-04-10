@@ -46,7 +46,7 @@ public class mainmenuController {
         docentrooster.setVisible       (usertype.equals(  "docent"));
         docentpresent.setVisible       (false);  // (usertype.equals(  "docent"));
 
-        SBtoevoegen.setVisible        (usertype.equals("beheerder"));
+        SBtoevoegen.setVisible         (usertype.equals("beheerder"));
 
 
         if (usertype.equals("leerling")){
@@ -56,9 +56,6 @@ public class mainmenuController {
             userlabel = userlabel + " van klas: " + klasnaam;
         }
         loggedLabel.setText(userlabel);
-    }
-
-    public void initialize() {
     }
 
     public void roosterscherm() {

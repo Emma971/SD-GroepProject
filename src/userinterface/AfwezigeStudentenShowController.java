@@ -42,7 +42,10 @@ public class AfwezigeStudentenShowController {
             if (naam != null && !naam.isEmpty()) {
                 System.out.println("leerlingID: " + leerlingIDs.get(naam));
                 System.out.println("lesID: " + lesID);
-                Utils.Database.executeStatement("DELETE FROM `afwezigheid` WHERE leerlingID = " + leerlingIDs.get(naam) + " and lesID = " + lesID);
+                String query = "DELETE FROM `afwezigheid` " +
+                        "WHERE leerlingID = " + leerlingIDs.get(naam) + " " +
+                        "AND lesID = " + lesID;
+                Utils.Database.executeStatement(query);
                 Aanwezig.add(naam);
                 Afwezig.remove(naam);
                 initialize();
@@ -85,7 +88,14 @@ public class AfwezigeStudentenShowController {
     }
 
     public void LijstMaken(){
-        Alleleerlingen = Utils.Database.executeStatement("SELECT g.naam, l.leerlingID, a.reden FROM gebruiker g INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID INNER JOIN klas k ON l.klasID = k.klasID INNER JOIN les ON les.klasID = k.klasID LEFT OUTER JOIN afwezigheid a ON l.leerlingID = a.leerlingID WHERE les.lesID = " + lesID);
+        String query = "SELECT g.naam, l.leerlingID, a.reden " +
+                "FROM gebruiker g " +
+                "INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID " +
+                "INNER JOIN klas k ON l.klasID = k.klasID " +
+                "INNER JOIN les ON les.klasID = k.klasID " +
+                "LEFT OUTER JOIN afwezigheid a ON l.leerlingID = a.leerlingID " +
+                "WHERE les.lesID = " + lesID;
+        Alleleerlingen = Utils.Database.executeStatement(query);
         for (Map<String, Object> stringObjectMap : Alleleerlingen) {
             if (stringObjectMap.get("reden") == null) {
                 Aanwezig.add((String) stringObjectMap.get("naam"));

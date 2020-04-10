@@ -27,9 +27,19 @@ public class InloggenController {
         String gebrnm = gebruikersnaam.getText();
         String wachtw = wachtwoord.getText();
 
-        ArrayList<Map<String, Object>> gebrD = new ArrayList<>(Database.executeStatement("SELECT COUNT(*) FROM gebruiker g WHERE g.gebruikersnaam = '" + gebrnm+"';"));
+        String query = "SELECT COUNT(*) " +
+                "FROM gebruiker g " +
+                "WHERE g.gebruikersnaam = '" + gebrnm;
+        ArrayList<Map<String, Object>> gebrD = new ArrayList<>(Database.executeStatement(query));
         if ((int) gebrD.get(0).get("COUNT(*)") == 1){
-            ArrayList<Map<String, Object>> wwD = Database.executeStatement("SELECT g.gebruikerType, k.klasNaam, g.gebruikerID, g.naam, m.medewerkerType FROM gebruiker g LEFT OUTER JOIN medewerker m ON g.gebruikerID = m.gebruikerID LEFT OUTER JOIN leerling l ON g.gebruikerID = l.gebruikerID LEFT OUTER JOIN klas k ON l.klasID = k.klasID WHERE g.wachtwoord = '" + wachtw + "' AND g.gebruikersnaam = '" + gebrnm+"';");
+            query = "SELECT g.gebruikerType, k.klasNaam, g.gebruikerID, g.naam, m.medewerkerType " +
+                    "FROM gebruiker g " +
+                    "LEFT OUTER JOIN medewerker m ON g.gebruikerID = m.gebruikerID " +
+                    "LEFT OUTER JOIN leerling l ON g.gebruikerID = l.gebruikerID " +
+                    "LEFT OUTER JOIN klas k ON l.klasID = k.klasID " +
+                    "WHERE g.wachtwoord = '" + wachtw + "' " +
+                    "AND g.gebruikersnaam = '" + gebrnm+"'";
+            ArrayList<Map<String, Object>> wwD = Database.executeStatement(query);
             System.out.println(wwD);
             if (wwD.size() == 1) {
 //                try {

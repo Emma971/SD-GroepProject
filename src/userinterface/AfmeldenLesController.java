@@ -73,7 +73,10 @@ public class AfmeldenLesController {
 
         int leerlingID = 5;
         int lesID = lesIDs.get(les);
-        Database.executeStatement("INSERT INTO afwezigheid (reden, leerlingID, lesID) VALUES ('" + reden + "', '" + leerlingID + "', '" + lesID + "');");
+        String query = "INSERT INTO afwezigheid " +
+                "(reden, leerlingID, lesID) VALUES " +
+                "('" + reden + "', '" + leerlingID + "', '" + lesID + "')";
+        Database.executeStatement(query);
 
     }
 
@@ -86,7 +89,14 @@ public class AfmeldenLesController {
         String valueToSelect = null;
         int gebruikerID = parentController.parentController.getGebruikerID();
         System.out.println(date);
-        ArrayList<Map<String, Object>> lessen = Database.executeStatement("SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam FROM les INNER JOIN cursus ON les.cursusID = cursus.cursusID INNER JOIN leerling ON les.klasID = leerling.klasID WHERE les.begintijd >= '" + date + " 00:00:00' AND les.begintijd <= '" + date + " 23:59:59' AND leerling.gebruikerID = " + gebruikerID + ";");
+        String query = "SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam " +
+                "FROM les " +
+                "INNER JOIN cursus ON les.cursusID = cursus.cursusID " +
+                "INNER JOIN leerling ON les.klasID = leerling.klasID " +
+                "WHERE les.begintijd >= '" + date + " 00:00:00' " +
+                "AND les.begintijd <= '" + date + " 23:59:59' " +
+                "AND leerling.gebruikerID = " + gebruikerID;
+        ArrayList<Map<String, Object>> lessen = Database.executeStatement(query);
         ObservableList<String> lessenStrings = FXCollections.observableArrayList();
         System.out.println(lessen);
         for (Map<String, Object> les : lessen) {
