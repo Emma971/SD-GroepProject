@@ -82,55 +82,80 @@ public class UserToevoegenController {
         sbDocentCursus.setVisible(medwerkerComboValue.equals      ("docent"));
     }
     public void opslaan(){
+        errorLabel.setText("");
         String gebruikersnaam = sbUserNaamtext.getText();
         String gebruikernaam = sbNaamtext.getText();
         String gebruikerWachtword = sbWachtword.getText();
         String gebruikerType = sbUsertype.getValue();
-        if (gebruikerType.equals("leerling")){
-            int gebruikerID;
-            int klasID = 0;
-            gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
-            for (Map<String, Object> data : executeStatement("SELECT klasID FROM klas WHERE klasNaam = '" + sbLeerlingKlas.getValue()+"';"))
-                klasID = (int) data.get("klasID");
-            executeStatement("INSERT INTO leerling(gebruikerID,klasID) VALUES ('"+ gebruikerID + "', '" + klasID + "');");
-        }
 
-        if (gebruikerType.equals("medewerker")){
-            int gebruikerID;
-            String medewerkertype;
-            medewerkertype = sbMedewerkerType.getValue();
-            gebruikerID = gebruikerID(gebruikersnaam,gebruikernaam,gebruikerType,gebruikerWachtword);
-            executeStatement("INSERT INTO medewerker(gebruikerID,type) VALUES ('"+ gebruikerID + "', '" + medewerkertype + "');");
-            if (medewerkertype.equals("slb")){
-                int medewerkerID = 0;
-                int klasID       = 0;
-                for (Map<String, Object> data : executeStatement("SELECT medewerkerID FROM medewerker WHERE gebruikerID = '" + gebruikerID +"';"))
-                    medewerkerID = (int) data.get("medewerkerID");
-                for (Map<String, Object> data : executeStatement("SELECT klasID FROM klas WHERE klasNaam = '" + sbSLBKlas.getValue() +"';"))
+        checkTextFields(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
+        if (errorLabel.getText().isEmpty()) {
+            if (gebruikerType.equals("leerling")) {
+                int gebruikerID;
+                int klasID = 0;
+                gebruikerID = gebruikerID(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
+                for (Map<String, Object> data : executeStatement("SELECT klasID FROM klas WHERE klasNaam = '" + sbLeerlingKlas.getValue() + "';"))
                     klasID = (int) data.get("klasID");
-                executeStatement("INSERT INTO medewerkertoegangklas(medewerkerID, klasID) VALUES ('"+ medewerkerID + "', " + klasID + ");");
+                executeStatement("INSERT INTO leerling(gebruikerID,klasID) VALUES ('" + gebruikerID + "', '" + klasID + "');");
             }
-            if (medewerkertype.equals("docent")){
-                int medewerkerID = 0;
-                int cursusID     = 0;
-                for (Map<String, Object> data : executeStatement("SELECT medewerkerID FROM medewerker WHERE gebruikerID = '" + gebruikerID +"';"))
-                    medewerkerID = (int) data.get("medewerkerID");
-                for (Map<String, Object> data : executeStatement("SELECT cursusID FROM cursus WHERE cursusNaam = '" + sbSLBKlas.getValue() +"';"))
-                    cursusID = (int) data.get("cursusID");
-                executeStatement("INSERT INTO medewerkertoegangcursus(medewerkerID, cursusID) VALUES ('"+ medewerkerID + "', '" + cursusID + "');");
+
+            if (gebruikerType.equals("medewerker")) {
+                int gebruikerID;
+                String medewerkertype;
+                medewerkertype = sbMedewerkerType.getValue();
+                gebruikerID = gebruikerID(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
+                executeStatement("INSERT INTO medewerker(gebruikerID,medewerkerType) VALUES ('" + gebruikerID + "', '" + medewerkertype + "');");
+
+                if (medewerkertype.equals("slb")) {
+                    int medewerkerID = 0;
+                    int klasID = 0;
+                    for (Map<String, Object> data : executeStatement("SELECT medewerkerID FROM medewerker WHERE gebruikerID = '" + gebruikerID + "';"))
+                        medewerkerID = (int) data.get("medewerkerID");
+                    for (Map<String, Object> data : executeStatement("SELECT klasID FROM klas WHERE klasNaam = '" + sbSLBKlas.getValue() + "';"))
+                        klasID = (int) data.get("klasID");
+                    executeStatement("INSERT INTO medewerkertoegangklas(medewerkerID, klasID) VALUES ('" + medewerkerID + "', " + klasID + ");");
+                }
+
+                if (medewerkertype.equals("docent")) {
+                    int medewerkerID = 0;
+                    int cursusID = 0;
+                    for (Map<String, Object> data : executeStatement("SELECT medewerkerID FROM medewerker WHERE gebruikerID = '" + gebruikerID + "';"))
+                        medewerkerID = (int) data.get("medewerkerID");
+                    for (Map<String, Object> data : executeStatement("SELECT cursusID FROM cursus WHERE cursusNaam = '" + sbSLBKlas.getValue() + "';"))
+                        cursusID = (int) data.get("cursusID");
+                    executeStatement("INSERT INTO medewerkertoegangcursus(medewerkerID, cursusID) VALUES ('" + medewerkerID + "', '" + cursusID + "');");
+                }
+
             }
+
+            leegmaken();
+            errorLabel.setText("De nieuwe " + gebruikerType + " is opgeslagen");
         }
-        leegmaken();
-        errorLabel.setText("De nieuwe " + gebruikerType + " is opgeslagen");
     }
 
-    public static int gebruikerID(String a, String b, String c, String d){
+    public int gebruikerID(String a, String b, String c, String d){
         int gebruikerID = 0;
         executeStatement("INSERT INTO gebruiker(gebruikersnaam, naam, gebruikerType, wachtwoord) VALUES ('"+ a + "', '" + b + "', '" + c + "', '" + d + "');");
         for (Map<String, Object> data : executeStatement("SELECT gebruikerID FROM gebruiker WHERE gebruikersnaam = '" + a + "';")){
             gebruikerID = (int) data.get("gebruikerID");
         }
         return gebruikerID;
+    }
+
+    public void checkTextFields(String a, String b, String c, String d){
+        boolean isUserTypeComboBoxEmpty = (sbUsertype.getSelectionModel().isEmpty());
+        boolean aa = (a==null);
+        boolean bb = (b==null);
+        boolean cc = (c==null);
+        for (Map<String, Object> data : executeStatement("SELECT gebruikersnaam FROM gebruiker WHERE gebruikersnaam = '" + a +"';")) {
+            System.out.println(data.get("gebruikersnaam"));
+            if (a.equals(data.get("gebruikersnaam"))) {
+                errorLabel.setText("gebruikersnaam bestaat al !");
+            }
+        }
+        if (aa || bb || cc || isUserTypeComboBoxEmpty ){
+                errorLabel.setText("vul alles in AUB !");
+            }
     }
 
     public void reset(){
