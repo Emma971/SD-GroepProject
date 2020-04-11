@@ -4,7 +4,6 @@ import Utils.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
@@ -54,7 +53,7 @@ public class InloggenController {
                     } else {
                         typeID = (int) wwD.get(0).get("leerlingID");
                     }
-                    String klasNaam = (String) wwD.get(0).get("klasnaam");
+                    String klasNaam = (String) wwD.get(0).get("klasNaam");
                     Gebruiker gebruiker = new Gebruiker(gebruikerID, naam, gebruikerType, typeID, klasNaam);
                     //                try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("MainMenu.fxml"));
@@ -79,11 +78,7 @@ public class InloggenController {
                 HeadLabel.setText("Deze gebruiker bestaat niet");
             }
         } catch (UnsupportedOperationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Er is een fout opgetreden");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getLocalizedMessage());
-            alert.showAndWait();
+            Popup.alert(e.getLocalizedMessage());
         }
     }
 }
