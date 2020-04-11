@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.util.*;
 
+import static Utils.Database.executeStatement;
+
 public class AfwezigeStudentenShowController {
     private LocalDate Datum;
     private String Les;
@@ -26,8 +28,8 @@ public class AfwezigeStudentenShowController {
     private Gebruiker gebruiker;
 
     public void initialize(){
-        AfwezigLijst.setItems(Afwezig);
         AanwezigLijst.setItems(Aanwezig);
+        AfwezigLijst.setItems(Afwezig);
     }
 
     public void SluitenMainFrame(ActionEvent actionEvent) {
@@ -47,7 +49,7 @@ public class AfwezigeStudentenShowController {
                 String query = "DELETE FROM `afwezigheid` " +
                         "WHERE leerlingID = " + leerlingIDs.get(naam) + " " +
                         "AND lesID = " + lesID;
-                Utils.Database.executeStatement(query);
+                executeStatement(query);
                 Aanwezig.add(naam);
                 Afwezig.remove(naam);
                 initialize();
@@ -56,18 +58,6 @@ public class AfwezigeStudentenShowController {
             System.out.println("Kan actie niet uitvoeren");
             e.printStackTrace();
             initialize();
-
-//        naam = (String) AfwezigLijst.getSelectionModel().getSelectedItem();
-//        int leerlingID = leerlingIDs.get(naam);
-//        if(naam.equals(null)||naam.isEmpty()){
-//            System.out.println("Er is niks geselecteerd");
-//        }
-//        else{
-//            Utils.Database.executeStatement("DELETE FROM `afwezigheid` WHERE leerlingID = " + leerlingID + " and lesID = " + lesID);
-//            Aanwezig.remove(naam);
-//            Afwezig.add(naam);
-//            initialize();
-//        }
         }
     }
 
@@ -77,7 +67,7 @@ public class AfwezigeStudentenShowController {
             if (naam != null && !naam.isEmpty()) {
                 System.out.println("leerlingID: " + leerlingIDs.get(naam));
                 System.out.println("lesID: " + lesID);
-                Utils.Database.executeStatement("INSERT INTO `afwezigheid` (`reden`, `leerlingID`, `lesID`) VALUES ('Absent', '" + leerlingIDs.get(naam) + "', '" + lesID + "')");
+                executeStatement("INSERT INTO `afwezigheid` (`reden`, `leerlingID`, `lesID`) VALUES ('Absent', '" + leerlingIDs.get(naam) + "', '" + lesID + "')");
                 Afwezig.add(naam);
                 Aanwezig.remove(naam);
                 initialize();
@@ -90,26 +80,41 @@ public class AfwezigeStudentenShowController {
     }
 
     public void LijstMaken(){
-        String query = "SELECT g.naam, l.leerlingID, a.reden " +
-                "FROM gebruiker g " +
-                "INNER JOIN leerling l ON g.gebruikerID = l.gebruikerID " +
-                "INNER JOIN klas k ON l.klasID = k.klasID " +
-                "INNER JOIN les ON les.klasID = k.klasID " +
-                "LEFT OUTER JOIN afwezigheid a ON l.leerlingID = a.leerlingID " +
-                "WHERE les.lesID = " + lesID;
-        Alleleerlingen = Utils.Database.executeStatement(query);
-        for (Map<String, Object> stringObjectMap : Alleleerlingen) {
-            if (stringObjectMap.get("reden") == null) {
-                Aanwezig.add((String) stringObjectMap.get("naam"));
-                System.out.println(stringObjectMap.get("naam"));
-                System.out.println(stringObjectMap.get("leerlingID"));
-                System.out.println("Afwezig? " + stringObjectMap.get("reden"));
-            } else {
-                Afwezig.add((String) stringObjectMap.get("naam"));
-            }
-
-            leerlingIDs.put((String) stringObjectMap.get("naam"), (int) stringObjectMap.get("leerlingID"));
+        System.out.println(lesID);
+        Aanwezig.add("Naam - LeerlingNummer");
+        Afwezig.add("Naam - LeerlingNummer");
+        String query = "SELECT gebruiker.naam, leerling.leerlingID " +
+                "FROM gebruiker " +
+                "INNER JOIN leerling ON gebruiker.gebruikerID = leerling.gebruikerID " +
+                "INNER JOIN klas ON leerling.klasID = klas.klasID " +
+                "INNER JOIN les ON les.klasID = klas.klasID " +
+                "WHERE les.lesID = " + lesID + " " +
+                "ORDER BY gebruiker.naam; ";
+        for (Map<String, Object> data : executeStatement(query)) {
+            String aanwezigestudenten = data.get("naam") + " - " + data.get("leerlingID");
+            if (!Aanwezig.contains(aanwezigestudenten))
+                Aanwezig.add(aanwezigestudenten);
         }
+        query = "SELECT gebruiker.naam, leerling.leerlingID " +
+                "FROM afwezigheid " +
+                "INNER JOIN leerling ON afwezigheid.leerlingID = leerling.leerlingID " +
+                "INNER JOIN gebruiker ON leerling.gebruikerID = gebruiker.gebruikerID " +
+                "INNER JOIN klas ON leerling.klasID = klas.klasID " +
+                "INNER JOIN les ON klas.klasID = les.klasID " +
+                "WHERE afwezigheid.lesID = " + lesID + " " +
+                "ORDER BY gebruiker.naam; ";
+        for (Map<String, Object> afw : executeStatement(query)) {
+            String afwezigestudenten = afw.get("naam") + " - " + afw.get("leerlingID");
+            System.out.println(afwezigestudenten);
+            if (!Afwezig.contains(afwezigestudenten))
+                Afwezig.add(afwezigestudenten);
+
+            if (Aanwezig.contains(afwezigestudenten))
+                Aanwezig.remove(afwezigestudenten);
+
+        AanwezigLijst.setItems(Aanwezig);
+        AfwezigLijst.setItems(Afwezig);
+    }
     }
 
     public void setLesID(int lesID) {
