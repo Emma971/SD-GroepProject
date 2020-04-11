@@ -15,13 +15,13 @@ import java.util.Map;
 public class AfmeldenLesController {
 
     @FXML    /* Lengte afmelding */
-    private ToggleGroup lengteAfmelding;
+    private ToggleGroup lengteAfmeldingToggle;
     @FXML
     private RadioButton dezeLesRadioButton;
     @FXML
     private RadioButton heleDagRadioButton;
     @FXML
-    private RadioButton VanTotRadioButton;
+    private RadioButton vanTotRadioButton;
     @FXML
     private DatePicker AbsentStartDatePicker;
     @FXML
@@ -29,8 +29,6 @@ public class AfmeldenLesController {
 
     @FXML    /* Reden afmelding */
     private ToggleGroup redenAfmelding;
-    @FXML
-    private RadioButton geenRedenRadioButton;
     @FXML
     private RadioButton ziekRadioButton;
     @FXML
@@ -44,12 +42,7 @@ public class AfmeldenLesController {
     private DatePicker datePicker;
     @FXML
     private ComboBox<String> lesTijdComboBox;
-    @FXML
-    private Button bevestigButton;
 
-    private LocalDate date;
-    private String reden;
-    private int lesID;
     private HashMap<String, Integer> lesIDs = new HashMap<>();
     private Gebruiker gebruiker;
 
@@ -58,20 +51,74 @@ public class AfmeldenLesController {
     }
 
     public void BevestigAfmelding() {
-        date = datePicker.getValue();
-        String les = lesTijdComboBox.getSelectionModel().getSelectedItem();
-        RedenAfmelding();
+        try {
+            int leerlingID = gebruiker.getTypeID();
 
-        int gebruikerID = gebruiker.getID();
+            // Duur van afwezigheid
+            ArrayList<Integer> lesIDsAfwezig = new ArrayList<>();
+            Toggle lengteAfmelding = lengteAfmeldingToggle.getSelectedToggle();
+            System.out.println(lengteAfmelding);
+            if (lengteAfmelding == dezeLesRadioButton) {
+                Integer lesID = lesIDs.get(lesTijdComboBox.getSelectionModel().getSelectedItem());  // Integer kan null zijn, int niet
+                if (lesID == null) {
+                    throw new IllegalArgumentException("Geen les geselecteerd");
+                }
+                lesIDsAfwezig.add(lesID);
+            } else if (lengteAfmelding == heleDagRadioButton) {
+                lesIDsAfwezig = new ArrayList<>(lesIDs.values());
+            } else if (lengteAfmelding == vanTotRadioButton) {
+                LocalDate start = AbsentStartDatePicker.getValue();
+                LocalDate end = AbsentEndDatePicker.getValue();
+                if (start == null && end != null) {
+                    Popup.alert("Begindatum niet geselecteerd");
+                } else if (start != null && end == null) {
+                    Popup.alert("Einddatum niet geselecteerd");
+                } else if (start == null /* && end == null */) {
+                    Popup.alert("Begin- en einddatum niet geselecteerd");
+                } else {
+                    String query = "SELECT les.lesID " +
+                            "FROM les LEFT " +
+                            "OUTER JOIN afwezigheid ON les.lesID = afwezigheid.lesID " +
+                            "INNER JOIN cursus ON les.cursusID = cursus.cursusID " +
+                            "INNER JOIN leerling ON les.klasID = leerling.klasID " +
+                            "WHERE les.begintijd >= '" + start + " 00:00:00' " +
+                            "AND les.begintijd <= '" + end + " 23:59:59' " +
+                            "AND afwezigheid.leerlingID IS NULL " +
+                            "AND leerling.leerlingID = " + leerlingID;
+                    ArrayList<Map<String, Object>> lessen = Database.executeStatement(query);
+                    System.out.println(lessen);
+                    for (Map<String, Object> les : lessen) {
+                        lesIDsAfwezig.add((int) les.get("lesID"));
+                    }
+                }
+
+            }
+
+            // Reden
+            String reden;
+            Toggle toggleReden = redenAfmelding.getSelectedToggle();
+            if (toggleReden == ziekRadioButton) {
+                reden = "Ziek";
+            } else if (toggleReden == dokterRadioButton) {
+                reden = "Dokter / Ortho / Tandarts";
+            } else if (toggleReden == andersRadioButton) {
+                reden = andersTextArea.getText();
+            } else {
+                throw new IllegalArgumentException("Geen reden opgegeven");
+            }
 
 
-        int leerlingID = 5;
-        int lesID = lesIDs.get(les);
-        String query = "INSERT INTO afwezigheid " +
-                "(reden, leerlingID, lesID) VALUES " +
-                "('" + reden + "', '" + leerlingID + "', '" + lesID + "')";
-        Database.executeStatement(query);
-
+            StringBuilder query = new StringBuilder("INSERT INTO afwezigheid " +
+                    "(reden, leerlingID, lesID) VALUES ");
+            for (Integer lesID : lesIDsAfwezig) {
+                query.append( "('" ).append( reden ).append( "', '" ).append( leerlingID ).append( "', '" ).append( lesID ).append( "')," );
+            }
+            query.deleteCharAt(query.length() - 1);
+//        Database.executeStatement(query.toString());
+            System.out.println(query);
+        } catch (IllegalArgumentException e) {
+            Popup.alert(e.getLocalizedMessage());
+        }
     }
 
     public void setLesTijdComboBox() {
@@ -79,7 +126,7 @@ public class AfmeldenLesController {
     }
 
     public void setLesTijdComboBox(int lesID) {
-        date = datePicker.getValue();
+        LocalDate date = datePicker.getValue();
         String valueToSelect = null;
         int gebruikerID = gebruiker.getID();
         String query = "SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam " +
@@ -109,19 +156,6 @@ public class AfmeldenLesController {
         lesTijdComboBox.setVisibleRowCount(lessenStrings.size());  // Resize ComboBox dropdown list
         lesTijdComboBox.hide();                                    //
         lesTijdComboBox.setValue(valueToSelect);
-    }
-
-    public void RedenAfmelding() {
-        Toggle toggleReden = redenAfmelding.getSelectedToggle();
-        if (toggleReden == geenRedenRadioButton) {
-            reden = "Geen reden";
-        } if (toggleReden == ziekRadioButton) {
-            reden = "Ziek";
-        } if (toggleReden == dokterRadioButton) {
-            reden = "Dokter/Ortho/Tandarts";
-        } if (toggleReden == andersRadioButton) {
-            reden = String.valueOf(andersTextArea);
-        }
     }
 
     public void selectAnders() {
