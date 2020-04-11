@@ -108,10 +108,8 @@ public class AfwezigeStudentenShowController {
             System.out.println(afwezigestudenten);
             if (!Afwezig.contains(afwezigestudenten))
                 Afwezig.add(afwezigestudenten);
-
             if (Aanwezig.contains(afwezigestudenten))
                 Aanwezig.remove(afwezigestudenten);
-
         AanwezigLijst.setItems(Aanwezig);
         AfwezigLijst.setItems(Afwezig);
     }
