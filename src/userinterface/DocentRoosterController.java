@@ -40,7 +40,6 @@ public class DocentRoosterController {
     public void initialize() {
         try {
             overzichtDatePicker.setValue(LocalDate.now());
-
         } catch (NullPointerException e) {
             errorLabel.setText("Error! couldn't load the data");
         }
@@ -61,46 +60,109 @@ public class DocentRoosterController {
     }
 
     public void toonlessen() {
-        try {
-            lesIDs = new HashMap<>();
+        String type = gebruiker.getType();
+        if (type.equals("docent")) {
+            try {
+                lesIDs = new HashMap<>();
 
-            ObservableList<String> lessenDag = FXCollections.observableArrayList();
-            ObservableList<String> lessenWeek = FXCollections.observableArrayList();
+                ObservableList<String> lessenDag = FXCollections.observableArrayList();
+                ObservableList<String> lessenWeek = FXCollections.observableArrayList();
 
-            LocalDate dagX = overzichtDatePicker.getValue();
-            DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
-            int weekX = Integer.parseInt(dagX.format(forX));
+                LocalDate dagX = overzichtDatePicker.getValue();
+                DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
+                int weekX = Integer.parseInt(dagX.format(forX));
 
-            dagLabel.setText(overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase());
-            weekLabel.setText("Week : " + weekX);
-            String query = "SELECT les.begintijd, klas.klasNaam, les.lesID " +
-                    "FROM les " +
-                    "INNER JOIN klas ON les.klasID = klas.klasID " +
-                    "INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID " +
-                    "WHERE medewerker.gebruikerID = " + gebruiker.getID() + " " +
-                    "AND WEEK(les.begintijd) = " + (weekX - 1);
-            for (Map<String, Object> data : Database.executeStatement(query)) {
-                System.out.println(data);
-                LocalDateTime begintijd = (LocalDateTime) data.get("begintijd");
-                if(overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())){
-                    String lesinfo="";
-                    lesinfo = lesinfo + "Les : " + data.get("klasNaam");
+                dagLabel.setText(overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase());
+                weekLabel.setText("Week : " + weekX);
+                String query = "SELECT les.begintijd, klas.klasNaam, les.lesID " +
+                        "FROM les " +
+                        "INNER JOIN klas ON les.klasID = klas.klasID " +
+                        "INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID " +
+                        "WHERE medewerker.gebruikerID = " + gebruiker.getID() + " " +
+                        "AND WEEK(les.begintijd) = " + (weekX - 1) + " " +
+                        "ORDER BY les.begintijd";
+                for (Map<String, Object> data : Database.executeStatement(query)) {
+                    System.out.println(data);
+                    LocalDateTime begintijd = (LocalDateTime) data.get("begintijd");
+                    if (overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())) {
+                        String lesinfo = "";
+                        lesinfo = lesinfo + "Les : " + data.get("klasNaam");
+                        lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
+                        if (!lessenDag.contains(lesinfo))
+                            lessenDag.add(lesinfo);
+                        lesIDs.put(lesinfo, (int) data.get("lesID"));
+                    }
+                    String lesinfo = "";
+                    lesinfo = lesinfo + begintijd.getDayOfWeek();
+                    lesinfo = lesinfo + "  |  Les : " + data.get("klasNaam");
                     lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
-                    lessenDag.add(lesinfo);
+                    if (!lessenWeek.contains(lesinfo))
+                        lessenWeek.add(lesinfo);
                     lesIDs.put(lesinfo, (int) data.get("lesID"));
                 }
-                String lesinfo = "";
-                lesinfo = lesinfo + begintijd.getDayOfWeek();
-                lesinfo = lesinfo + "  |  Les : " + data.get("klasNaam");
-                lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
-                lessenWeek.add(lesinfo);
-                lesIDs.put(lesinfo, (int) data.get("lesID"));
+                if (lessenDag.isEmpty())
+                    lessenDag.add("");
+                if (lessenWeek.isEmpty())
+                    lessenWeek.add("");
+                dagRoosterListView.setItems(lessenDag);
+                weekRoosterListView.setItems(lessenWeek);
+            } catch (NullPointerException e) {
+                errorLabel.setText("Error! couldn't load the data");
+                e.printStackTrace();
             }
-            dagRoosterListView.setItems(lessenDag);
-            weekRoosterListView.setItems(lessenWeek);
-        } catch (NullPointerException e) {
-            errorLabel.setText("Error! couldn't load the data");
-            e.printStackTrace();
+        }
+        if (type.equals("slb")){
+            try {
+                lesIDs = new HashMap<>();
+
+                ObservableList<String> lessenDag = FXCollections.observableArrayList();
+                ObservableList<String> lessenWeek = FXCollections.observableArrayList();
+
+                LocalDate dagX = overzichtDatePicker.getValue();
+                DateTimeFormatter forX = DateTimeFormatter.ofPattern("w");
+                int weekX = Integer.parseInt(dagX.format(forX));
+
+                dagLabel.setText(overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase());
+                weekLabel.setText("Week : " + weekX);
+
+                String query = "SELECT les.begintijd, klas.klasNaam, les.lesID " +
+                        "FROM les " +
+                        "INNER JOIN klas ON les.klasID = klas.klasID " +
+                        "INNER JOIN leerling ON  les.klasID = leerling.klasID " +
+                        "INNER JOIN gebruiker ON leerling.gebruikerID = gebruiker.gebruikerID " +
+                        "INNER JOIN medewerker ON leerling.SLBID = medewerker.medewerkerID " +
+                        "WHERE medewerker.gebruikerID = " + gebruiker.getID() + " " +
+                        "AND WEEK(les.begintijd) = " + (weekX - 1) + " " +
+                        "ORDER BY les.begintijd";
+                for (Map<String, Object> data : Database.executeStatement(query)) {
+                    System.out.println(data);
+                    LocalDateTime begintijd = (LocalDateTime) data.get("begintijd");
+                    if(overzichtDatePicker.getValue().isEqual(begintijd.toLocalDate())){
+                        String lesinfo="";
+                        lesinfo = lesinfo + "Les : " + data.get("klasNaam");
+                        lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
+                        if (!lessenDag.contains(lesinfo))
+                            lessenDag.add(lesinfo);
+                        lesIDs.put(lesinfo, (int) data.get("lesID"));
+                    }
+                    String lesinfo = "";
+                    lesinfo = lesinfo + begintijd.getDayOfWeek();
+                    lesinfo = lesinfo + "  |  Les : " + data.get("klasNaam");
+                    lesinfo = lesinfo + " | tijd : " + begintijd.toLocalTime();
+                    if (!lessenWeek.contains(lesinfo))
+                        lessenWeek.add(lesinfo);
+                    lesIDs.put(lesinfo, (int) data.get("lesID"));
+                }
+                if (lessenDag.isEmpty())
+                    lessenDag.add("");
+                if (lessenWeek.isEmpty())
+                    lessenWeek.add("");
+                dagRoosterListView.setItems(lessenDag);
+                weekRoosterListView.setItems(lessenWeek);
+            } catch (NullPointerException e) {
+                errorLabel.setText("Error! couldn't load the data");
+                e.printStackTrace();
+            }
         }
     }
 

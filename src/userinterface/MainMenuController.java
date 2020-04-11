@@ -36,10 +36,6 @@ public class MainMenuController {
         this.naamGebruiker = username;
         this.usertype = usertype;
         this.klasnaam = klasnaam;
-
-
-
-
     }
 
     public void roosterscherm() {
@@ -151,7 +147,7 @@ public class MainMenuController {
 
         studentrooster.setVisible      (gebruikerType.equals("leerling") || gebruikerType.equals("slb"));
         studentabsent.setVisible       (gebruikerType.equals("leerling"));
-        studentaanwezigheid.setVisible (gebruikerType.equals("leerling") || gebruikerType.equals("decaan"));
+        studentaanwezigheid.setVisible (gebruikerType.equals("leerling") || gebruikerType.equals("decaan") || gebruikerType.equals("slb") );
 
         docentrooster.setVisible       (gebruikerType.equals(  "docent"));
         docentpresent.setVisible       (false);  // (usertype.equals(  "docent"));
@@ -160,9 +156,6 @@ public class MainMenuController {
 
 
         if (gebruikerType.equals("leerling")){
-            userlabel = userlabel + " van klas: " + gebruiker.getKlasNaam();
-        }
-        if (gebruikerType.equals("SLB")){
             userlabel = userlabel + " van klas: " + gebruiker.getKlasNaam();
         }
         loggedLabel.setText(userlabel);

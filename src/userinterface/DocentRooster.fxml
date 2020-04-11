@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.DocentRoosterController">
+<AnchorPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.DocentRoosterController">
     <children>
       <TabPane layoutX="6.0" layoutY="145.0" prefHeight="345.0" prefWidth="639.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -29,12 +30,12 @@
                </content></Tab>
         </tabs>
       </TabPane>
-      <Label fx:id="roosterTitel" layoutX="27.0" layoutY="17.0" prefHeight="28.0" prefWidth="275.0" text="Rooster:">
+      <Label fx:id="roosterTitel" layoutX="14.0" layoutY="18.0" prefHeight="28.0" prefWidth="85.0" text="Rooster:">
          <font>
             <Font name="Calibri" size="24.0" />
          </font>
       </Label>
-        <Label fx:id="roosternaamLabel" layoutX="27.0" layoutY="43.0" prefHeight="28.0" prefWidth="275.0" text="\\%User-Name%">
+        <Label fx:id="roosternaamLabel" layoutX="14.0" layoutY="45.0" prefHeight="28.0" prefWidth="447.0" text="\\%User-Name%">
             <font>
                 <Font name="Calibri" size="24.0" />
             </font>

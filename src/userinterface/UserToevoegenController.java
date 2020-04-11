@@ -11,25 +11,16 @@ import javafx.scene.control.TextField;
 import java.util.Map;
 
 public class UserToevoegenController {
-
-    @FXML private Label sbLeerlingGIDLabel;
-    @FXML private Label sbMedewerkerGIDLabel;
-    @FXML private Label sbSLBMEDIDLabel;
-    @FXML private Label sbDocentMEDIDLabel;
     @FXML private Label errorLabel;
 
     @FXML private TextField sbNaamtext;
     @FXML private TextField sbWachtword;
-    @FXML private TextField sbLeerlingGID;
-    @FXML private TextField sbMedewerkerGID;
-    @FXML private TextField sbSLBMedID;
-    @FXML private TextField sbDocentMedID;
     @FXML private TextField sbUserNaamtext;
 
     @FXML private ComboBox<String> sbUsertype;
     @FXML private ComboBox<String> sbLeerlingKlas;
+    @FXML private ComboBox<String> sbLeerlingSLB;
     @FXML private ComboBox<String> sbMedewerkerType;
-    @FXML private ComboBox<String> sbSLBKlas;
     @FXML private ComboBox<String> sbDocentCursus;
 
     public void initialize() {
@@ -42,6 +33,7 @@ public class UserToevoegenController {
 
             ObservableList<String> klassen = FXCollections.observableArrayList();
             ObservableList<String> cursus = FXCollections.observableArrayList();
+            ObservableList<String> SLB = FXCollections.observableArrayList();
 
             String query = "SELECT klas.klasNaam, cursus.cursusNaam " +
                     "FROM klas " +
@@ -54,13 +46,27 @@ public class UserToevoegenController {
                 String klasNaam   = (String) data.get("klasNaam");
                 String cursusnaam = (String) data.get("cursusNaam");
                 if(klasNaam!=null){
-                    klassen.add(klasNaam);
+                    if(!klassen.contains(klasNaam))
+                        klassen.add(klasNaam);
                 }
                 if(cursusnaam!=null){
                     cursus.add(cursusnaam);}
             }
+            query = "SELECT gebruiker.naam " +
+                    "FROM gebruiker " +
+                    "INNER JOIN medewerker ON gebruiker.gebruikerID = medewerker.gebruikerID " +
+                    "WHERE medewerkerType = 'slb' " +
+                    "ORDER BY gebruiker.naam;";
+
+            for (Map<String, Object> data : Database.executeStatement(query)){
+                String slbnaam   = (String) data.get("naam");
+                if(slbnaam!=null){
+                    SLB.add(slbnaam);
+                }
+            }
+
+            sbLeerlingSLB.setItems(SLB);
             sbLeerlingKlas.setItems(klassen);
-            sbSLBKlas.setItems(klassen);
             sbDocentCursus.setItems(cursus);
         }catch (NullPointerException e){
             e.printStackTrace();
@@ -69,100 +75,96 @@ public class UserToevoegenController {
 
     public void action() {
         String userComboValue = sbUsertype.getValue();
-        sbLeerlingGIDLabel.setVisible(userComboValue.equals      ("leerling"));
-        sbLeerlingGID.setVisible(userComboValue.equals           ("leerling"));
-        sbLeerlingKlas.setVisible(userComboValue.equals          ("leerling"));
-
-        sbMedewerkerGIDLabel.setVisible(userComboValue.equals  ("medewerker"));
-        sbMedewerkerGID.setVisible(userComboValue.equals       ("medewerker"));
-        sbMedewerkerType.setVisible(userComboValue.equals      ("medewerker"));
+        sbLeerlingKlas.setVisible(userComboValue.equals      ("leerling"));
+        sbLeerlingSLB.setVisible(userComboValue.equals       ("leerling"));
+        sbMedewerkerType.setVisible(userComboValue.equals  ("medewerker"));
     }
     public void action2(){
         String medwerkerComboValue = sbMedewerkerType.getValue();
-        sbSLBMEDIDLabel.setVisible(medwerkerComboValue.equals        ("slb"));
-        sbSLBMedID.setVisible(medwerkerComboValue.equals             ("slb"));
-        sbSLBKlas.setVisible(medwerkerComboValue.equals              ("slb"));
-
-        sbDocentMEDIDLabel.setVisible(medwerkerComboValue.equals  ("docent"));
-        sbDocentMedID.setVisible(medwerkerComboValue.equals       ("docent"));
-        sbDocentCursus.setVisible(medwerkerComboValue.equals      ("docent"));
+        sbDocentCursus.setVisible(medwerkerComboValue.equals   ("docent"));
     }
+
     public void opslaan(){
         errorLabel.setText("");
-        String gebruikersnaam = sbUserNaamtext.getText();
-        String gebruikernaam = sbNaamtext.getText();
+        String gebruikersnaam     = sbUserNaamtext.getText();
+        String gebruikernaam      = sbNaamtext.getText();
         String gebruikerWachtword = sbWachtword.getText();
-        String gebruikerType = sbUsertype.getValue();
+        String gebruikerType      = sbUsertype.getValue();
 
-        checkTextFields(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
-        if (errorLabel.getText().isEmpty()) {
+        String cbleerlingklas     = sbLeerlingKlas.getValue();
+        String cbleerlingSLB      = sbLeerlingSLB.getValue();
+        String cbmedewerkertype   = sbMedewerkerType.getValue();
+        String cbdocentcursus     = sbDocentCursus.getValue();
+
+        checkBasicFields(gebruikersnaam, gebruikernaam, gebruikerWachtword);
+        if (errorLabel.getText().isEmpty()) { // deze check is voor gebruikersData
             if (gebruikerType.equals("leerling")) {
-                int gebruikerID;
-                int klasID = 0;
-                gebruikerID = gebruikerID(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
-                String query = "SELECT klasID " +
-                        "FROM klas " +
-                        "WHERE klasNaam = '" + sbLeerlingKlas.getValue() + "'";
-                for (Map<String, Object> data : Database.executeStatement(query))
-                    klasID = (int) data.get("klasID");
-                query = "INSERT INTO leerling " +
-                        "(gebruikerID, klasID) VALUES " +
-                        "(" + gebruikerID + ", " + klasID + ")";
-                Database.executeStatement(query);
+                checkCombobox(cbleerlingklas);
+                checkCombobox(cbleerlingSLB);
+                if (errorLabel.getText().isEmpty()) { // deze check is voor de leerlingdata
+                    int gebruikerID;
+                    int klasID = 0;
+                    int SLBID = 0;
+                    gebruikerID = gebruikerID(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
+                    String query = "SELECT klasID " +
+                            "FROM klas " +
+                            "WHERE klasNaam = '" + sbLeerlingKlas.getValue() + "'";
+                    for (Map<String, Object> data : Database.executeStatement(query))
+                        klasID = (int) data.get("klasID");
+                    query = "SELECT medewerkerID " +
+                            "FROM medewerker " +
+                            "INNER JOIN gebruiker ON medewerker.gebruikerID = gebruiker.gebruikerID "+
+                            "WHERE naam = '" + sbLeerlingSLB.getValue() + "'";
+                    for (Map<String, Object> data : Database.executeStatement(query))
+                        SLBID = (int) data.get("medewerkerID");
+                    query = "INSERT INTO leerling " +
+                            "(gebruikerID, klasID, SLBID) VALUES " +
+                            "(" + gebruikerID + ", " + klasID + ", " + SLBID +")";
+                    Database.executeStatement(query);
+                    errorLabel.setText("De nieuwe " + gebruikerType + " is opgeslagen");
+                    leegmaken();
+                }
             }
 
             if (gebruikerType.equals("medewerker")) {
-                int gebruikerID;
-                String medewerkertype;
-                medewerkertype = sbMedewerkerType.getValue();
-                gebruikerID = gebruikerID(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
-                String query = "INSERT INTO medewerker " +
-                        "(gebruikerID, medewerkerType) VALUES " +
-                        "(" + gebruikerID + ", '" + medewerkertype + "')";
-                Database.executeStatement(query);
+                checkCombobox(cbmedewerkertype);
+                if (errorLabel.getText().isEmpty()) {
+                    int gebruikerID;
+                    String medewerkertype;
 
-                if (medewerkertype.equals("slb")) {
-                    int medewerkerID = 0;
-                    int klasID = 0;
-                    query = "SELECT medewerkerID " +
-                            "FROM medewerker " +
-                            "WHERE gebruikerID = " + gebruikerID;
-                    for (Map<String, Object> data : Database.executeStatement(query))
-                        medewerkerID = (int) data.get("medewerkerID");
-                    query = "SELECT klasID " +
-                            "FROM klas " +
-                            "WHERE klasNaam = '" + sbSLBKlas.getValue() + "';";
-                    for (Map<String, Object> data : Database.executeStatement(query))
-                        klasID = (int) data.get("klasID");
-                    query = "INSERT INTO medewerkertoegangklas " +
-                            "(medewerkerID, klasID) VALUES " +
-                            "(" + medewerkerID + ", " + klasID + ")";
+                    medewerkertype = sbMedewerkerType.getValue();
+                    gebruikerID = gebruikerID(gebruikersnaam, gebruikernaam, gebruikerType, gebruikerWachtword);
+                    String query = "INSERT INTO medewerker " +
+                            "(gebruikerID, medewerkerType) VALUES " +
+                            "(" + gebruikerID + ", '" + medewerkertype + "')";
                     Database.executeStatement(query);
-                }
 
-                if (medewerkertype.equals("docent")) {
-                    int medewerkerID = 0;
-                    int cursusID = 0;
-                    query = "SELECT medewerkerID " +
-                            "FROM medewerker " +
-                            "WHERE gebruikerID = " + gebruikerID;
-                    for (Map<String, Object> data : Database.executeStatement(query))
-                        medewerkerID = (int) data.get("medewerkerID");
-                    query = "SELECT cursusID " +
-                            "FROM cursus " +
-                            "WHERE cursusNaam = '" + sbSLBKlas.getValue() + "'";
-                    for (Map<String, Object> data : Database.executeStatement(query))
-                        cursusID = (int) data.get("cursusID");
-                    query = "INSERT INTO medewerkertoegangcursus " +
-                            "(medewerkerID, cursusID) VALUES " +
-                            "(" + medewerkerID + ", " + cursusID + ")";
-                    Database.executeStatement(query);
+                    if (medewerkertype.equals("docent")) {
+                        checkCombobox(cbdocentcursus);
+                        if (errorLabel.getText().isEmpty()) {
+                            int medewerkerID = 0;
+                            int cursusID = 0;
+                            query = "SELECT medewerkerID " +
+                                    "FROM medewerker " +
+                                    "WHERE gebruikerID = " + gebruikerID;
+                            for (Map<String, Object> data : Database.executeStatement(query))
+                                medewerkerID = (int) data.get("medewerkerID");
+                            query = "SELECT cursusID " +
+                                    "FROM cursus " +
+                                    "WHERE cursusNaam = '" + sbDocentCursus.getValue() + "'";
+                            for (Map<String, Object> data : Database.executeStatement(query))
+                                cursusID = (int) data.get("cursusID");
+                            query = "INSERT INTO medewerkertoegangcursus " +
+                                    "(medewerkerID, cursusID) VALUES " +
+                                    "(" + medewerkerID + ", " + cursusID + ")";
+                            Database.executeStatement(query);
+                        }
+                    }
+                    errorLabel.setText("De nieuwe " + gebruikerType + " is opgeslagen");
+                    leegmaken();
                 }
-
             }
 
-            leegmaken();
-            errorLabel.setText("De nieuwe " + gebruikerType + " is opgeslagen");
         }
     }
 
@@ -181,8 +183,9 @@ public class UserToevoegenController {
         return gebruikerID;
     }
 
-    public void checkTextFields(String a, String b, String c, String d){
-        boolean isUserTypeComboBoxEmpty = (sbUsertype.getSelectionModel().isEmpty());
+    public void checkBasicFields(String a, String b, String c){
+        boolean isUserTypeComboBoxEmpty       = (sbUsertype.getSelectionModel().isEmpty());
+
         boolean aa = (a==null);
         boolean bb = (b==null);
         boolean cc = (c==null);
@@ -195,9 +198,17 @@ public class UserToevoegenController {
                 errorLabel.setText("gebruikersnaam bestaat al !");
             }
         }
-        if (aa || bb || cc || isUserTypeComboBoxEmpty ){
+        if ((aa || bb || cc || isUserTypeComboBoxEmpty)){
                 errorLabel.setText("vul alles in AUB !");
             }
+    }
+
+    public void checkCombobox(String a){
+        boolean aa = (a==null);
+
+        if ((aa)){
+            errorLabel.setText("vul alles in AUB !");
+        }
     }
 
     public void reset(){
@@ -205,18 +216,15 @@ public class UserToevoegenController {
     }
 
     private void leegmaken() {
-        sbUserNaamtext.setText("");
-        sbDocentCursus.setValue("Kies een cursus");
-        sbSLBKlas.setValue("Kies een Klas");
-        sbMedewerkerType.setValue("Kies Medewerker Type");
-        sbLeerlingKlas.setValue("Kies een Klas");
-        sbUsertype.setValue("Kies User Type");
-        sbMedewerkerGID.setText(null);
-        sbLeerlingGID.setText(null);
-        sbSLBMedID.setText(null);
-        sbDocentMedID.setText(null);
+        sbUserNaamtext.setText(null);
         sbNaamtext.setText(null);
         sbWachtword.setText(null);
+
+        sbUsertype.setValue("Kies User Type");
+        sbLeerlingKlas.setValue("Kies een Klas");
+        sbLeerlingSLB.setValue("Kies een Klas");
+        sbMedewerkerType.setValue("Kies Medewerker Type");
+        sbDocentCursus.setValue("Kies een cursus");
     }
 }
 
