@@ -1,6 +1,6 @@
 package userinterface;
 
-import Utils.Database;
+import Utils.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SchoolOverzichtController {
-    mainmenuController parentController;
+//    mainmenuController parentController;
 
     @FXML private Label dagLabel;
     @FXML private Label weekLabel;
@@ -32,16 +32,7 @@ public class SchoolOverzichtController {
     @FXML private DatePicker overzichtDatePicker;
 
     private HashMap<String, Integer> lesIDs = new HashMap<>();
-
-    public void setParentController(mainmenuController controller) {
-        try {
-            this.parentController = controller;
-            roosternaamLabel.setText("" + parentController.getNaamGebruiker() + " Klas : " + parentController.getUserklasnaam());
-            toonlessen();
-        } catch (NullPointerException e) {
-            errorLabel.setText("Error! couldn't load the data");
-        }
-    }
+    private Gebruiker gebruiker;
 
     public void initialize() {
             overzichtDatePicker.setValue(LocalDate.now());
@@ -76,7 +67,7 @@ public class SchoolOverzichtController {
                 "FROM les " +
                 "INNER JOIN cursus ON les.cursusID = cursus.cursusID " +
                 "INNER JOIN leerling ON les.klasID = leerling.klasID " +
-                "WHERE leerling.gebruikerID = " + parentController.getGebruikerID() + " " +
+                "WHERE leerling.gebruikerID = " + gebruiker.getID() + " " +
                 "AND WEEK(les.begintijd) = " + (weekNummer - 1) + " " +
                 "ORDER BY les.begintijd";
         for (Map<String, Object> les : Database.executeStatement(query)) {
@@ -115,11 +106,11 @@ public class SchoolOverzichtController {
             fxmlLoader.setLocation(getClass().getResource("AfmeldenLes.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             AfmeldenLesController controller = fxmlLoader.getController();
-            controller.setParentController(this);
+            controller.setGebruiker(gebruiker);
             String dagRoosterSelectedLes = dagRoosterListView.getSelectionModel().getSelectedItem();
             if (dagRoosterSelectedLes != null) {
                 controller.setDatePicker(overzichtDatePicker.getValue());
-                controller.setLesTijdComboBox();
+                controller.setLesTijdComboBox(lesIDs.get(dagRoosterSelectedLes));
             }
             Stage stage = new Stage();
             stage.setTitle("Absent Melden");
@@ -128,5 +119,11 @@ public class SchoolOverzichtController {
         } catch (IOException e) {
             errorLabel.setText("Error! can't access absent melden window ");
         }
+    }
+
+    public void setGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
+            roosternaamLabel.setText("" + gebruiker.getNaam() + " Klas : " + gebruiker.getKlasNaam());
+            toonlessen();
     }
 }

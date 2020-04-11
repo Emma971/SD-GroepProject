@@ -1,6 +1,6 @@
 package userinterface;
 
-import Utils.Database;
+import Utils.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -50,14 +50,8 @@ public class AfmeldenLesController {
     private LocalDate date;
     private String reden;
     private int lesID;
-    private SchoolOverzichtController parentController;
     private HashMap<String, Integer> lesIDs = new HashMap<>();
-
-    public void setParentController(SchoolOverzichtController controller) {
-        this.parentController = controller;
-        datePicker.setValue(LocalDate.now());
-        setLesTijdComboBox();
-    }
+    private Gebruiker gebruiker;
 
     public void initialize() {
         datePicker.setValue(LocalDate.now());
@@ -68,7 +62,7 @@ public class AfmeldenLesController {
         String les = lesTijdComboBox.getSelectionModel().getSelectedItem();
         RedenAfmelding();
 
-        int gebruikerID = parentController.parentController.getGebruikerID();
+        int gebruikerID = gebruiker.getID();
 
 
         int leerlingID = 5;
@@ -87,14 +81,15 @@ public class AfmeldenLesController {
     public void setLesTijdComboBox(int lesID) {
         date = datePicker.getValue();
         String valueToSelect = null;
-        int gebruikerID = parentController.parentController.getGebruikerID();
-        System.out.println(date);
+        int gebruikerID = gebruiker.getID();
         String query = "SELECT les.begintijd, les.eindtijd, les.lesID, cursus.cursusNaam " +
-                "FROM les " +
+                "FROM les LEFT " +
+                "OUTER JOIN afwezigheid ON les.lesID = afwezigheid.lesID " +
                 "INNER JOIN cursus ON les.cursusID = cursus.cursusID " +
                 "INNER JOIN leerling ON les.klasID = leerling.klasID " +
                 "WHERE les.begintijd >= '" + date + " 00:00:00' " +
                 "AND les.begintijd <= '" + date + " 23:59:59' " +
+                "AND afwezigheid.leerlingID IS NULL " +
                 "AND leerling.gebruikerID = " + gebruikerID;
         ArrayList<Map<String, Object>> lessen = Database.executeStatement(query);
         ObservableList<String> lessenStrings = FXCollections.observableArrayList();
@@ -102,7 +97,7 @@ public class AfmeldenLesController {
         for (Map<String, Object> les : lessen) {
             String beginTijd = ((LocalDateTime) les.get("begintijd")).getHour() + ":" + ((LocalDateTime) les.get("begintijd")).getMinute();
             String eindTijd = ((LocalDateTime) les.get("eindtijd")).getHour() + ":" + ((LocalDateTime) les.get("eindtijd")).getMinute();
-            String lesString ="Les: " + les.get("cursusNaam") + "\n\t" + beginTijd + " - " + eindTijd;
+            String lesString =les.get("cursusNaam") + "\t  " + beginTijd + " - " + eindTijd;
             lesIDs.put(lesString, (int) les.get("lesID"));
             lessenStrings.add(lesString);
             if (lesID == (int) les.get("lesID")) {
@@ -135,5 +130,11 @@ public class AfmeldenLesController {
 
     public void setDatePicker(LocalDate date) {
         datePicker.setValue(date);
+    }
+
+    public void setGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
+        datePicker.setValue(LocalDate.now());
+        setLesTijdComboBox();
     }
 }

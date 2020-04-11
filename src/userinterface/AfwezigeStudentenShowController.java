@@ -1,5 +1,6 @@
 package userinterface;
 
+import Utils.Gebruiker;
 import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +23,7 @@ public class AfwezigeStudentenShowController {
     @FXML Button Aanwezigbutton;
     private int lesID;
     private HashMap<String, Integer> leerlingIDs = new HashMap<>();
+    private Gebruiker gebruiker;
 
     public void initialize(){
         AfwezigLijst.setItems(Afwezig);
@@ -130,5 +132,9 @@ public class AfwezigeStudentenShowController {
     public void zetButtonsVisable(String usertype){
             Afwezigbutton.setVisible      (usertype.equals("docent"));
             Aanwezigbutton.setVisible      (usertype.equals("docent"));
+    }
+
+    public void setGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
     }
 }

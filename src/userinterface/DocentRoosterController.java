@@ -1,7 +1,7 @@
 
 package userinterface;
 
-import Utils.Database;
+import Utils.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DocentRoosterController {
-    mainmenuController parentController;
 
     @FXML private Label dagLabel;
     @FXML private Label weekLabel;
@@ -36,12 +35,7 @@ public class DocentRoosterController {
     private String gebruikersType;
     private String Lesnaam = "";
     private HashMap<String, Integer> lesIDs;
-
-    public void setParentController(mainmenuController controller) {
-        this.parentController = controller;
-        roosternaamLabel.setText("" + parentController.getNaamGebruiker());
-        toonlessen();
-    }
+    private Gebruiker gebruiker;
 
     public void initialize() {
         try {
@@ -83,7 +77,7 @@ public class DocentRoosterController {
                     "FROM les " +
                     "INNER JOIN klas ON les.klasID = klas.klasID " +
                     "INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID " +
-                    "WHERE medewerker.gebruikerID = " + parentController.getGebruikerID() + " " +
+                    "WHERE medewerker.gebruikerID = " + gebruiker.getID() + " " +
                     "AND WEEK(les.begintijd) = " + (weekX - 1);
             for (Map<String, Object> data : Database.executeStatement(query)) {
                 System.out.println(data);
@@ -124,6 +118,7 @@ public class DocentRoosterController {
             controller.giveDatum(overzichtDatePicker.getValue());
             controller.zetAlleleerlingen();
             controller.zetButtonsVisable(gebruikersType);
+            controller.setGebruiker(gebruiker);
             Stage stage = new Stage();
             if(Lesnaam == null || Lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
@@ -140,5 +135,11 @@ public class DocentRoosterController {
 
     public void setUserType(String Usertype){
         gebruikersType = Usertype;
+    }
+
+    public void setGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
+        roosternaamLabel.setText("" + gebruiker.getNaam());
+        toonlessen();
     }
 }

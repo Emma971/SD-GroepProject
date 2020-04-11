@@ -1,6 +1,6 @@
 package userinterface;
 
-import Utils.Database;
+import Utils.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

@@ -44,7 +44,7 @@
                               <Insets />
                            </VBox.margin>
                         </Label>
-                        <TextArea fx:id="andersTextArea" prefWidth="150.0" onKeyTyped="#selectAnders" promptText="Anders: " wrapText="true" />
+                        <TextArea fx:id="andersTextArea" onKeyTyped="#selectAnders" prefWidth="150.0" promptText="Anders: " wrapText="true" />
                      </children>
                   </VBox>
                   <VBox alignment="TOP_CENTER" prefHeight="160.0" prefWidth="50.0" spacing="20.0">
@@ -90,8 +90,8 @@
             </HBox>
          </content>
       </TitledPane>
-      <DatePicker fx:id="datePicker" layoutX="80.0" layoutY="46.0" onAction="#setLesTijdComboBox" onInputMethodTextChanged="#setLesTijdComboBox" promptText="01/04/2020" showWeekNumbers="true" />
-      <ComboBox fx:id="lesTijdComboBox" layoutX="312.0" layoutY="46.0" prefWidth="150.0" promptText="les" />
+      <DatePicker fx:id="datePicker" layoutX="42.0" layoutY="46.0" onAction="#setLesTijdComboBox" onInputMethodTextChanged="#setLesTijdComboBox" prefHeight="25.0" prefWidth="250.0" promptText="01/04/2020" showWeekNumbers="true" />
+      <ComboBox fx:id="lesTijdComboBox" layoutX="312.0" layoutY="46.0" prefHeight="25.0" prefWidth="250.0" promptText="les" />
       <TitledPane animated="false" collapsible="false" layoutX="312.0" layoutY="107.0" prefHeight="215.0" prefWidth="250.0" text="Lengte afmelding">
          <content>
             <HBox prefHeight="100.0" prefWidth="200.0">

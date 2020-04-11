@@ -1,6 +1,6 @@
 package userinterface;
 
-import Utils.Database;
+import Utils.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -34,7 +34,7 @@ public class InloggenController {
         try {
             ArrayList<Map<String, Object>> gebrD = new ArrayList<>(Database.executeStatement(query));
             if ((int) gebrD.get(0).get("COUNT(*)") == 1) {
-                query = "SELECT g.gebruikerType, k.klasNaam, g.gebruikerID, g.naam, m.medewerkerType " +
+                query = "SELECT g.gebruikerType, k.klasNaam, g.gebruikerID, g.naam, m.medewerkerType, l.leerlingID, m.medewerkerID " +
                         "FROM gebruiker g " +
                         "LEFT OUTER JOIN medewerker m ON g.gebruikerID = m.gebruikerID " +
                         "LEFT OUTER JOIN leerling l ON g.gebruikerID = l.gebruikerID " +
@@ -44,15 +44,24 @@ public class InloggenController {
                 ArrayList<Map<String, Object>> wwD = Database.executeStatement(query);
                 System.out.println(wwD);
                 if (wwD.size() == 1) {
-                    //                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("Mainmenu.fxml"));
-                    Parent root = loader.load();
-                    mainmenuController controller = loader.getController();
-                    String gebruikertype = (String) wwD.get(0).get("gebruikerType");
-                    if (gebruikertype.equals("medewerker")) {
-                        gebruikertype = (String) wwD.get(0).get("medewerkerType");
+                    int gebruikerID = (int) wwD.get(0).get("gebruikerID");
+                    String naam = (String) wwD.get(0).get("naam");
+                    String gebruikerType = (String) wwD.get(0).get("gebruikerType");
+                    int typeID;
+                    if (gebruikerType.equals("medewerker")) {
+                        gebruikerType = (String) wwD.get(0).get("medewerkerType");
+                        typeID = (int) wwD.get(0).get("medewerkerID");
+                    } else {
+                        typeID = (int) wwD.get(0).get("leerlingID");
                     }
-                    controller.setLoginDetails((int) wwD.get(0).get("gebruikerID"), (String) wwD.get(0).get("naam"), gebruikertype, (String) wwD.get(0).get("klasNaam"));
+                    String klasNaam = (String) wwD.get(0).get("klasnaam");
+                    Gebruiker gebruiker = new Gebruiker(gebruikerID, naam, gebruikerType, typeID, klasNaam);
+                    //                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("MainMenu.fxml"));
+                    Parent root = loader.load();
+                    MainMenuController controller = loader.getController();
+                    controller.setGebruiker(gebruiker);
+                    controller.setLoginDetails((int) wwD.get(0).get("gebruikerID"), (String) wwD.get(0).get("naam"), gebruikerType, (String) wwD.get(0).get("klasNaam"));
                     Stage newStage = new Stage();
                     newStage.setScene(new Scene(root));
                     newStage.setTitle("Main menu");

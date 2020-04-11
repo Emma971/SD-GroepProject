@@ -1,5 +1,6 @@
 package userinterface;
 
+import Utils.Gebruiker;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class mainmenuController {
+public class MainMenuController {
 
     @FXML private Label loggedLabel;
     @FXML private Label errormenulabel;
@@ -28,6 +29,7 @@ public class mainmenuController {
     private String usertype;
     private String klasnaam;
     private int gebruikerID;
+    private Gebruiker gebruiker;
 
     public void setLoginDetails(int gebruikerID, String username, String usertype, String klasnaam) {
         this.gebruikerID = gebruikerID;
@@ -37,25 +39,7 @@ public class mainmenuController {
 
 
 
-        String userlabel = username + ", " + usertype;
 
-        studentrooster.setVisible      (usertype.equals("leerling") || usertype.equals("slb"));
-        studentabsent.setVisible       (usertype.equals("leerling"));
-        studentaanwezigheid.setVisible (usertype.equals("leerling") || usertype.equals("decaan"));
-
-        docentrooster.setVisible       (usertype.equals(  "docent"));
-        docentpresent.setVisible       (false);  // (usertype.equals(  "docent"));
-
-        SBtoevoegen.setVisible         (usertype.equals("beheerder"));
-
-
-        if (usertype.equals("leerling")){
-            userlabel = userlabel + " van klas: " + klasnaam;
-        }
-        if (usertype.equals("SLB")){
-            userlabel = userlabel + " van klas: " + klasnaam;
-        }
-        loggedLabel.setText(userlabel);
     }
 
     public void roosterscherm() {
@@ -66,12 +50,14 @@ public class mainmenuController {
                 fxmlLoader.setLocation(getClass().getResource("SchoolOverzicht.fxml"));
                 scene = new Scene(fxmlLoader.load());
                 SchoolOverzichtController controller = fxmlLoader.getController();
-                controller.setParentController(this);
+                controller.setGebruiker(gebruiker);
+//                controller.setParentController(this);
             } else if (usertype.equals("docent")|| usertype.equals("slb")) {
                 fxmlLoader.setLocation(getClass().getResource("DocentRooster.fxml"));
                 scene = new Scene(fxmlLoader.load());
                 DocentRoosterController controller = fxmlLoader.getController();
-                controller.setParentController(this);
+                controller.setGebruiker(gebruiker);
+//                controller.setParentController(this);
                 controller.setUserType(usertype);
             }
             Stage stage = new Stage();
@@ -90,7 +76,8 @@ public class mainmenuController {
             fxmlLoader.setLocation(getClass().getResource("aanwezigheid.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             aanwezigheidController controller = fxmlLoader.getController();
-            controller.setParentController(this);
+            controller.setGebruiker(gebruiker);
+//            controller.setParentController(this);
             Stage stage = new Stage();
             stage.setTitle("Aanwezigheid");
             stage.setScene(scene);
@@ -122,6 +109,9 @@ public class mainmenuController {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfmeldenLes.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
+            aanwezigheidController controller = fxmlLoader.getController();
+            controller.setGebruiker(gebruiker);
+//            controller.setParentController(this);
             Stage stage = new Stage();
             stage.setTitle("Absent Melden");
             stage.setScene(scene);
@@ -137,6 +127,9 @@ public class mainmenuController {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfwezigeStudentenShow.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
+            aanwezigheidController controller = fxmlLoader.getController();
+            controller.setGebruiker(gebruiker);
+//            controller.setParentController(this);
             Stage stage = new Stage();
             stage.setTitle("presentieLijst");
             stage.setScene(scene);
@@ -151,20 +144,27 @@ public class mainmenuController {
         Platform.exit();
     }
 
+    public void setGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
+        String gebruikerType = gebruiker.getType();
+        String userlabel = gebruiker.getNaam() + ", " + gebruiker.getType();
 
-    public String getNaamGebruiker(){
-        return naamGebruiker;
-    }
+        studentrooster.setVisible      (gebruikerType.equals("leerling") || gebruikerType.equals("slb"));
+        studentabsent.setVisible       (gebruikerType.equals("leerling"));
+        studentaanwezigheid.setVisible (gebruikerType.equals("leerling") || gebruikerType.equals("decaan"));
 
-    public String getUsertype(){
-        return usertype;
-    }
+        docentrooster.setVisible       (gebruikerType.equals(  "docent"));
+        docentpresent.setVisible       (false);  // (usertype.equals(  "docent"));
 
-    public String getUserklasnaam(){
-        return klasnaam;
-    }
+        SBtoevoegen.setVisible         (gebruikerType.equals("beheerder"));
 
-    public int getGebruikerID(){
-        return gebruikerID;
+
+        if (gebruikerType.equals("leerling")){
+            userlabel = userlabel + " van klas: " + gebruiker.getKlasNaam();
+        }
+        if (gebruikerType.equals("SLB")){
+            userlabel = userlabel + " van klas: " + gebruiker.getKlasNaam();
+        }
+        loggedLabel.setText(userlabel);
     }
 }
