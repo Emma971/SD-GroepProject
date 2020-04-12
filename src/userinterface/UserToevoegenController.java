@@ -183,30 +183,30 @@ public class UserToevoegenController {
         return gebruikerID;
     }
 
-    public void checkBasicFields(String a, String b, String c){
+    public void checkBasicFields(String gebruikersnaam, String gebruikernaam, String gebruikerswachtwoord){
         boolean isUserTypeComboBoxEmpty       = (sbUsertype.getSelectionModel().isEmpty());
 
-        boolean aa = (a==null);
-        boolean bb = (b==null);
-        boolean cc = (c==null);
+        boolean gebruikersnaamCheck = (gebruikersnaam       ==null);
+        boolean gebruikernaamCheck = (gebruikernaam        ==null);
+        boolean gebruikerswachtwoordCheck = (gebruikerswachtwoord ==null);
         String query = "SELECT gebruikersnaam " +
                 "FROM gebruiker " +
-                "WHERE gebruikersnaam = '" + a +"';";
+                "WHERE gebruikersnaam = '" + gebruikersnaam +"';";
         for (Map<String, Object> data : Database.executeStatement(query)) {
             System.out.println(data.get("gebruikersnaam"));
-            if (a.equals(data.get("gebruikersnaam"))) {
+            if (gebruikersnaam.equals(data.get("gebruikersnaam"))) {
                 errorLabel.setText("gebruikersnaam bestaat al !");
             }
         }
-        if ((aa || bb || cc || isUserTypeComboBoxEmpty)){
+        if ((gebruikersnaamCheck || gebruikernaamCheck || gebruikerswachtwoordCheck || isUserTypeComboBoxEmpty)){
                 errorLabel.setText("vul alles in AUB !");
             }
     }
 
-    public void checkCombobox(String a){
-        boolean aa = (a==null);
+    public void checkCombobox(String gebruikersCombo){
+        boolean gebruikersComboCheck = ( gebruikersCombo==null );
 
-        if ((aa)){
+        if ((gebruikersComboCheck)){
             errorLabel.setText("vul alles in AUB !");
         }
     }
