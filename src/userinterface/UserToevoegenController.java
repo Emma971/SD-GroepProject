@@ -168,15 +168,15 @@ public class UserToevoegenController {
         }
     }
 
-    public int gebruikerID(String a, String b, String c, String d){
+    public int gebruikerID(String gebruikersnaam, String gebruikernaam, String gebruikerswachtwoord, String gebruikerstype){
         int gebruikerID = 0;
         String query = "INSERT INTO gebruiker " +
                 "(gebruikersnaam, naam, gebruikerType, wachtwoord) VALUES " +
-                "('"+ a + "', '" + b + "', '" + c + "', '" + d + "');";
+                "('"+ gebruikersnaam + "', '" + gebruikernaam + "', '" + gebruikerswachtwoord + "', '" + gebruikerstype + "');";
         Database.executeStatement(query);
         query = "SELECT gebruikerID " +
                 "FROM gebruiker " +
-                "WHERE gebruikersnaam = '" + a + "';";
+                "WHERE gebruikersnaam = '" + gebruikersnaam + "';";
         for (Map<String, Object> data : Database.executeStatement(query)){
             gebruikerID = (int) data.get("gebruikerID");
         }
