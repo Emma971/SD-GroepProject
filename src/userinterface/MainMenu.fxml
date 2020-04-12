@@ -11,7 +11,7 @@
       <Button fx:id="studentabsent" layoutX="118.0" layoutY="139.0" mnemonicParsing="false" onAction="#absentmelden" text="absent melden" />
       <Button fx:id="studentrooster" layoutX="118.0" layoutY="94.0" mnemonicParsing="false" onAction="#roosterscherm" prefHeight="25.0" prefWidth="95.0" text="rooster" />
       <Button fx:id="docentpresent" layoutX="118.0" layoutY="139.0" mnemonicParsing="false" onAction="#presentieLijst" prefHeight="25.0" prefWidth="95.0" text="presentie lijst" />
-      <Button layoutX="242.0" layoutY="263.0" mnemonicParsing="false" onAction="#close" text="uitloggen" />
+<!--      <Button layoutX="242.0" layoutY="263.0" mnemonicParsing="false" onAction="#close" text="uitloggen" />-->
       <Button fx:id="studentaanwezigheid" layoutX="118.0" layoutY="181.0" mnemonicParsing="false" onAction="#aanwezig" prefHeight="25.0" prefWidth="95.0" text="absenties" />
       <Button fx:id="docentrooster" layoutX="110.0" layoutY="94.0" mnemonicParsing="false" onAction="#roosterscherm" prefHeight="25.0" prefWidth="111.0" text="Docent Rooster" />
       <Label fx:id="errormenulabel" layoutX="72.0" layoutY="53.0" />

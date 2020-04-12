@@ -4,7 +4,6 @@ import Utils.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
@@ -54,19 +53,19 @@ public class InloggenController {
                     } else {
                         typeID = (int) wwD.get(0).get("leerlingID");
                     }
-                    String klasNaam = (String) wwD.get(0).get("klasnaam");
+                    String klasNaam = (String) wwD.get(0).get("klasNaam");
                     Gebruiker gebruiker = new Gebruiker(gebruikerID, naam, gebruikerType, typeID, klasNaam);
                     //                try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("MainMenu.fxml"));
                     Parent root = loader.load();
                     MainMenuController controller = loader.getController();
                     controller.setGebruiker(gebruiker);
-                    controller.setLoginDetails((int) wwD.get(0).get("gebruikerID"), (String) wwD.get(0).get("naam"), gebruikerType, (String) wwD.get(0).get("klasNaam"));
-                    Stage newStage = new Stage();
-                    newStage.setScene(new Scene(root));
-                    newStage.setTitle("Main menu");
-                    newStage.initModality(Modality.APPLICATION_MODAL);
-                    newStage.showAndWait();
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(root));
+                    stage.setTitle("Main menu");
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.show();
+                    root.requestFocus();
 
                     //                } catch (IOException e) {
                     //                    String message = e.getMessage();
@@ -79,11 +78,7 @@ public class InloggenController {
                 HeadLabel.setText("Deze gebruiker bestaat niet");
             }
         } catch (UnsupportedOperationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Er is een fout opgetreden");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getLocalizedMessage());
-            alert.showAndWait();
+            Popup.alert(e.getLocalizedMessage());
         }
     }
 }

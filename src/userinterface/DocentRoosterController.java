@@ -32,8 +32,6 @@ public class DocentRoosterController {
 
     @FXML private DatePicker overzichtDatePicker;
 
-    private String gebruikersType;
-    private String Lesnaam = "";
     private HashMap<String, Integer> lesIDs;
     private Gebruiker gebruiker;
 
@@ -110,8 +108,7 @@ public class DocentRoosterController {
                 errorLabel.setText("Error! couldn't load the data");
                 e.printStackTrace();
             }
-        }
-        if (type.equals("slb")){
+        } else if (type.equals("slb")){
             try {
                 lesIDs = new HashMap<>();
 
@@ -168,7 +165,7 @@ public class DocentRoosterController {
 
     public void Afwezigheid() {
         try {
-            Lesnaam = dagRoosterListView.getSelectionModel().getSelectedItem();
+            String lesnaam = dagRoosterListView.getSelectionModel().getSelectedItem();
 
             String fxmlPagina = "AfwezigeStudentenShow.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPagina));
@@ -176,27 +173,24 @@ public class DocentRoosterController {
 
             AfwezigeStudentenShowController controller = loader.getController();
             controller.setLesID(lesIDs.get(dagRoosterListView.getSelectionModel().getSelectedItem()));
-            controller.Les(Lesnaam);
+            controller.Les(lesnaam);
             controller.giveDatum(overzichtDatePicker.getValue());
             controller.zetAlleleerlingen();
-            controller.zetButtonsVisable(gebruikersType);
+            controller.zetButtonsVisable(gebruiker.getType());
             controller.setGebruiker(gebruiker);
             Stage stage = new Stage();
-            if(Lesnaam == null || Lesnaam.isEmpty()){
+            if(lesnaam == null || lesnaam.isEmpty()){
                 stage.setTitle("Absentie");
             }else {
-                stage.setTitle(Lesnaam);
+                stage.setTitle(lesnaam);
             }
             stage.setScene(new Scene(root));
             stage.show();
+            root.requestFocus();
         } catch (IOException e) {
             errorLabel.setText("Error! can't access absent melden window ");
             e.printStackTrace();
         }
-    }
-
-    public void setUserType(String Usertype){
-        gebruikersType = Usertype;
     }
 
     public void setGebruiker(Gebruiker gebruiker) {

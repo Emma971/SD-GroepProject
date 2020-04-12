@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -104,7 +105,8 @@ public class SchoolOverzichtController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfmeldenLes.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
             AfmeldenLesController controller = fxmlLoader.getController();
             controller.setGebruiker(gebruiker);
             String dagRoosterSelectedLes = dagRoosterListView.getSelectionModel().getSelectedItem();
@@ -116,6 +118,7 @@ public class SchoolOverzichtController {
             stage.setTitle("Absent Melden");
             stage.setScene(scene);
             stage.show();
+            root.requestFocus();
         } catch (IOException e) {
             errorLabel.setText("Error! can't access absent melden window ");
         }

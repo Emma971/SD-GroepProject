@@ -1,9 +1,9 @@
 package userinterface;
 
-import Utils.Gebruiker;
-import javafx.application.Platform;
+import Utils.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -24,43 +24,59 @@ public class MainMenuController {
     @FXML private Button docentrooster;
     @FXML private Button docentpresent;
     @FXML private Button SBtoevoegen;
-
-    private String naamGebruiker;
-    private String usertype;
-    private String klasnaam;
-    private int gebruikerID;
     private Gebruiker gebruiker;
 
-    public void setLoginDetails(int gebruikerID, String username, String usertype, String klasnaam) {
-        this.gebruikerID = gebruikerID;
-        this.naamGebruiker = username;
-        this.usertype = usertype;
-        this.klasnaam = klasnaam;
+    public void setGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
+        String gebruikerType = gebruiker.getType();
+        String userlabel = gebruiker.getNaam() + ", " + gebruiker.getType();
+
+        studentrooster.setVisible      (gebruikerType.equals("leerling") || gebruikerType.equals("slb"));
+        studentabsent.setVisible       (false);  //(gebruikerType.equals("leerling"));
+        studentaanwezigheid.setVisible (gebruikerType.equals("leerling") || gebruikerType.equals("decaan") || gebruikerType.equals("slb") );
+
+        docentrooster.setVisible       (gebruikerType.equals(  "docent"));
+        docentpresent.setVisible       (false);  // (gebruiker.getType().equals(  "docent"));
+
+        SBtoevoegen.setVisible         (gebruikerType.equals("beheerder"));
+
+
+        if (gebruikerType.equals("leerling")){
+            userlabel = userlabel + " van klas: " + gebruiker.getKlasNaam();
+        }
+        loggedLabel.setText(userlabel);
     }
 
     public void roosterscherm() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
+            Parent root;
             Scene scene = null;
-            if(usertype.equals("leerling")) {
+            if(gebruiker.getType().equals("leerling")) {
                 fxmlLoader.setLocation(getClass().getResource("SchoolOverzicht.fxml"));
-                scene = new Scene(fxmlLoader.load());
+                root = fxmlLoader.load();
+                scene = new Scene(root);
                 SchoolOverzichtController controller = fxmlLoader.getController();
                 controller.setGebruiker(gebruiker);
 //                controller.setParentController(this);
-            } else if (usertype.equals("docent")|| usertype.equals("slb")) {
+            } else if (gebruiker.getType().equals("docent")|| gebruiker.getType().equals("slb")) {
                 fxmlLoader.setLocation(getClass().getResource("DocentRooster.fxml"));
-                scene = new Scene(fxmlLoader.load());
+                root = fxmlLoader.load();
+                scene = new Scene(root);
                 DocentRoosterController controller = fxmlLoader.getController();
                 controller.setGebruiker(gebruiker);
 //                controller.setParentController(this);
-                controller.setUserType(usertype);
+//                controller.setUserType(gebruiker.getType());
+            } else {
+                root = fxmlLoader.load();  // Unreachable, but circumvents compile error
             }
             Stage stage = new Stage();
             stage.setTitle("Rooster");
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            stage.show();
+            root.requestFocus();
+
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
         }
@@ -68,19 +84,19 @@ public class MainMenuController {
 
     public void aanwezig() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("aanwezigheid.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("aanwezigheid.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
             aanwezigheidController controller = fxmlLoader.getController();
             controller.setGebruiker(gebruiker);
-//            controller.setParentController(this);
             Stage stage = new Stage();
             stage.setTitle("Aanwezigheid");
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            stage.show();
+            root.requestFocus();
         } catch (IOException e) {
-            errormenulabel.setText("ERROR! Couldn't load new window.");
+            Popup.alert("ERROR! Couldn't load new window.");
         }
     }
 
@@ -88,12 +104,14 @@ public class MainMenuController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("UserToevoegen.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.setTitle("Aanwezigheid");
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            stage.show();
+            root.requestFocus();
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
             e.printStackTrace();
@@ -104,7 +122,8 @@ public class MainMenuController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfmeldenLes.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
             aanwezigheidController controller = fxmlLoader.getController();
             controller.setGebruiker(gebruiker);
 //            controller.setParentController(this);
@@ -112,7 +131,8 @@ public class MainMenuController {
             stage.setTitle("Absent Melden");
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            stage.show();
+            root.requestFocus();
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
         }
@@ -122,7 +142,8 @@ public class MainMenuController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AfwezigeStudentenShow.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
             aanwezigheidController controller = fxmlLoader.getController();
             controller.setGebruiker(gebruiker);
 //            controller.setParentController(this);
@@ -130,34 +151,14 @@ public class MainMenuController {
             stage.setTitle("presentieLijst");
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            stage.show();
+            root.requestFocus();
         } catch (IOException e) {
             errormenulabel.setText("ERROR! Couldn't load new window.");
         }
     }
 
-    public void close() {
-        Platform.exit();
-    }
-
-    public void setGebruiker(Gebruiker gebruiker) {
-        this.gebruiker = gebruiker;
-        String gebruikerType = gebruiker.getType();
-        String userlabel = gebruiker.getNaam() + ", " + gebruiker.getType();
-
-        studentrooster.setVisible      (gebruikerType.equals("leerling") || gebruikerType.equals("slb"));
-        studentabsent.setVisible       (gebruikerType.equals("leerling"));
-        studentaanwezigheid.setVisible (gebruikerType.equals("leerling") || gebruikerType.equals("decaan") || gebruikerType.equals("slb") );
-
-        docentrooster.setVisible       (gebruikerType.equals(  "docent"));
-        docentpresent.setVisible       (false);  // (usertype.equals(  "docent"));
-
-        SBtoevoegen.setVisible         (gebruikerType.equals("beheerder"));
-
-
-        if (gebruikerType.equals("leerling")){
-            userlabel = userlabel + " van klas: " + gebruiker.getKlasNaam();
-        }
-        loggedLabel.setText(userlabel);
-    }
+//    public void close() {
+//        Platform.exit();
+//    }
 }
