@@ -8,9 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,7 +25,10 @@ public class DocentRoosterController {
     @FXML private Label errorLabel;
     @FXML private Label roosternaamLabel;
 
+    @FXML private TabPane dagWeekTabs;
+    @FXML private Tab dagTab;
     @FXML private ListView<String> dagRoosterListView;
+    @FXML private Tab weekTab;
     @FXML private ListView<String> weekRoosterListView;
 
     @FXML private DatePicker overzichtDatePicker;
@@ -43,18 +44,42 @@ public class DocentRoosterController {
         }
     }
 
+    public void clearSelection() {
+        if (dagRoosterListView.getSelectionModel() != null) {
+            dagRoosterListView.getSelectionModel().clearSelection();
+        }
+        if (weekRoosterListView.getSelectionModel() != null) {
+            weekRoosterListView.getSelectionModel().clearSelection();
+        }
+    }
+
     public void toonVanDaag() {
         overzichtDatePicker.setValue(LocalDate.now());
+        clearSelection();
     }
 
-    public void toonVorigeDag() {
-        LocalDate dagEerder = overzichtDatePicker.getValue().minusDays(1);
-        overzichtDatePicker.setValue(dagEerder);
+    public void toonVorige() {
+        LocalDate nieuweDatum;
+        if (dagWeekTabs.getSelectionModel().getSelectedItem() == dagTab) {
+            nieuweDatum = overzichtDatePicker.getValue().minusDays(1);
+        } else {
+            nieuweDatum = overzichtDatePicker.getValue().minusDays(7);
+        }
+        overzichtDatePicker.setValue(nieuweDatum);
+        clearSelection();
     }
 
-    public void toonVolgendeDag() {
-        LocalDate dagLater = overzichtDatePicker.getValue().plusDays(1);
-        overzichtDatePicker.setValue(dagLater);
+    public void toonVolgende() {
+        LocalDate nieuweDatum;
+        if (dagWeekTabs.getSelectionModel().getSelectedItem() == dagTab) {
+            nieuweDatum = overzichtDatePicker.getValue().plusDays(1);
+        } else if (dagWeekTabs.getSelectionModel().getSelectedItem() == weekTab){
+            nieuweDatum = overzichtDatePicker.getValue().plusDays(7);
+        } else {
+            nieuweDatum = overzichtDatePicker.getValue();  // Unreachable, but circumvents compile error
+        }
+        overzichtDatePicker.setValue(nieuweDatum);
+        clearSelection();
     }
 
     public void toonlessen() {
@@ -75,8 +100,7 @@ public class DocentRoosterController {
                 String query = "SELECT les.begintijd, klas.klasNaam, les.lesID " +
                         "FROM les " +
                         "INNER JOIN klas ON les.klasID = klas.klasID " +
-                        "INNER JOIN medewerker ON les.docentID = medewerker.medewerkerID " +
-                        "WHERE medewerker.gebruikerID = " + gebruiker.getID() + " " +
+                        "WHERE les.docentID = " + gebruiker.getTypeID() + " " +
                         "AND WEEK(les.begintijd) = " + (weekX - 1) + " " +
                         "ORDER BY les.begintijd";
                 for (Map<String, Object> data : Database.executeStatement(query)) {
@@ -126,9 +150,7 @@ public class DocentRoosterController {
                         "FROM les " +
                         "INNER JOIN klas ON les.klasID = klas.klasID " +
                         "INNER JOIN leerling ON  les.klasID = leerling.klasID " +
-                        "INNER JOIN gebruiker ON leerling.gebruikerID = gebruiker.gebruikerID " +
-                        "INNER JOIN medewerker ON leerling.SLBID = medewerker.medewerkerID " +
-                        "WHERE medewerker.gebruikerID = " + gebruiker.getID() + " " +
+                        "WHERE leerling.SLBID = " + gebruiker.getTypeID() + " " +
                         "AND WEEK(les.begintijd) = " + (weekX - 1) + " " +
                         "ORDER BY les.begintijd";
                 for (Map<String, Object> data : Database.executeStatement(query)) {
