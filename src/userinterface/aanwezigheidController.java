@@ -15,7 +15,6 @@ public class aanwezigheidController {
     @FXML private Label aanwezigDatumLabel;
     @FXML private Label aanwezigDataLabel;
     @FXML private Label aanwezigCalcLabel;
-    @FXML private Label aanwezigStudentLabel;
 
     @FXML private ListView<String> aanwezigList;
 
@@ -140,7 +139,6 @@ public class aanwezigheidController {
                         "WHERE afwezigheid.leerlingID = " + leerlingID;
                 for (Map<String, Object> afwezig : Database.executeStatement(query)) {
                     String reden = (String) afwezig.get("reden");
-                    String cursusNaam = (String) afwezig.get("cursusNaam");
                     LocalDateTime begintijd = (LocalDateTime) afwezig.get("begintijd");
                     LocalDateTime eindtijd = (LocalDateTime) afwezig.get("eindtijd");
                     String studentnaam = afwezig.get("naam").toString();
@@ -168,7 +166,6 @@ public class aanwezigheidController {
                         "WHERE cursus.cursusID = '" + cursusID + "'";
                 for (Map<String, Object> afwezig : Database.executeStatement(query)) {
                     String reden = (String) afwezig.get("reden");
-                    String cursusNaam = (String) afwezig.get("cursusNaam");
                     LocalDateTime begintijd = (LocalDateTime) afwezig.get("begintijd");
                     LocalDateTime eindtijd = (LocalDateTime) afwezig.get("eindtijd");
                     String studentnaam = afwezig.get("naam").toString();

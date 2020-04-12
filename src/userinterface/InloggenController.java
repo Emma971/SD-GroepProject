@@ -60,12 +60,12 @@ public class InloggenController {
                     Parent root = loader.load();
                     MainMenuController controller = loader.getController();
                     controller.setGebruiker(gebruiker);
-                    controller.setLoginDetails((int) wwD.get(0).get("gebruikerID"), (String) wwD.get(0).get("naam"), gebruikerType, (String) wwD.get(0).get("klasNaam"));
-                    Stage newStage = new Stage();
-                    newStage.setScene(new Scene(root));
-                    newStage.setTitle("Main menu");
-                    newStage.initModality(Modality.APPLICATION_MODAL);
-                    newStage.showAndWait();
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(root));
+                    stage.setTitle("Main menu");
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.show();
+                    root.requestFocus();
 
                     //                } catch (IOException e) {
                     //                    String message = e.getMessage();

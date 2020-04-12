@@ -1,6 +1,6 @@
 package userinterface;
 
-import Utils.Gebruiker;
+import Utils.*;
 import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,12 +11,9 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.util.*;
 
-import static Utils.Database.executeStatement;
-
 public class AfwezigeStudentenShowController {
     private LocalDate Datum;
     private String Les;
-    ArrayList<Map<String, Object>> Alleleerlingen;
     ObservableList<String> Aanwezig = FXCollections.observableArrayList();
     ObservableList<String> Afwezig = FXCollections.observableArrayList();
     @FXML ListView<String> AfwezigLijst;
@@ -49,7 +46,7 @@ public class AfwezigeStudentenShowController {
                 String query = "DELETE FROM `afwezigheid` " +
                         "WHERE leerlingID = " + leerlingIDs.get(naam) + " " +
                         "AND lesID = " + lesID;
-                executeStatement(query);
+                Database.executeStatement(query);
                 Aanwezig.add(naam);
                 Afwezig.remove(naam);
                 initialize();
@@ -67,7 +64,7 @@ public class AfwezigeStudentenShowController {
             if (naam != null && !naam.isEmpty()) {
                 System.out.println("leerlingID: " + leerlingIDs.get(naam));
                 System.out.println("lesID: " + lesID);
-                executeStatement("INSERT INTO `afwezigheid` (`reden`, `leerlingID`, `lesID`) VALUES ('Absent', '" + leerlingIDs.get(naam) + "', '" + lesID + "')");
+                Database.executeStatement("INSERT INTO `afwezigheid` (`reden`, `leerlingID`, `lesID`) VALUES ('Absent', '" + leerlingIDs.get(naam) + "', '" + lesID + "')");
                 Afwezig.add(naam);
                 Aanwezig.remove(naam);
                 initialize();
@@ -80,18 +77,18 @@ public class AfwezigeStudentenShowController {
     }
 
     public void LijstMaken(){
-        System.out.println(lesID);
-        Aanwezig.add("Naam - LeerlingNummer");
-        Afwezig.add("Naam - LeerlingNummer");
+        System.out.println("lesID " + lesID);
+//        Aanwezig.add("Naam - LeerlingNummer");
+//        Afwezig.add("Naam - LeerlingNummer");
         String query = "SELECT gebruiker.naam, leerling.leerlingID " +
                 "FROM gebruiker " +
                 "INNER JOIN leerling ON gebruiker.gebruikerID = leerling.gebruikerID " +
                 "INNER JOIN klas ON leerling.klasID = klas.klasID " +
                 "INNER JOIN les ON les.klasID = klas.klasID " +
                 "WHERE les.lesID = " + lesID + " " +
-                "ORDER BY gebruiker.naam; ";
-        for (Map<String, Object> data : executeStatement(query)) {
-            String aanwezigestudenten = data.get("naam") + " - " + data.get("leerlingID");
+                "ORDER BY gebruiker.naam";
+        for (Map<String, Object> data : Database.executeStatement(query)) {
+            String aanwezigestudenten = data.get("leerlingID") + ". " + data.get("naam");
             if (!Aanwezig.contains(aanwezigestudenten))
                 Aanwezig.add(aanwezigestudenten);
         }
@@ -99,12 +96,10 @@ public class AfwezigeStudentenShowController {
                 "FROM afwezigheid " +
                 "INNER JOIN leerling ON afwezigheid.leerlingID = leerling.leerlingID " +
                 "INNER JOIN gebruiker ON leerling.gebruikerID = gebruiker.gebruikerID " +
-                "INNER JOIN klas ON leerling.klasID = klas.klasID " +
-                "INNER JOIN les ON klas.klasID = les.klasID " +
                 "WHERE afwezigheid.lesID = " + lesID + " " +
-                "ORDER BY gebruiker.naam; ";
-        for (Map<String, Object> afw : executeStatement(query)) {
-            String afwezigestudenten = afw.get("naam") + " - " + afw.get("leerlingID");
+                "ORDER BY gebruiker.naam";
+        for (Map<String, Object> afw : Database.executeStatement(query)) {
+            String afwezigestudenten = afw.get("leerlingID") + ". " + afw.get("naam");
             System.out.println(afwezigestudenten);
             if (!Afwezig.contains(afwezigestudenten))
                 Afwezig.add(afwezigestudenten);
