@@ -21,8 +21,6 @@ public class aanwezigheidController {
 
     @FXML private DatePicker overzichtDatePicker;
 
-    @FXML private TextField aanwezigInputText;
-
     @FXML private Button aanwezigTonen;
 
     @FXML private ComboBox<String> aanwezigheidComboBox;
@@ -239,8 +237,11 @@ public class aanwezigheidController {
             aanwezigheidComboBox.setVisible(gebruiker.getType().equals("decaan"));
             aanwezigCalcLabel.setVisible(gebruiker.getType().equals("leerling"));
 
-            if (gebruiker.getType().equals("leerling"))
+            if (gebruiker.getType().equals("leerling")) {
                 toonabsentlessen();
+            } else {
+                aanwezigList.setItems(FXCollections.observableArrayList(""));
+            }
         } catch (NullPointerException e) {
             Popup.alert("Error! couldn't load the data");
         }
