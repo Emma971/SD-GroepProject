@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.aanwezigheidController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userinterface.aanwezigheidController">
    <children>
       <Button fx:id="aanwezigTonen" layoutX="448.0" layoutY="40.0" mnemonicParsing="false" onAction="#toonabsentlessenDecaan" prefHeight="25.0" prefWidth="70.0" text="tonen" />
       <Label fx:id="aanwezigDatumLabel" layoutX="14.0" layoutY="6.0" text="\%date%" />
@@ -15,7 +14,7 @@
       <Button layoutX="460.0" layoutY="103.0" mnemonicParsing="false" onAction="#toonVolgendeDag" prefHeight="25.0" prefWidth="120.0" text="&gt;&gt;&gt;" />
       <Button layoutX="10.0" layoutY="103.0" mnemonicParsing="false" onAction="#toonVorigeDag" prefHeight="25.0" prefWidth="120.0" text="&lt;&lt;&lt;" />
       <Button layoutX="259.0" layoutY="10.0" mnemonicParsing="false" onAction="#toonVanDaag" text="Vandaag" />
-      <ComboBox fx:id="aanwezigheidComboBox" layoutX="75.0" layoutY="40.0" prefHeight="25.0" prefWidth="103.0" promptText="Kies" />
+      <ComboBox fx:id="aanwezigheidComboBox" layoutX="75.0" layoutY="40.0" onAction="#toonabsentlessenDecaan" prefHeight="25.0" prefWidth="103.0" promptText="Kies" />
       <ComboBox fx:id="aanwezigheidComboBoxantwoord" layoutX="178.0" layoutY="40.0" prefHeight="25.0" prefWidth="269.0" promptText="Kies klas / leerling" visible="false" />
    </children>
 </AnchorPane>

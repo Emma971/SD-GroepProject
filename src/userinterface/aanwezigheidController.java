@@ -21,14 +21,42 @@ public class aanwezigheidController {
 
     @FXML private DatePicker overzichtDatePicker;
 
-    @FXML private TextField aanwezigInputText;
-
     @FXML private Button aanwezigTonen;
 
     @FXML private ComboBox<String> aanwezigheidComboBox;
     @FXML private ComboBox<String> aanwezigheidComboBoxantwoord;
 
     private Gebruiker gebruiker;
+
+    public void setGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
+        overzichtDatePicker.setValue(LocalDate.now());
+        try {
+            ObservableList<String> list = FXCollections.observableArrayList();
+            String comboBoxklas = "klas";
+            String comboBoxleerling = "leerling";
+            list.add(comboBoxklas);
+            list.add(comboBoxleerling);
+            aanwezigheidComboBox.setItems(list);
+
+            aanwezigDataLabel.setText(gebruiker.getNaam() + ", " + gebruiker.getType() + ", " + gebruiker.getID());
+            overzichtDatePicker.setValue(LocalDate.now());
+            aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek().toString().toLowerCase() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth().toString().toLowerCase() + "/" + LocalDate.now().getYear());
+
+            aanwezigTonen.setVisible(gebruiker.getType().equals("decaan"));
+            aanwezigheidComboBox.setVisible(gebruiker.getType().equals("decaan"));
+            aanwezigCalcLabel.setVisible(gebruiker.getType().equals("leerling"));
+
+            if (gebruiker.getType().equals("leerling")) {
+                toonabsentlessen();
+            } else {
+                aanwezigList.setItems(FXCollections.observableArrayList(""));
+            }
+        } catch (NullPointerException e) {
+            Popup.alert("Error! couldn't load the data");
+            e.printStackTrace();
+        }
+    }
 
     public void toonVanDaag() {
         overzichtDatePicker.setValue(LocalDate.now());
@@ -118,7 +146,6 @@ public class aanwezigheidController {
             }
             if (aanwezigheidComboBox.getValue().equals("leerling")) {
                 aanwezigheidComboBoxantwoord.setVisible(aanwezigheidComboBox.getValue().equals("leerling"));
-                String leerlingNaam = aanwezigInputText.getText();
                 String query = "SELECT gebruiker.naam " +
                         "FROM gebruiker " +
                         "INNER JOIN leerling ON gebruiker.gebruikerID = leerling.gebruikerID " +
@@ -139,8 +166,8 @@ public class aanwezigheidController {
                         "INNER JOIN gebruiker on leerling.gebruikerID = gebruiker.gebruikerID " +
                         "INNER JOIN klas on leerling.klasID = klas.klasID " +
                         "INNER JOIN medewerkertoegangklas ON les.klasID = medewerkertoegangklas.klasID " +
-                        "WHERE medewerkertoegangklas.medewerkerID = " + aanwezigheidComboBoxantwoord.getValue() + " " +
-                        "AND gebruiker.naam = '" + leerlingNaam + "'" +
+                        "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
+                        "AND gebruiker.naam = '" + aanwezigheidComboBoxantwoord.getValue() + "'" +
                         "AND les.begintijd >= '" + datum + " 00:00:00' " +
                         "AND les.begintijd <= '" + datum + " 23:59:59' " +
                         "ORDER BY les.begintijd";
@@ -168,6 +195,7 @@ public class aanwezigheidController {
             aanwezigList.setItems(dagDecaanafwezig);
         } catch (NullPointerException e) {
             Popup.alert("Error! couldn't load the data");
+            e.printStackTrace();
         }
     }
 
@@ -210,6 +238,7 @@ public class aanwezigheidController {
                     "/" + overzichtDatePicker.getValue().getYear());
         } catch (NullPointerException e) {
             Popup.alert("Error! couldn't load the data");
+            e.printStackTrace();
         }
     }
 
@@ -244,33 +273,7 @@ public class aanwezigheidController {
             aanwezigCalcLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase() + ", " + overzichtDatePicker.getValue().getDayOfMonth() + "/" + overzichtDatePicker.getValue().getMonth().toString().toLowerCase() + "/" + overzichtDatePicker.getValue().getYear());
         } catch (NullPointerException e) {
             Popup.alert("Error! couldn't load the data");
-        }
-    }
-
-    public void setGebruiker(Gebruiker gebruiker) {
-        this.gebruiker = gebruiker;
-        overzichtDatePicker.setValue(LocalDate.now());
-        try {
-            ObservableList<String> list = FXCollections.observableArrayList();
-            String comboBoxklas = "klas";
-            String comboBoxleerling = "leerling";
-            list.add(comboBoxklas);
-            list.add(comboBoxleerling);
-            aanwezigheidComboBox.setItems(list);
-
-            aanwezigDataLabel.setText(gebruiker.getNaam() + ", " + gebruiker.getType() + ", " + gebruiker.getID());
-            overzichtDatePicker.setValue(LocalDate.now());
-            aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek().toString().toLowerCase() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth().toString().toLowerCase() + "/" + LocalDate.now().getYear());
-
-            aanwezigInputText.setVisible(gebruiker.getType().equals("decaan"));
-            aanwezigTonen.setVisible(gebruiker.getType().equals("decaan"));
-            aanwezigheidComboBox.setVisible(gebruiker.getType().equals("decaan"));
-            aanwezigCalcLabel.setVisible(gebruiker.getType().equals("leerling"));
-
-            if (gebruiker.getType().equals("leerling"))
-                toonabsentlessen();
-        } catch (NullPointerException e) {
-            Popup.alert("Error! couldn't load the data");
+            e.printStackTrace();
         }
     }
 }
