@@ -235,7 +235,6 @@ public class aanwezigheidController {
             overzichtDatePicker.setValue(LocalDate.now());
             aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek().toString().toLowerCase() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth().toString().toLowerCase() + "/" + LocalDate.now().getYear());
 
-            aanwezigInputText.setVisible(gebruiker.getType().equals("decaan"));
             aanwezigTonen.setVisible(gebruiker.getType().equals("decaan"));
             aanwezigheidComboBox.setVisible(gebruiker.getType().equals("decaan"));
             aanwezigCalcLabel.setVisible(gebruiker.getType().equals("leerling"));
