@@ -125,10 +125,10 @@ public class aanwezigheidController {
                         "INNER JOIN medewerkertoegangklas ON leerling.klasID = medewerkertoegangklas.klasID " +
                         "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
                         "ORDER BY gebruiker.naam";
-                ArrayList<Map<String, Object>> klasnaamlist = Database.executeStatement(query);
-                for (Map<String, Object> klasnaam : klasnaamlist) {
-                    String klas = (String) klasnaam.get("klasNaam");
-                    comboboxData.add(klas);
+                ArrayList<Map<String, Object>> leerlingnaamlist = Database.executeStatement(query);
+                for (Map<String, Object> leerlingnaam : leerlingnaamlist) {
+                    String naam = (String) leerlingnaam.get("naam");
+                    comboboxData.add(naam);
                     aanwezigheidComboBoxantwoord.setItems(comboboxData);
                 }
                 query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
