@@ -21,42 +21,14 @@ public class aanwezigheidController {
 
     @FXML private DatePicker overzichtDatePicker;
 
+    @FXML private TextField aanwezigInputText;
+
     @FXML private Button aanwezigTonen;
 
     @FXML private ComboBox<String> aanwezigheidComboBox;
     @FXML private ComboBox<String> aanwezigheidComboBoxantwoord;
 
     private Gebruiker gebruiker;
-
-    public void setGebruiker(Gebruiker gebruiker) {
-        this.gebruiker = gebruiker;
-        overzichtDatePicker.setValue(LocalDate.now());
-        try {
-            ObservableList<String> list = FXCollections.observableArrayList();
-            String comboBoxklas = "klas";
-            String comboBoxleerling = "leerling";
-            list.add(comboBoxklas);
-            list.add(comboBoxleerling);
-            aanwezigheidComboBox.setItems(list);
-
-            aanwezigDataLabel.setText(gebruiker.getNaam() + ", " + gebruiker.getType() + ", " + gebruiker.getID());
-            overzichtDatePicker.setValue(LocalDate.now());
-            aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek().toString().toLowerCase() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth().toString().toLowerCase() + "/" + LocalDate.now().getYear());
-
-            aanwezigTonen.setVisible(gebruiker.getType().equals("decaan"));
-            aanwezigheidComboBox.setVisible(gebruiker.getType().equals("decaan"));
-            aanwezigCalcLabel.setVisible(gebruiker.getType().equals("leerling"));
-
-            if (gebruiker.getType().equals("leerling")) {
-                toonabsentlessen();
-            } else {
-                aanwezigList.setItems(FXCollections.observableArrayList(""));
-            }
-        } catch (NullPointerException e) {
-            Popup.alert("Error! couldn't load the data");
-            e.printStackTrace();
-        }
-    }
 
     public void toonVanDaag() {
         overzichtDatePicker.setValue(LocalDate.now());
@@ -98,23 +70,10 @@ public class aanwezigheidController {
 
     public void toonabsentlessenDecaan() {
         try {
-            ObservableList<String> comboboxData = FXCollections.observableArrayList();
             ObservableList<String> dagDecaanafwezig = FXCollections.observableArrayList();
             LocalDate datum = overzichtDatePicker.getValue();
             if (aanwezigheidComboBox.getValue().equals("klas")) {
-                aanwezigheidComboBoxantwoord.setVisible(aanwezigheidComboBox.getValue().equals("klas"));
-                String query = "SELECT klas.klasNaam " +
-                        "FROM klas " +
-                        "INNER JOIN medewerkertoegangklas ON klas.klasID = medewerkertoegangklas.klasID " +
-                        "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
-                        "ORDER BY klas.klasNaam";
-                ArrayList<Map<String, Object>> klasnaamlist = Database.executeStatement(query);
-                for (Map<String, Object> klasnaam : klasnaamlist) {
-                    String klas = (String) klasnaam.get("klasNaam");
-                    comboboxData.add(klas);
-                    aanwezigheidComboBoxantwoord.setItems(comboboxData);
-                }
-                query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
+                 String query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
                         "FROM afwezigheid " +
                         "INNER JOIN leerling ON afwezigheid.leerlingID = leerling.leerlingID " +
                         "INNER JOIN gebruiker ON leerling.gebruikerID = gebruiker.gebruikerID " +
@@ -145,20 +104,7 @@ public class aanwezigheidController {
                 }
             }
             if (aanwezigheidComboBox.getValue().equals("leerling")) {
-                aanwezigheidComboBoxantwoord.setVisible(aanwezigheidComboBox.getValue().equals("leerling"));
-                String query = "SELECT gebruiker.naam " +
-                        "FROM gebruiker " +
-                        "INNER JOIN leerling ON gebruiker.gebruikerID = leerling.gebruikerID " +
-                        "INNER JOIN medewerkertoegangklas ON leerling.klasID = medewerkertoegangklas.klasID " +
-                        "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
-                        "ORDER BY gebruiker.naam";
-                ArrayList<Map<String, Object>> leerlingnaamlist = Database.executeStatement(query);
-                for (Map<String, Object> leerlingnaam : leerlingnaamlist) {
-                    String naam = (String) leerlingnaam.get("naam");
-                    comboboxData.add(naam);
-                    aanwezigheidComboBoxantwoord.setItems(comboboxData);
-                }
-                query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
+                String query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
                         "FROM afwezigheid " +
                         "INNER JOIN les ON afwezigheid.lesID = les.lesID " +
                         "INNER JOIN cursus ON les.cursusID = cursus.cursusID " +
@@ -195,7 +141,6 @@ public class aanwezigheidController {
             aanwezigList.setItems(dagDecaanafwezig);
         } catch (NullPointerException e) {
             Popup.alert("Error! couldn't load the data");
-            e.printStackTrace();
         }
     }
 
@@ -238,7 +183,6 @@ public class aanwezigheidController {
                     "/" + overzichtDatePicker.getValue().getYear());
         } catch (NullPointerException e) {
             Popup.alert("Error! couldn't load the data");
-            e.printStackTrace();
         }
     }
 
@@ -273,7 +217,66 @@ public class aanwezigheidController {
             aanwezigCalcLabel.setText("" + overzichtDatePicker.getValue().getDayOfWeek().toString().toLowerCase() + ", " + overzichtDatePicker.getValue().getDayOfMonth() + "/" + overzichtDatePicker.getValue().getMonth().toString().toLowerCase() + "/" + overzichtDatePicker.getValue().getYear());
         } catch (NullPointerException e) {
             Popup.alert("Error! couldn't load the data");
-            e.printStackTrace();
         }
+    }
+
+    public void setGebruiker(Gebruiker gebruiker) {
+        this.gebruiker = gebruiker;
+        overzichtDatePicker.setValue(LocalDate.now());
+        try {
+            ObservableList<String> list = FXCollections.observableArrayList();
+            String comboBoxklas = "klas";
+            String comboBoxleerling = "leerling";
+            list.add(comboBoxklas);
+            list.add(comboBoxleerling);
+            aanwezigheidComboBox.setItems(list);
+
+            aanwezigDataLabel.setText(gebruiker.getNaam() + ", " + gebruiker.getType() + ", " + gebruiker.getID());
+            overzichtDatePicker.setValue(LocalDate.now());
+            aanwezigDatumLabel.setText("" + LocalDate.now().getDayOfWeek().toString().toLowerCase() + ", " + LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth().toString().toLowerCase() + "/" + LocalDate.now().getYear());
+
+            aanwezigTonen.setVisible(gebruiker.getType().equals("decaan"));
+            aanwezigheidComboBox.setVisible(gebruiker.getType().equals("decaan"));
+            aanwezigCalcLabel.setVisible(gebruiker.getType().equals("leerling"));
+
+            if (gebruiker.getType().equals("leerling"))
+                toonabsentlessen();
+        } catch (NullPointerException e) {
+            Popup.alert("Error! couldn't load the data");
+        }
+    }
+
+    public void action(){
+        String medwerkerComboValue = aanwezigheidComboBox.getValue();
+        ObservableList<String> comboboxData = FXCollections.observableArrayList();
+        if (aanwezigheidComboBox.getValue().equals("klas")) {
+            aanwezigheidComboBoxantwoord.setVisible(medwerkerComboValue.equals   ("klas"));
+            String query = "SELECT klas.klasNaam " +
+                    "FROM klas " +
+                    "INNER JOIN medewerkertoegangklas ON klas.klasID = medewerkertoegangklas.klasID " +
+                    "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
+                    "ORDER BY klas.klasNaam";
+            ArrayList<Map<String, Object>> klasnaamlist = Database.executeStatement(query);
+            System.out.println(klasnaamlist);
+            for (Map<String, Object> klasnaam : klasnaamlist) {
+                String klas = (String) klasnaam.get("klasNaam");
+                comboboxData.add(klas);
+                aanwezigheidComboBoxantwoord.setItems(comboboxData);
+            }}
+        if (aanwezigheidComboBox.getValue().equals("leerling")) {
+            aanwezigheidComboBoxantwoord.setVisible(medwerkerComboValue.equals   ("leerling"));
+            String query = "SELECT gebruiker.naam " +
+                    "FROM gebruiker " +
+                    "INNER JOIN leerling ON gebruiker.gebruikerID = leerling.gebruikerID " +
+                    "INNER JOIN medewerkertoegangklas ON leerling.klasID = medewerkertoegangklas.klasID " +
+                    "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
+                    "ORDER BY gebruiker.naam";
+            ArrayList<Map<String, Object>> leerlingnaamlist = Database.executeStatement(query);
+            System.out.println(leerlingnaamlist);
+            for (Map<String, Object> leerlingnaam : leerlingnaamlist) {
+                String naam = (String) leerlingnaam.get("naam");
+                comboboxData.add(naam);
+                aanwezigheidComboBoxantwoord.setItems(comboboxData);
+            }}
     }
 }
