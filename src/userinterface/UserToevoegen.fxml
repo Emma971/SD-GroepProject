@@ -20,6 +20,7 @@
       <ComboBox fx:id="sbLeerlingSLB" layoutX="309.0" layoutY="137.0" prefWidth="150.0" promptText="SLB" visible="false" />
       <ComboBox fx:id="sbMedewerkerType" layoutX="153.0" layoutY="175.0" onAction="#action2" prefWidth="150.0" promptText="medewerker type" visible="false" />
       <ComboBox fx:id="sbDocentCursus" layoutX="309.0" layoutY="175.0" prefWidth="150.0" promptText="Cursus" visible="false" />
+      <ComboBox fx:id="sbDecaan" layoutX="309.0" layoutY="175.0" prefWidth="150.0" promptText="Klas" visible="false" />
       <Button fx:id="sbOpslaan" layoutX="573.0" layoutY="175.0" mnemonicParsing="false" onAction="#opslaan" text="Opslaan" />
       <Button fx:id="sbReset" layoutX="493.0" layoutY="173.0" mnemonicParsing="false" onAction="#reset" prefHeight="17.0" prefWidth="66.0" text="RESET" textFill="#e50202">
          <font>

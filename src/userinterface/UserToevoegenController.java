@@ -22,6 +22,7 @@ public class UserToevoegenController {
     @FXML private ComboBox<String> sbLeerlingSLB;
     @FXML private ComboBox<String> sbMedewerkerType;
     @FXML private ComboBox<String> sbDocentCursus;
+    @FXML private ComboBox<String> sbDecaan;
 
     public void initialize() {
         try {
@@ -67,6 +68,7 @@ public class UserToevoegenController {
 
             sbLeerlingSLB.setItems(SLB);
             sbLeerlingKlas.setItems(klassen);
+            sbDecaan.setItems(klassen);
             sbDocentCursus.setItems(cursus);
         }catch (NullPointerException e){
             e.printStackTrace();
@@ -82,6 +84,7 @@ public class UserToevoegenController {
     public void action2(){
         String medwerkerComboValue = sbMedewerkerType.getValue();
         sbDocentCursus.setVisible(medwerkerComboValue.equals   ("docent"));
+        sbDecaan.setVisible(medwerkerComboValue.equals   ("docent"));
     }
 
     public void opslaan(){
@@ -157,6 +160,27 @@ public class UserToevoegenController {
                             query = "INSERT INTO medewerkertoegangcursus " +
                                     "(medewerkerID, cursusID) VALUES " +
                                     "(" + medewerkerID + ", " + cursusID + ")";
+                            Database.executeStatement(query);
+                        }
+                    }
+                    if (medewerkertype.equals("decaan")) {
+                        checkCombobox(cbdocentcursus);
+                        if (errorLabel.getText().isEmpty()) {
+                            int medewerkerID = 0;
+                            int klasID = 0;
+                            query = "SELECT medewerkerID " +
+                                    "FROM medewerker " +
+                                    "WHERE gebruikerID = " + gebruikerID;
+                            for (Map<String, Object> data : Database.executeStatement(query))
+                                medewerkerID = (int) data.get("medewerkerID");
+                            query = "SELECT klasID " +
+                                    "FROM klas " +
+                                    "WHERE klasNaam = '" + sbDecaan.getValue() + "'";
+                            for (Map<String, Object> data : Database.executeStatement(query))
+                                klasID = (int) data.get("klasID");
+                            query = "INSERT INTO medewerkertoegangklas " +
+                                    "(medewerkerID, klasID) VALUES " +
+                                    "(" + medewerkerID + ", " + klasID + ")";
                             Database.executeStatement(query);
                         }
                     }
