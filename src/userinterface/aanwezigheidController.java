@@ -70,23 +70,10 @@ public class aanwezigheidController {
 
     public void toonabsentlessenDecaan() {
         try {
-            ObservableList<String> comboboxData = FXCollections.observableArrayList();
             ObservableList<String> dagDecaanafwezig = FXCollections.observableArrayList();
             LocalDate datum = overzichtDatePicker.getValue();
             if (aanwezigheidComboBox.getValue().equals("klas")) {
-                aanwezigheidComboBoxantwoord.setVisible(aanwezigheidComboBox.getValue().equals("klas"));
-                String query = "SELECT klas.klasNaam " +
-                        "FROM klas " +
-                        "INNER JOIN medewerkertoegangklas ON klas.klasID = medewerkertoegangklas.klasID " +
-                        "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
-                        "ORDER BY klas.klasNaam";
-                ArrayList<Map<String, Object>> klasnaamlist = Database.executeStatement(query);
-                for (Map<String, Object> klasnaam : klasnaamlist) {
-                    String klas = (String) klasnaam.get("klasNaam");
-                    comboboxData.add(klas);
-                    aanwezigheidComboBoxantwoord.setItems(comboboxData);
-                }
-                query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
+                 String query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
                         "FROM afwezigheid " +
                         "INNER JOIN leerling ON afwezigheid.leerlingID = leerling.leerlingID " +
                         "INNER JOIN gebruiker ON leerling.gebruikerID = gebruiker.gebruikerID " +
@@ -117,21 +104,7 @@ public class aanwezigheidController {
                 }
             }
             if (aanwezigheidComboBox.getValue().equals("leerling")) {
-                aanwezigheidComboBoxantwoord.setVisible(aanwezigheidComboBox.getValue().equals("leerling"));
-                String leerlingNaam = aanwezigInputText.getText();
-                String query = "SELECT gebruiker.naam " +
-                        "FROM gebruiker " +
-                        "INNER JOIN leerling ON gebruiker.gebruikerID = leerling.gebruikerID " +
-                        "INNER JOIN medewerkertoegangklas ON leerling.klasID = medewerkertoegangklas.klasID " +
-                        "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
-                        "ORDER BY gebruiker.naam";
-                ArrayList<Map<String, Object>> leerlingnaamlist = Database.executeStatement(query);
-                for (Map<String, Object> leerlingnaam : leerlingnaamlist) {
-                    String naam = (String) leerlingnaam.get("naam");
-                    comboboxData.add(naam);
-                    aanwezigheidComboBoxantwoord.setItems(comboboxData);
-                }
-                query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
+                String query = "SELECT gebruiker.naam, afwezigheid.reden, cursus.cursusNaam, les.begintijd, les.eindtijd " +
                         "FROM afwezigheid " +
                         "INNER JOIN les ON afwezigheid.lesID = les.lesID " +
                         "INNER JOIN cursus ON les.cursusID = cursus.cursusID " +
@@ -139,8 +112,8 @@ public class aanwezigheidController {
                         "INNER JOIN gebruiker on leerling.gebruikerID = gebruiker.gebruikerID " +
                         "INNER JOIN klas on leerling.klasID = klas.klasID " +
                         "INNER JOIN medewerkertoegangklas ON les.klasID = medewerkertoegangklas.klasID " +
-                        "WHERE medewerkertoegangklas.medewerkerID = " + aanwezigheidComboBoxantwoord.getValue() + " " +
-                        "AND gebruiker.naam = '" + leerlingNaam + "'" +
+                        "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
+                        "AND gebruiker.naam = '" + aanwezigheidComboBoxantwoord.getValue() + "'" +
                         "AND les.begintijd >= '" + datum + " 00:00:00' " +
                         "AND les.begintijd <= '" + datum + " 23:59:59' " +
                         "ORDER BY les.begintijd";
@@ -272,5 +245,39 @@ public class aanwezigheidController {
         } catch (NullPointerException e) {
             Popup.alert("Error! couldn't load the data");
         }
+    }
+
+    public void action(){
+        String medwerkerComboValue = aanwezigheidComboBox.getValue();
+        ObservableList<String> comboboxData = FXCollections.observableArrayList();
+        if (aanwezigheidComboBox.getValue().equals("klas")) {
+            aanwezigheidComboBoxantwoord.setVisible(medwerkerComboValue.equals   ("klas"));
+            String query = "SELECT klas.klasNaam " +
+                    "FROM klas " +
+                    "INNER JOIN medewerkertoegangklas ON klas.klasID = medewerkertoegangklas.klasID " +
+                    "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
+                    "ORDER BY klas.klasNaam";
+            ArrayList<Map<String, Object>> klasnaamlist = Database.executeStatement(query);
+            System.out.println(klasnaamlist);
+            for (Map<String, Object> klasnaam : klasnaamlist) {
+                String klas = (String) klasnaam.get("klasNaam");
+                comboboxData.add(klas);
+                aanwezigheidComboBoxantwoord.setItems(comboboxData);
+            }}
+        if (aanwezigheidComboBox.getValue().equals("leerling")) {
+            aanwezigheidComboBoxantwoord.setVisible(medwerkerComboValue.equals   ("leerling"));
+            String query = "SELECT gebruiker.naam " +
+                    "FROM gebruiker " +
+                    "INNER JOIN leerling ON gebruiker.gebruikerID = leerling.gebruikerID " +
+                    "INNER JOIN medewerkertoegangklas ON leerling.klasID = medewerkertoegangklas.klasID " +
+                    "WHERE medewerkertoegangklas.medewerkerID = " + gebruiker.getTypeID() + " " +
+                    "ORDER BY gebruiker.naam";
+            ArrayList<Map<String, Object>> leerlingnaamlist = Database.executeStatement(query);
+            System.out.println(leerlingnaamlist);
+            for (Map<String, Object> leerlingnaam : leerlingnaamlist) {
+                String naam = (String) leerlingnaam.get("naam");
+                comboboxData.add(naam);
+                aanwezigheidComboBoxantwoord.setItems(comboboxData);
+            }}
     }
 }
